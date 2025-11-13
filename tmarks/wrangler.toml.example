@@ -2,26 +2,19 @@ name = "tmarks"
 compatibility_date = "2024-03-18"
 pages_build_output_dir = ".deploy"
 
-[[d1_databases]]
-binding = "DB"
-database_name = "tmarks-prod-db"
-database_id = "请替换为实际的D1_ID"
-
-[[kv_namespaces]]
-binding = "RATE_LIMIT_KV"
-id = "请替换为实际的KV_ID"  # 需要先创建KV命名空间
-
-[[kv_namespaces]]
-binding = "PUBLIC_SHARE_KV"
-id = "请替换为实际的KV_ID"  # 需要先创建KV命名空间
-
-# Environment variables
-# ⚠️ 安全警告: 敏感信息不应该提交到Git仓库!
+# ⚠️ 重要说明：
+# D1 和 KV 资源绑定请在 Cloudflare Pages Dashboard 中配置
+# 路径：项目设置 → 函数 → 绑定
 #
-# 推荐做法:
-# 1. 在Cloudflare Dashboard中配置环境变量 (Settings → Environment variables)
-# 2. 本地开发使用 .dev.vars 文件 (已在.gitignore中)
-# 3. wrangler.toml 只保留非敏感的默认值
+# 需要绑定的资源：
+# - D1 数据库：变量名 DB，选择数据库 tmarks-prod-db
+# - KV 命名空间：变量名 RATE_LIMIT_KV
+# - KV 命名空间：变量名 PUBLIC_SHARE_KV
+#
+# 这样配置的好处：
+# 1. 不需要在代码中暴露资源 ID
+# 2. 拉取更新时不会覆盖你的配置
+# 3. 更安全，更灵活
 
 [vars]
 ALLOW_REGISTRATION = "true"
@@ -29,6 +22,7 @@ ENVIRONMENT = "production"
 JWT_ACCESS_TOKEN_EXPIRES_IN = "365d"
 JWT_REFRESH_TOKEN_EXPIRES_IN = "365d"
 
-# ⚠️ 敏感信息必须在Cloudflare Dashboard中配置:
-# - JWT_SECRET (至少32个字符的随机字符串)
-# - ENCRYPTION_KEY (至少32个字符的随机字符串)
+# ⚠️ 敏感环境变量请在 Dashboard 中配置：
+# 路径：项目设置 → 环境变量 → 生产环境
+# - JWT_SECRET
+# - ENCRYPTION_KEY

@@ -32,7 +32,6 @@ dist-ssr
 # Wrangler
 .wrangler
 .mf
-wrangler.toml
 
 # Testing
 coverage
