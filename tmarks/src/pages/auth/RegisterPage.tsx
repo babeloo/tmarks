@@ -60,10 +60,18 @@ export function RegisterPage() {
       }, 2000)
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(err.message)
+        // 根据错误状态码提供更友好的提示
+        if (err.status === 409) {
+          setError('用户名或邮箱已被注册')
+        } else if (err.status === 500) {
+          setError('服务器错误,但您的账号可能已创建成功,请尝试登录')
+        } else {
+          setError(err.message)
+        }
       } else {
-        setError('注册失败，请稍后重试')
+        setError('注册失败,请稍后重试')
       }
+      console.error('注册错误:', err)
     }
   }
 
