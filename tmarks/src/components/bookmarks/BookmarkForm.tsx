@@ -446,7 +446,7 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
             <div
               ref={availableTagsScrollRef}
               onWheelCapture={handleAvailableTagsWheel}
-              className="p-2.5 bg-muted rounded-lg max-h-[120px] overflow-y-auto scrollbar-hide min-h-0 overscroll-contain"
+              className="p-2.5 bg-muted rounded-lg max-h-[120px] overflow-y-auto scrollbar-theme min-h-0 overscroll-contain"
               style={{ scrollbarGutter: 'stable' }}
             >
               <div ref={availableTagsInnerRef} className="flex flex-wrap gap-1.5">
