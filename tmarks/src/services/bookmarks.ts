@@ -102,4 +102,42 @@ export const bookmarksService = {
     )
     return response.data!
   },
+
+  /**
+   * 获取回收站书签列表
+   */
+  async getTrash(params?: { page_size?: number; page_cursor?: string }) {
+    const searchParams = new URLSearchParams()
+    if (params?.page_size) searchParams.set('page_size', params.page_size.toString())
+    if (params?.page_cursor) searchParams.set('page_cursor', params.page_cursor)
+    
+    const query = searchParams.toString()
+    const endpoint = query ? `/bookmarks/trash?${query}` : '/bookmarks/trash'
+    
+    const response = await apiClient.get<BookmarksResponse>(endpoint)
+    return response.data!
+  },
+
+  /**
+   * 从回收站恢复书签
+   */
+  async restoreFromTrash(id: string) {
+    const response = await apiClient.patch<{ bookmark: Bookmark }>(`/bookmarks/${id}/restore`, {})
+    return response.data!.bookmark
+  },
+
+  /**
+   * 永久删除书签
+   */
+  async permanentDelete(id: string) {
+    await apiClient.delete(`/bookmarks/${id}/permanent`)
+  },
+
+  /**
+   * 清空回收站
+   */
+  async emptyTrash() {
+    const response = await apiClient.delete<{ message: string; count: number }>('/bookmarks/trash/empty')
+    return response.data!
+  },
 }

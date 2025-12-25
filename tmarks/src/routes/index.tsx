@@ -9,6 +9,7 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage').then(m => ({ default: m.LoginPage })))
 const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage').then(m => ({ default: m.RegisterPage })))
 const BookmarksPage = lazy(() => import('@/pages/bookmarks/BookmarksPage').then(m => ({ default: m.BookmarksPage })))
+const BookmarkTrashPage = lazy(() => import('@/pages/bookmarks/BookmarkTrashPage').then(m => ({ default: m.BookmarkTrashPage })))
 const TabGroupsPage = lazy(() => import('@/pages/tab-groups/TabGroupsPage').then(m => ({ default: m.TabGroupsPage })))
 const TabGroupDetailPage = lazy(() => import('@/pages/tab-groups/TabGroupDetailPage').then(m => ({ default: m.TabGroupDetailPage })))
 const TrashPage = lazy(() => import('@/pages/tab-groups/TrashPage').then(m => ({ default: m.TrashPage })))
@@ -63,6 +64,7 @@ export function AppRouter() {
 
           {/* 常规布局 - 用于设置和其他页面 */}
           <Route element={<AppShell />}>
+            <Route path="/bookmarks/trash" element={<BookmarkTrashPage />} />
             <Route path="/tab/todo" element={<TodoPage />} />
             <Route path="/tab/trash" element={<TrashPage />} />
             <Route path="/tab/statistics" element={<StatisticsPage />} />

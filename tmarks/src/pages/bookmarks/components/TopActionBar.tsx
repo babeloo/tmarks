@@ -14,8 +14,10 @@ import {
   TrendingUp,
   Tag as TagIcon,
   Search,
-  Plus
+  Plus,
+  Trash2
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import type { ViewMode, VisibilityFilter } from '../hooks/useBookmarksState'
 import type { SortOption } from '@/components/common/SortSelector'
 
@@ -233,6 +235,16 @@ export function TopActionBar({
               <CheckCircle className="w-4 h-4" />
             </button>
 
+            {/* 回收站按钮 */}
+            <Link
+              to="/bookmarks/trash"
+              className="btn btn-sm btn-ghost p-2 flex-shrink-0"
+              title="回收站"
+              aria-label="回收站"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Link>
+
             {/* 新增书签按钮 */}
             <button
               onClick={onOpenForm}
@@ -331,6 +343,16 @@ export function TopActionBar({
             >
               <CheckSquare className="w-5 h-5" />
             </button>
+
+            {/* 回收站按钮 */}
+            <Link
+              to="/bookmarks/trash"
+              className="btn btn-sm btn-ghost p-2 flex-shrink-0"
+              title="回收站"
+              aria-label="回收站"
+            >
+              <Trash2 className="w-5 h-5" />
+            </Link>
 
             {/* 添加书签按钮 */}
             <button
