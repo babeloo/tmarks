@@ -165,19 +165,19 @@ export function createRateLimiter(
 }
 
 /**
- * Rate limiter for login endpoint (5 requests per minute per IP)
+ * Rate limiter for login endpoint (取消限制)
  */
 export const loginRateLimiter = createRateLimiter(
   (context) => {
     const ip = getClientIP(context.request)
     return `login:${ip}`
   },
-  5, // 5 requests
-  60 // 60 seconds
+  999999, // 取消限制
+  60
 )
 
 /**
- * Rate limiter for bookmarks/filter endpoints (60 requests per minute per user)
+ * Rate limiter for bookmarks/filter endpoints (取消限制)
  */
 export const filterRateLimiter = createRateLimiter(
   (context) => {
@@ -185,6 +185,6 @@ export const filterRateLimiter = createRateLimiter(
     const userId = context.data?.user_id || getClientIP(context.request)
     return `filter:${userId}`
   },
-  60, // 60 requests
-  60 // 60 seconds
+  999999, // 取消限制
+  60
 )

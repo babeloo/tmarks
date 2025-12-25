@@ -20,25 +20,9 @@ interface CreateApiKeyRequest {
 }
 
 // 获取用户的 API Key 配额限制
-async function getUserApiKeyLimit(db: D1Database, userId: string): Promise<number> {
-  type DbUser = { role?: string | null }
-
-  let user: DbUser | null = null
-
-  try {
-    user = await db.prepare('SELECT role FROM users WHERE id = ?').bind(userId).first<DbUser>()
-  } catch (error) {
-    if (!(error instanceof Error && /no such column: role/i.test(error.message))) {
-      throw error
-    }
-  }
-
-  const role = user?.role ?? 'user'
-
-  // 根据角色返回不同的配额
-  // admin: 无限制(用较大的数字表示)
-  // user: 3个
-  return role === 'admin' ? 999 : 3
+async function getUserApiKeyLimit(_db: D1Database, _userId: string): Promise<number> {
+  // 取消限制，所有用户都可以创建无限个 API Key
+  return 999
 }
 
 // GET /api/v1/settings/api-keys - 列出所有 API Keys

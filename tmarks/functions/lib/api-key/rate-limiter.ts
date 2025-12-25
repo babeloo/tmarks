@@ -9,10 +9,11 @@ interface RateLimitConfig {
   per_day: number
 }
 
+// 取消速率限制 - 设置为极大值
 const DEFAULT_LIMITS: RateLimitConfig = {
-  per_minute: 60,
-  per_hour: 1000,
-  per_day: 10000,
+  per_minute: 999999,
+  per_hour: 999999,
+  per_day: 999999,
 }
 
 interface RateLimitResult {
