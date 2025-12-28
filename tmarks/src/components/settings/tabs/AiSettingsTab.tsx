@@ -366,7 +366,7 @@ export function AiSettingsTab() {
           </div>
           
           {showModelDropdown && allModels.length > 0 && (
-            <div className="absolute z-10 mt-2 right-0 w-full max-h-64 overflow-y-auto rounded-lg border border-border bg-popover shadow-lg">
+            <div className="absolute z-10 mt-2 right-0 w-full max-h-64 overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
               {allModels.map((m) => (
                 <button
                   key={m}
@@ -379,7 +379,7 @@ export function AiSettingsTab() {
                   className={`w-full text-left px-3 py-2 text-sm transition-colors ${
                     model === m
                       ? 'bg-primary/10 text-primary'
-                      : 'text-foreground hover:bg-muted'
+                      : 'text-foreground hover:bg-muted/50'
                   }`}
                 >
                   {m}
