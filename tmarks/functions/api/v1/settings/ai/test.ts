@@ -4,9 +4,9 @@
  */
 
 import type { PagesFunction } from '@cloudflare/workers-types'
-import type { Env, RouteParams } from '../../../lib/types'
-import { success, badRequest, internalError } from '../../../lib/response'
-import { requireAuth, AuthContext } from '../../../middleware/auth'
+import type { Env, RouteParams } from '../../../../lib/types'
+import { success, badRequest, internalError } from '../../../../lib/response'
+import { requireAuth, AuthContext } from '../../../../middleware/auth'
 
 // AI 服务商类型
 type AIProvider = 'openai' | 'claude' | 'deepseek' | 'zhipu' | 'modelscope' | 'siliconflow' | 'iflow' | 'custom'

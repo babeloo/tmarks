@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { tabGroupsService } from '@/services/tab-groups'
 import type { TabGroup, TabGroupItem } from '@/lib/types'
 import { useToastStore } from '@/stores/toastStore'
@@ -30,6 +31,7 @@ export function useBatchActions({
   setConfirmDialog,
   confirmDialog,
 }: UseBatchActionsProps) {
+  const { t } = useTranslation('tabGroups')
   const { success, error: showError } = useToastStore()
 
   const handleBatchDelete = () => {
@@ -37,8 +39,8 @@ export function useBatchActions({
 
     setConfirmDialog({
       isOpen: true,
-      title: '批量删除',
-      message: `确定要删除选中的 ${selectedItems.size} 个标签页吗？`,
+      title: t('confirm.batchDelete'),
+      message: t('confirm.batchDeleteMessage', { count: selectedItems.size }),
       onConfirm: async () => {
         setConfirmDialog({ ...confirmDialog, isOpen: false })
         try {
@@ -59,10 +61,10 @@ export function useBatchActions({
           )
 
           setSelectedItems(new Set())
-          success('批量删除成功')
+          success(t('message.batchDeleteSuccess'))
         } catch (err) {
           logger.error('Failed to batch delete:', err)
-          showError('批量删除失败，请重试')
+          showError(t('message.batchDeleteFailed'))
         }
       },
     })
@@ -88,10 +90,10 @@ export function useBatchActions({
       )
 
       setSelectedItems(new Set())
-      success('批量固定成功')
+      success(t('message.batchPinSuccess'))
     } catch (err) {
       logger.error('Failed to batch pin:', err)
-      showError('批量固定失败，请重试')
+      showError(t('message.batchPinFailed'))
     }
   }
 
@@ -115,10 +117,10 @@ export function useBatchActions({
       )
 
       setSelectedItems(new Set())
-      success('批量标记待办成功')
+      success(t('message.batchTodoSuccess'))
     } catch (err) {
       logger.error('Failed to batch todo:', err)
-      showError('批量标记待办失败，请重试')
+      showError(t('message.batchTodoFailed'))
     }
   }
 
@@ -136,15 +138,15 @@ export function useBatchActions({
     })
 
     // Generate markdown
-    let markdown = `# 批量导出的标签页\n\n`
-    markdown += `导出时间: ${new Date().toLocaleString('zh-CN')}\n`
-    markdown += `标签页数量: ${selectedItemsData.length}\n\n`
+    let markdown = `# ${t('export.title')}\n\n`
+    markdown += `${t('export.exportTime')}: ${new Date().toLocaleString()}\n`
+    markdown += `${t('export.tabCount')}: ${selectedItemsData.length}\n\n`
     markdown += `---\n\n`
 
     selectedItemsData.forEach((item, index) => {
       markdown += `${index + 1}. [${item.title}](${item.url})\n`
-      if (item.is_pinned === 1) markdown += '   - 📌 已固定\n'
-      if (item.is_todo === 1) markdown += '   - ✅ 待办\n'
+      if (item.is_pinned === 1) markdown += `   - 📌 ${t('item.pinned')}\n`
+      if (item.is_todo === 1) markdown += `   - ✅ ${t('item.todo')}\n`
       markdown += '\n'
     })
 
@@ -159,7 +161,7 @@ export function useBatchActions({
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
 
-    success('导出成功')
+    success(t('message.exportSuccess'))
   }
 
   const handleDeselectAll = () => {

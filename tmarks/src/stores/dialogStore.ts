@@ -54,11 +54,11 @@ export const useDialogStore = create<DialogState>((set, get) => ({
   alertDialog: null,
 
   confirm: async ({
-    title = '确认',
+    title,
     message,
     type = 'warning',
-    confirmText = '确定',
-    cancelText = '取消',
+    confirmText,
+    cancelText,
   }) => {
     const existing = get().confirmDialog
     if (existing?.isOpen) {
@@ -69,7 +69,7 @@ export const useDialogStore = create<DialogState>((set, get) => ({
       set({
         confirmDialog: {
           isOpen: true,
-          title,
+          title: title || '',
           message,
           type,
           confirmText,
@@ -80,7 +80,7 @@ export const useDialogStore = create<DialogState>((set, get) => ({
     })
   },
 
-  alert: async ({ title = '提示', message, type = 'info', confirmText = '确定' }) => {
+  alert: async ({ title, message, type = 'info', confirmText }) => {
     const existing = get().alertDialog
     if (existing?.isOpen) {
       existing.resolve?.()
@@ -90,7 +90,7 @@ export const useDialogStore = create<DialogState>((set, get) => ({
       set({
         alertDialog: {
           isOpen: true,
-          title,
+          title: title || '',
           message,
           type,
           confirmText,
@@ -112,19 +112,19 @@ export const useDialogStore = create<DialogState>((set, get) => ({
     set({ alertDialog: null })
   },
 
-  info: async (message, title = '提示') => {
+  info: async (message, title) => {
     return await get().alert({ title, message, type: 'info' })
   },
 
-  warning: async (message, title = '提示') => {
+  warning: async (message, title) => {
     return await get().alert({ title, message, type: 'warning' })
   },
 
-  error: async (message, title = '操作失败') => {
+  error: async (message, title) => {
     return await get().alert({ title, message, type: 'error' })
   },
 
-  success: async (message, title = '操作成功') => {
+  success: async (message, title) => {
     return await get().alert({ title, message, type: 'success' })
   },
 }))

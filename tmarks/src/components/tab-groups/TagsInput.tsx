@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X, Plus } from 'lucide-react'
 import { useIsMobile } from '@/hooks/useMediaQuery'
 
@@ -9,6 +10,7 @@ interface TagsInputProps {
 }
 
 export function TagsInput({ tags, onTagsChange, onClose }: TagsInputProps) {
+  const { t } = useTranslation('tags')
   const [inputValue, setInputValue] = useState('')
   const inputRef = useRef<HTMLDivElement>(null)
 
@@ -59,7 +61,7 @@ export function TagsInput({ tags, onTagsChange, onClose }: TagsInputProps) {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="输入标签名称..."
+            placeholder={t('form.placeholder')}
             className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
             style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
             autoFocus
@@ -98,13 +100,13 @@ export function TagsInput({ tags, onTagsChange, onClose }: TagsInputProps) {
           onClick={onClose}
           className="px-4 py-2 text-foreground hover:bg-muted rounded-lg"
         >
-          取消
+          {t('action.cancel')}
         </button>
         <button
           onClick={onClose}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
         >
-          完成
+          {t('action.done')}
         </button>
       </div>
     </div>

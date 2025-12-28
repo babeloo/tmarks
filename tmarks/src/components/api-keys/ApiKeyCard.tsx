@@ -3,9 +3,10 @@
  * 显示单个 API Key 的摘要信息
  */
 
+import { useTranslation } from 'react-i18next'
 import type { ApiKey } from '@/services/api-keys'
 import { formatDistanceToNow } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
+import { zhCN, enUS } from 'date-fns/locale'
 
 interface ApiKeyCardProps {
   apiKey: ApiKey
@@ -15,24 +16,23 @@ interface ApiKeyCardProps {
 }
 
 export function ApiKeyCard({ apiKey, onViewDetails, onRevoke, onDelete }: ApiKeyCardProps) {
+  const { t, i18n } = useTranslation('settings')
+  const dateLocale = i18n.language === 'zh-CN' ? zhCN : enUS
+
   const statusIcon = {
     active: '🟢',
     revoked: '🔴',
     expired: '🟠',
   }[apiKey.status]
 
-  const statusText = {
-    active: '活跃',
-    revoked: '已撤销',
-    expired: '已过期',
-  }[apiKey.status]
+  const statusText = t(`apiKey.status.${apiKey.status}`)
 
   const lastUsedText = apiKey.last_used_at
     ? formatDistanceToNow(new Date(apiKey.last_used_at), {
         addSuffix: true,
-        locale: zhCN,
+        locale: dateLocale,
       })
-    : '从未使用'
+    : t('apiKey.neverUsed')
 
   return (
     <div className="p-3 sm:p-4 md:p-5 bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20 rounded-xl">
@@ -58,27 +58,27 @@ export function ApiKeyCard({ apiKey, onViewDetails, onRevoke, onDelete }: ApiKey
           {/* 元信息 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-xs text-muted-foreground">
             <div className="flex items-center space-x-1">
-              <span>状态:</span>
+              <span>{t('apiKey.status.label')}:</span>
               <span>{statusIcon}</span>
               <strong>{statusText}</strong>
             </div>
             <div>
-              权限: <strong>{apiKey.permissions.length} 项</strong>
+              {t('apiKey.permissions')}: <strong>{t('apiKey.permissionsCount', { count: apiKey.permissions.length })}</strong>
             </div>
             <div>
-              最后使用: <strong className="break-words">{lastUsedText}</strong>
+              {t('apiKey.lastUsed')}: <strong className="break-words">{lastUsedText}</strong>
             </div>
             <div>
-              创建于:{' '}
+              {t('apiKey.createdAt')}:{' '}
               <strong>
-                {new Date(apiKey.created_at).toLocaleDateString('zh-CN')}
+                {new Date(apiKey.created_at).toLocaleDateString(i18n.language)}
               </strong>
             </div>
             {apiKey.expires_at && (
               <div className="sm:col-span-2">
-                过期时间:{' '}
+                {t('apiKey.expiresAt')}:{' '}
                 <strong>
-                  {new Date(apiKey.expires_at).toLocaleDateString('zh-CN')}
+                  {new Date(apiKey.expires_at).toLocaleDateString(i18n.language)}
                 </strong>
               </div>
             )}
@@ -88,11 +88,11 @@ export function ApiKeyCard({ apiKey, onViewDetails, onRevoke, onDelete }: ApiKey
         {/* 操作按钮 */}
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:ml-4">
           <button className="btn btn-sm w-full sm:w-auto touch-manipulation" onClick={onViewDetails}>
-            查看详情
+            {t('apiKey.viewDetails')}
           </button>
           {apiKey.status === 'active' && (
             <button className="btn btn-sm btn-error w-full sm:w-auto touch-manipulation" onClick={onRevoke}>
-              撤销
+              {t('apiKey.revoke')}
             </button>
           )}
           {onDelete && (
@@ -100,7 +100,7 @@ export function ApiKeyCard({ apiKey, onViewDetails, onRevoke, onDelete }: ApiKey
               className={`btn btn-sm w-full sm:w-auto touch-manipulation ${apiKey.status === 'active' ? 'btn-outline btn-error' : 'btn-error'}`}
               onClick={onDelete}
             >
-              删除
+              {t('apiKey.delete')}
             </button>
           )}
         </div>

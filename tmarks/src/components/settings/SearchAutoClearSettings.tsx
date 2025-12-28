@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 interface SearchAutoClearSettingsProps {
   enabled: boolean
   seconds: number
@@ -11,12 +13,14 @@ export function SearchAutoClearSettings({
   onEnabledChange,
   onSecondsChange,
 }: SearchAutoClearSettingsProps) {
+  const { t } = useTranslation('settings')
+
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-lg font-semibold text-foreground">搜索框自动清空</h3>
+        <h3 className="text-lg font-semibold text-foreground">{t('automation.searchAutoClear.title')}</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          设置搜索框在无操作后自动清空的时间
+          {t('automation.searchAutoClear.description')}
         </p>
       </div>
 
@@ -28,14 +32,14 @@ export function SearchAutoClearSettings({
             onChange={(e) => onEnabledChange(e.target.checked)}
             className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
           />
-          <span className="text-sm text-foreground">启用搜索框自动清空</span>
+          <span className="text-sm text-foreground">{t('automation.searchAutoClear.enable')}</span>
         </label>
       </div>
 
       {enabled && (
         <div className="space-y-2">
           <label className="block text-sm font-medium text-foreground">
-            自动清空时间（秒）
+            {t('automation.searchAutoClear.timeLabel')}
           </label>
           <div className="flex items-center gap-4">
             <input
@@ -55,10 +59,10 @@ export function SearchAutoClearSettings({
               onChange={(e) => onSecondsChange(Number(e.target.value))}
               className="w-20 px-3 py-2 border border-border rounded-lg text-sm text-foreground bg-background"
             />
-            <span className="text-sm text-muted-foreground">秒</span>
+            <span className="text-sm text-muted-foreground">{t('automation.searchAutoClear.seconds')}</span>
           </div>
           <p className="text-xs text-muted-foreground">
-            搜索框在 {seconds} 秒无操作后会自动清空
+            {t('automation.searchAutoClear.hint', { seconds })}
           </p>
         </div>
       )}

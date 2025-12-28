@@ -1,0 +1,229 @@
+{
+  "title": "Bookmarks",
+  "search": {
+    "placeholder": "Search bookmarks...",
+    "tagPlaceholder": "Search tags...",
+    "noResults": "No matching bookmarks found"
+  },
+  "filter": {
+    "all": "All bookmarks",
+    "public": "Public only",
+    "private": "Private only",
+    "clickToSwitch": "(click to switch)"
+  },
+  "sort": {
+    "created": "By created time",
+    "updated": "By updated time",
+    "pinned": "Pinned first",
+    "popular": "By popularity",
+    "clickToSwitch": "(click to switch)"
+  },
+  "viewMode": {
+    "list": "List view",
+    "card": "Card view",
+    "minimal": "Minimal list",
+    "title": "Title waterfall",
+    "clickToSwitch": "(click to switch)"
+  },
+  "toolbar": {
+    "openTags": "Open tags",
+    "switchToTagSearch": "Switch to tag search",
+    "switchToBookmarkSearch": "Switch to bookmark search",
+    "batchMode": "Batch mode",
+    "exitBatchMode": "Exit batch mode",
+    "trash": "Trash",
+    "addBookmark": "Add bookmark"
+  },
+  "empty": {
+    "title": "No bookmarks yet",
+    "description": "Click \"Add Bookmark\" button to start collecting",
+    "readOnlyDescription": "No public bookmarks available"
+  },
+  "loading": "Loading...",
+  "status": {
+    "pinned": "Pinned",
+    "archived": "Archived"
+  },
+  "view": {
+    "header": {
+      "title": "Title",
+      "url": "URL",
+      "note": "Note"
+    },
+    "noDescription": "—"
+  },
+  "snapshot": {
+    "title": "Snapshots",
+    "count": "{{count}} snapshots",
+    "viewCount": "View {{count}} snapshots",
+    "loading": "Loading snapshots...",
+    "empty": "No snapshots",
+    "emptyHint": "Use browser extension to save page snapshots",
+    "version": "Version {{version}}",
+    "close": "Close",
+    "delete": "Delete snapshot",
+    "deleteTitle": "Delete Snapshot",
+    "deleteMessage": "Are you sure you want to delete version {{version}} snapshot?\n\nThis action cannot be undone.",
+    "deleteConfirm": "Are you sure you want to delete this snapshot?",
+    "deleteSuccess": "Snapshot deleted",
+    "deleteFailed": "Failed to delete snapshot"
+  },
+  "batch": {
+    "selected": "{{count}} bookmarks selected",
+    "selectedCount": "{{count}} selected",
+    "pleaseSelect": "Please select bookmarks",
+    "selectAll": "Select All ({{count}})",
+    "delete": "Delete",
+    "deleteTitle": "Batch Delete",
+    "deleteMessage": "Are you sure you want to delete these {{count}} bookmarks?",
+    "deleteSuccess": "Successfully deleted {{count}} bookmarks",
+    "pin": "Pin",
+    "pinTitle": "Batch Pin",
+    "pinMessage": "Are you sure you want to pin these {{count}} bookmarks?",
+    "pinSuccess": "Successfully pinned {{count}} bookmarks",
+    "archive": "Archive",
+    "archiveTitle": "Batch Archive",
+    "archiveMessage": "Are you sure you want to archive these {{count}} bookmarks?",
+    "archiveSuccess": "Successfully archived {{count}} bookmarks",
+    "tags": "Tags",
+    "selectTags": "Select tags",
+    "addTags": "Add",
+    "removeTags": "Remove",
+    "addTagsSuccess": "Successfully added tags to {{count}} bookmarks",
+    "removeTagsSuccess": "Successfully removed tags from {{count}} bookmarks",
+    "cancel": "Cancel",
+    "confirmAction": "Confirm Action",
+    "confirmMessage": "Are you sure you want to perform this action?",
+    "select": "Select",
+    "deselect": "Deselect"
+  },
+  "action": {
+    "success": "Operation successful",
+    "failed": "Operation failed, please try again",
+    "edit": "Edit",
+    "open": "Open bookmark {{title}}"
+  },
+  "form": {
+    "addTitle": "Add Bookmark",
+    "editTitle": "Edit Bookmark",
+    "title": "Title",
+    "titleRequired": "Title",
+    "titlePlaceholder": "Bookmark title",
+    "url": "URL",
+    "urlRequired": "URL",
+    "urlPlaceholder": "https://example.com",
+    "description": "Description",
+    "descriptionPlaceholder": "Bookmark description (optional)",
+    "coverImage": "Cover Image URL",
+    "coverImagePlaceholder": "https://example.com/image.jpg",
+    "tags": "Tags",
+    "tagsBatchHint": "(comma-separated for batch)",
+    "tagsSelected": "{{count}} selected",
+    "tagsInputPlaceholder": "Enter tag names (comma-separated), press Enter to add...",
+    "noTags": "No tags yet, type above and press Enter to create",
+    "pinned": "Pinned",
+    "archived": "Archived",
+    "public": "Public",
+    "save": "Save",
+    "create": "Create",
+    "saving": "Saving...",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "cancel": "Cancel",
+    "deleteTitle": "Delete Bookmark",
+    "deleteMessage": "Are you sure you want to delete this bookmark? This action cannot be undone.",
+    "deleteFailed": "Delete failed, please try again",
+    "validation": {
+      "titleRequired": "Please enter bookmark title",
+      "urlRequired": "Please enter bookmark URL",
+      "urlInvalid": "Invalid URL format",
+      "urlExists": "This URL already exists in bookmarks"
+    },
+    "urlWarning": {
+      "title": "URL already exists",
+      "bookmark": "Bookmark: {{title}}"
+    },
+    "createTagFailed": "Failed to create tag \"{{name}}\", please try again",
+    "operationFailed": "Operation failed, please try again"
+  },
+  "statistics": {
+    "title": "Bookmark Statistics",
+    "backToBookmarks": "Back to Bookmarks",
+    "loading": "Loading...",
+    "loadFailed": "Failed to load",
+    "retry": "Retry",
+    "granularity": {
+      "day": "Daily",
+      "week": "Weekly",
+      "month": "Monthly",
+      "year": "Yearly"
+    },
+    "navigation": {
+      "prevDay": "Previous Day",
+      "nextDay": "Next Day",
+      "prevWeek": "Previous Week",
+      "nextWeek": "Next Week",
+      "prevMonth": "Previous Month",
+      "nextMonth": "Next Month",
+      "prevYear": "Previous Year",
+      "nextYear": "Next Year",
+      "today": "Today"
+    },
+    "summary": {
+      "totalBookmarks": "Total Bookmarks",
+      "totalTags": "Total Tags",
+      "totalClicks": "Total Clicks",
+      "publicBookmarks": "Public Bookmarks",
+      "archived": "Archived"
+    },
+    "charts": {
+      "topBookmarks": "Top 10 Bookmarks",
+      "topTags": "Top 10 Tags",
+      "topDomains": "Top 10 Domains",
+      "currentRangeClicks": "Clicks in Current Range",
+      "recentVisits": "Recent Visits",
+      "creationTrend": "Bookmark Creation Trend",
+      "visitTrend": "Bookmark Visit Trend"
+    },
+    "noData": "No data",
+    "noClicksInRange": "No clicks in current range",
+    "times": "{{count}} times",
+    "items": "{{count}} items",
+    "dateFormat": {
+      "year": "{{year}}",
+      "month": "{{month}}/{{year}}",
+      "week": "Week {{week}}, {{year}}"
+    }
+  },
+  "trash": {
+    "title": "Bookmark Trash",
+    "backToBookmarks": "Back to Bookmarks",
+    "loading": "Loading...",
+    "loadFailed": "Failed to load trash",
+    "retry": "Retry",
+    "empty": "Empty",
+    "emptyTrash": "Empty Trash",
+    "emptyState": {
+      "title": "Trash is empty",
+      "description": "No deleted bookmarks"
+    },
+    "warning": "Bookmarks in trash will be permanently deleted after 30 days.",
+    "deletedAt": "Deleted {{time}}",
+    "restore": "Restore",
+    "delete": "Delete",
+    "restoreTitle": "Restore Bookmark",
+    "restoreMessage": "Are you sure you want to restore \"{{title}}\"?",
+    "restoreSuccess": "Bookmark restored",
+    "restoreFailed": "Restore failed, please try again",
+    "permanentDeleteTitle": "Permanent Delete",
+    "permanentDeleteMessage": "Are you sure you want to permanently delete \"{{title}}\"? This action cannot be undone!",
+    "permanentDeleteSuccess": "Bookmark permanently deleted",
+    "permanentDeleteFailed": "Delete failed, please try again",
+    "emptyTrashTitle": "Empty Trash",
+    "emptyTrashMessage": "Are you sure you want to permanently delete {{count}} bookmarks in trash? This action cannot be undone!",
+    "emptyTrashSuccess": "Trash emptied, {{count}} bookmarks deleted",
+    "emptyTrashFailed": "Failed to empty trash, please try again",
+    "confirmDelete": "Confirm Delete",
+    "confirm": "Confirm"
+  }
+}

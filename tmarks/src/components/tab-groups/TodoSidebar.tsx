@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { TabGroup, TabGroupItem } from '@/lib/types'
 import { ExternalLink, Trash2, Check, CheckCircle2, Circle, ListTodo, MoreVertical, Edit2, FolderInput, Archive } from 'lucide-react'
 import { tabGroupsService } from '@/services/tab-groups'
 import { useToastStore } from '@/stores/toastStore'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { formatDistanceToNow } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
+import { zhCN, enUS } from 'date-fns/locale'
 import { DropdownMenu } from '@/components/common/DropdownMenu'
 import { useIsMobile } from '@/hooks/useMediaQuery'
 
@@ -15,6 +16,7 @@ interface TodoSidebarProps {
 }
 
 export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
+  const { t, i18n } = useTranslation('tabGroups')
   const isMobile = useIsMobile()
   const [processingId, setProcessingId] = useState<string | null>(null)
   const [editingItemId, setEditingItemId] = useState<string | null>(null)
@@ -26,6 +28,8 @@ export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
     onConfirm: () => void
   } | null>(null)
   const { success, error: showError } = useToastStore()
+  
+  const dateLocale = i18n.language === 'zh-CN' ? zhCN : enUS
 
   // 收集所有TODO项
   const todoItems: Array<{ item: TabGroupItem; groupId: string; groupTitle: string }> = []
@@ -53,11 +57,11 @@ export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
       await tabGroupsService.updateTabGroupItem(itemId, {
         is_todo: currentStatus ? 0 : 1,
       })
-      success(currentStatus ? '已取消待办' : '已标记为待办')
+      success(currentStatus ? t('todo.todoUnmarked') : t('todo.todoMarked'))
       onUpdate()
     } catch (err) {
       console.error('Failed to toggle todo:', err)
-      showError('操作失败，请重试')
+      showError(t('message.operationFailed'))
     } finally {
       setProcessingId(null)
     }
@@ -66,18 +70,18 @@ export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
   const handleDelete = async (itemId: string) => {
     setConfirmState({
       isOpen: true,
-      title: '删除标签页',
-      message: '确定要删除这个标签页吗？',
+      title: t('confirm.deleteItem'),
+      message: t('confirm.deleteItemMessage', { title: '' }),
       onConfirm: async () => {
         setConfirmState(null)
         setProcessingId(itemId)
         try {
           await tabGroupsService.deleteTabGroupItem(itemId)
-          success('标签页已删除')
+          success(t('todo.tabDeleted'))
           onUpdate()
         } catch (err) {
           console.error('Failed to delete item:', err)
-          showError('删除失败，请重试')
+          showError(t('message.deleteFailed'))
         } finally {
           setProcessingId(null)
         }
@@ -94,9 +98,7 @@ export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
   }
 
   const handleOpenInIncognito = () => {
-    // Note: Opening in incognito mode is not directly supported in web browsers
-    // This would need to be implemented via browser extension
-    showError('隐身模式打开需要浏览器扩展支持')
+    showError(t('todo.incognitoNotSupported'))
   }
 
   const handleRename = (item: TabGroupItem) => {
@@ -106,7 +108,7 @@ export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
 
   const handleSaveRename = async (itemId: string) => {
     if (!editingTitle.trim()) {
-      showError('标题不能为空')
+      showError(t('message.titleRequired'))
       return
     }
 
@@ -115,50 +117,47 @@ export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
       await tabGroupsService.updateTabGroupItem(itemId, {
         title: editingTitle.trim(),
       })
-      success('重命名成功')
+      success(t('todo.renameSuccess'))
       setEditingItemId(null)
       setEditingTitle('')
       onUpdate()
     } catch (err) {
       console.error('Failed to rename item:', err)
-      showError('重命名失败，请重试')
+      showError(t('message.renameFailed'))
     } finally {
       setProcessingId(null)
     }
   }
 
   const handleMove = async (itemId: string, currentGroupId: string) => {
-    // 获取所有可用的分组（排除当前分组）
     const availableGroups = tabGroups.filter(g => g.id !== currentGroupId && !g.is_folder)
     
     if (availableGroups.length === 0) {
-      showError('没有可移动到的分组')
+      showError(t('todo.noGroupsToMove'))
       return
     }
 
-    // 简单实现：移动到第一个可用分组
-    // TODO: 添加分组选择对话框
     const targetGroup = availableGroups[0]
     
     if (!targetGroup) {
-      showError('没有可移动到的分组')
+      showError(t('todo.noGroupsToMove'))
       return
     }
 
     setConfirmState({
       isOpen: true,
-      title: '移动标签页',
-      message: `确定要将此标签页移动到"${targetGroup.title}"吗？`,
+      title: t('todo.moveTab'),
+      message: t('todo.moveTabMessage', { title: targetGroup.title }),
       onConfirm: async () => {
         setConfirmState(null)
         setProcessingId(itemId)
         try {
           await tabGroupsService.moveTabGroupItem(itemId, targetGroup.id)
-          success(`已移动到"${targetGroup.title}"`)
+          success(`${t('message.movedToTrash').replace(t('menu.moveToTrash'), targetGroup.title)}`)
           onUpdate()
         } catch (err) {
           console.error('Failed to move item:', err)
-          showError('移动失败，请重试')
+          showError(t('page.moveFailed'))
         } finally {
           setProcessingId(null)
         }
@@ -169,8 +168,8 @@ export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
   const handleArchive = async (itemId: string) => {
     setConfirmState({
       isOpen: true,
-      title: '归档标签页',
-      message: '确定要归档这个标签页吗？归档后可以在归档视图中查看。',
+      title: t('todo.archiveTab'),
+      message: t('todo.archiveTabMessage'),
       onConfirm: async () => {
         setConfirmState(null)
         setProcessingId(itemId)
@@ -178,11 +177,11 @@ export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
           await tabGroupsService.updateTabGroupItem(itemId, {
             is_archived: 1,
           })
-          success('标签页已归档')
+          success(t('todo.tabArchived'))
           onUpdate()
         } catch (err) {
           console.error('Failed to archive item:', err)
-          showError('归档失败，请重试')
+          showError(t('message.operationFailed'))
         } finally {
           setProcessingId(null)
         }
@@ -207,23 +206,15 @@ export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
       <div className={`p-4 border-b border-border bg-muted sticky top-0 z-10 shadow-md ${isMobile ? 'pt-safe-area-top' : ''}`}>
         <div className="flex items-center gap-2">
           <ListTodo className="w-5 h-5 text-foreground" />
-          <h2 className="text-lg font-bold text-foreground">待办事项</h2>
+          <h2 className="text-lg font-bold text-foreground">{t('todo.title')}</h2>
         </div>
         <div className="flex items-center gap-4 mt-2">
           <div className="flex items-center gap-1.5">
             <Circle className="w-3 h-3 text-muted-foreground" />
             <span className="text-xs text-muted-foreground">
-              {sortedTodos.length} 个待办
+              {sortedTodos.length} {t('todo.title').toLowerCase()}
             </span>
           </div>
-          {sortedTodos.length > 0 && (
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3 h-3 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">
-                待完成
-              </span>
-            </div>
-          )}
         </div>
       </div>
 
@@ -234,15 +225,15 @@ export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
             <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
               <ListTodo className="w-10 h-10 text-muted-foreground" />
             </div>
-            <p className="text-muted-foreground text-sm font-medium">暂无待办事项</p>
+            <p className="text-muted-foreground text-sm font-medium">{t('todo.empty')}</p>
             <p className="text-muted-foreground/70 text-xs mt-2">
-              在标签页上点击"待办"按钮添加
+              {t('todo.emptyTip')}
             </p>
           </div>
         ) : (
           sortedTodos.map(({ item, groupId, groupTitle }) => {
             const relativeTime = item.created_at
-              ? formatDistanceToNow(new Date(item.created_at), { addSuffix: true, locale: zhCN })
+              ? formatDistanceToNow(new Date(item.created_at), { addSuffix: true, locale: dateLocale })
               : ''
 
             return (
@@ -345,42 +336,42 @@ export function TodoSidebar({ tabGroups, onUpdate }: TodoSidebarProps) {
                     }
                     items={[
                       {
-                        label: '在新窗口中打开',
+                        label: t('menu.openInNewWindow'),
                         icon: <ExternalLink className="w-4 h-4" />,
                         onClick: () => handleOpenTab(item.url),
                       },
                       {
-                        label: '在此窗口中打开',
+                        label: t('menu.openInCurrentWindow'),
                         icon: <ExternalLink className="w-4 h-4" />,
                         onClick: () => handleOpenInCurrentTab(item.url),
                       },
                       {
-                        label: '在新的隐身窗口中打开',
+                        label: t('menu.openInIncognito'),
                         icon: <ExternalLink className="w-4 h-4" />,
                         onClick: () => handleOpenInIncognito(),
                       },
                       {
-                        label: '重命名',
+                        label: t('menu.rename'),
                         icon: <Edit2 className="w-4 h-4" />,
                         onClick: () => handleRename(item),
                       },
                       {
-                        label: item.is_todo ? '取消任务标记' : '标记为已完成任务',
+                        label: item.is_todo ? t('todo.cancelTaskMark') : t('todo.markAsCompleted'),
                         icon: <CheckCircle2 className="w-4 h-4" />,
                         onClick: () => handleToggleTodo(item.id, item.is_todo || 0),
                       },
                       {
-                        label: '移动到其他分组',
+                        label: t('todo.moveToOtherGroup'),
                         icon: <FolderInput className="w-4 h-4" />,
                         onClick: () => handleMove(item.id, groupId),
                       },
                       {
-                        label: '标记为已归档',
+                        label: t('todo.markAsArchived'),
                         icon: <Archive className="w-4 h-4" />,
                         onClick: () => handleArchive(item.id),
                       },
                       {
-                        label: '移至回收站',
+                        label: t('menu.moveToTrash'),
                         icon: <Trash2 className="w-4 h-4" />,
                         onClick: () => handleDelete(item.id),
                         danger: true,

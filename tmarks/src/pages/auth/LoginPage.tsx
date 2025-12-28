@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { ApiError } from '@/lib/api-client'
 
 export function LoginPage() {
+  const { t } = useTranslation('auth')
   const navigate = useNavigate()
   const login = useAuthStore((state) => state.login)
   const isLoading = useAuthStore((state) => state.isLoading)
@@ -19,7 +21,7 @@ export function LoginPage() {
     setError('')
 
     if (!username || !password) {
-      setError('请输入用户名和密码')
+      setError(t('validation.usernameRequired'))
       return
     }
 
@@ -30,7 +32,7 @@ export function LoginPage() {
       if (err instanceof ApiError) {
         setError(err.message)
       } else {
-        setError('登录失败，请稍后重试')
+        setError(t('error.loginFailed'))
       }
     }
   }
@@ -52,9 +54,9 @@ export function LoginPage() {
             </svg>
           </div>
           <h2 className="text-3xl font-bold mb-2 text-primary">
-            欢迎回来
+            {t('login.title')}
           </h2>
-          <p className="text-base-content/60 text-sm">登录到 TMarks 书签管理系统</p>
+          <p className="text-base-content/60 text-sm">{t('login.subtitle')}</p>
         </div>
 
         {error && (
@@ -71,13 +73,13 @@ export function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label htmlFor="username" className="block text-sm font-semibold mb-2 text-base-content">
-              用户名或邮箱
+              {t('login.username')}
             </label>
             <input
               id="username"
               type="text"
               className="input"
-              placeholder="请输入用户名或邮箱"
+              placeholder={t('login.usernamePlaceholder')}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               disabled={isLoading}
@@ -87,14 +89,14 @@ export function LoginPage() {
 
           <div>
             <label htmlFor="password" className="block text-sm font-semibold mb-2 text-base-content">
-              密码
+              {t('login.password')}
             </label>
             <div className="relative">
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 className="input pr-12"
-                placeholder="请输入密码"
+                placeholder={t('login.passwordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
@@ -130,7 +132,7 @@ export function LoginPage() {
               disabled={isLoading}
             />
             <label htmlFor="remember" className="text-sm font-medium cursor-pointer">
-              记住我 30 天
+              {t('login.rememberMe')}
             </label>
           </div>
 
@@ -141,22 +143,22 @@ export function LoginPage() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                登录中...
+                {t('login.submitting')}
               </span>
             ) : (
-              '立即登录'
+              t('login.submit')
             )}
           </button>
         </form>
 
         <div className="mt-8 pt-6 border-t border-base-300/50">
           <p className="text-center text-sm text-base-content/60">
-            还没有账号？{' '}
+            {t('login.noAccount')}{' '}
             <Link
               to="/register"
               className="text-primary hover:text-primary/80 font-semibold transition-colors"
             >
-              立即注册 →
+              {t('login.register')}
             </Link>
           </p>
         </div>

@@ -1,15 +1,9 @@
 /**
  * 导入功能组件
- * 提供书签数据导入功能的用户界面
- * 支持 AI 智能整理
- * 
- * 流程:
- * 1. upload: 选择格式 → 上传文件 → 验证 → 解析 → 选择是否启用 AI
- * 2. ai-organize: 输入 API Key → 配置选项 → 执行整理
- * 3. ai-preview: 预览对比 → 手动调整 → 确认导入
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Upload,
   FileText,
@@ -37,43 +31,18 @@ interface ImportSectionProps {
   onImport?: (result: ImportResult) => void
 }
 
-// 格式选项
-const formatOptions = [
-  {
-    value: 'html' as ImportFormat,
-    label: 'HTML',
-    description: '浏览器导出的书签文件',
-    icon: FileText,
-    extensions: ['.html', '.htm']
-  },
-  {
-    value: 'json' as ImportFormat,
-    label: 'JSON',
-    description: 'TMarks 标准格式',
-    icon: Code,
-    extensions: ['.json']
-  }
-]
-
-// 步骤类型
 type ImportStep = 'upload' | 'ai-organize' | 'ai-preview'
 
 export function ImportSection({ onImport }: ImportSectionProps) {
+  const { t } = useTranslation('import')
+  const { t: tc } = useTranslation('common')
   const navigate = useNavigate()
 
-  // 当前步骤
   const [currentStep, setCurrentStep] = useState<ImportStep>('upload')
-
-  // 解析后的书签（用于 AI 整理）
   const [parsedBookmarks, setParsedBookmarks] = useState<ParsedBookmark[]>([])
-
-  // AI 整理结果
   const [organizeResult, setOrganizeResult] = useState<OrganizeResult | null>(null)
-
-  // 是否启用 AI 整理
   const [enableAiOrganize, setEnableAiOrganize] = useState(false)
 
-  // 状态管理
   const state = useImportState()
   const {
     selectedFormat,
@@ -92,7 +61,6 @@ export function ImportSection({ onImport }: ImportSectionProps) {
     fileInputRef
   } = state
 
-  // 操作逻辑
   const actions = useImportActions({
     selectedFormat,
     setSelectedFile: state.setSelectedFile,
@@ -108,7 +76,23 @@ export function ImportSection({ onImport }: ImportSectionProps) {
 
   const { handleFileSelect, handleImport, handleReset } = actions
 
-  // 当文件验证通过后，解析书签
+  const formatOptions = [
+    {
+      value: 'html' as ImportFormat,
+      label: t('format.html'),
+      description: t('format.browserExport'),
+      icon: FileText,
+      extensions: ['.html', '.htm']
+    },
+    {
+      value: 'json' as ImportFormat,
+      label: t('format.json'),
+      description: t('format.tmarksFormat'),
+      icon: Code,
+      extensions: ['.json']
+    }
+  ]
+
   useEffect(() => {
     async function parseFile() {
       if (selectedFile && validationResult?.valid) {
@@ -127,19 +111,16 @@ export function ImportSection({ onImport }: ImportSectionProps) {
     parseFile()
   }, [selectedFile, validationResult, selectedFormat])
 
-  // 处理 AI 整理完成 - 进入预览步骤
   const handleAiOrganizeComplete = (result: OrganizeResult) => {
     setOrganizeResult(result)
     setCurrentStep('ai-preview')
   }
 
-  // 使用 AI 标签导入（从预览页面确认）
   const handleImportWithAiTags = async (bookmarks: OrganizedBookmark[]) => {
     setIsImporting(true)
-    setImportProgress({ current: 0, total: 100, status: '准备导入...' })
+    setImportProgress({ current: 0, total: 100, status: tc('status.processing') })
 
     try {
-      // 构建导入数据，使用 AI 生成的标签
       const importData = {
         format: 'json' as const,
         content: JSON.stringify({
@@ -186,7 +167,7 @@ export function ImportSection({ onImport }: ImportSectionProps) {
           {
             index: 0,
             item: { title: '', url: '', tags: [] },
-            error: error instanceof Error ? error.message : '未知错误',
+            error: error instanceof Error ? error.message : tc('message.operationFailed'),
             code: 'UNKNOWN_ERROR'
           }
         ],
@@ -202,26 +183,22 @@ export function ImportSection({ onImport }: ImportSectionProps) {
     }
   }
 
-  // 跳过 AI 整理，直接导入原始文件
   const handleSkipAiOrganize = () => {
     if (selectedFile) {
       handleImport(selectedFile)
     }
   }
 
-  // 从预览返回 AI 整理步骤
   const handleBackToOrganize = () => {
     setCurrentStep('ai-organize')
   }
 
-  // 放弃 AI 整理结果，直接导入原始文件
   const handleSkipAiResult = () => {
     if (selectedFile) {
       handleImport(selectedFile)
     }
   }
 
-  // 重置所有状态
   const handleFullReset = () => {
     handleReset()
     setCurrentStep('upload')
@@ -230,10 +207,9 @@ export function ImportSection({ onImport }: ImportSectionProps) {
     setEnableAiOrganize(false)
   }
 
-  // 渲染上传步骤
   const renderUploadStep = () => (
     <div className="space-y-6">
-      {/* AI 整理开关 - 始终显示在最前面 */}
+      {/* AI 整理开关 */}
       <div className={`p-4 rounded-lg border ${enableAiOrganize ? 'bg-primary/10 border-primary' : 'bg-primary/5 border-primary/20'}`}>
         <label className="flex items-center justify-between cursor-pointer">
           <div className="flex items-center gap-3">
@@ -241,18 +217,18 @@ export function ImportSection({ onImport }: ImportSectionProps) {
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-medium text-foreground">✨ 启用 AI 智能整理</div>
+              <div className="text-sm font-medium text-foreground">{t('ai.enableAi')}</div>
               <div className="text-xs text-muted-foreground">
                 {selectedFile && validationResult?.valid
                   ? (parsedBookmarks.length > 0 
-                      ? `已解析 ${parsedBookmarks.length} 个书签，AI 自动生成标签和描述`
-                      : '解析书签中...')
-                  : '上传文件后，AI 将自动生成标签和描述'}
+                      ? t('ai.parsedCount', { count: parsedBookmarks.length })
+                      : t('ai.parsing'))
+                  : t('ai.disabledHint')}
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">{enableAiOrganize ? '已启用' : '未启用'}</span>
+            <span className="text-xs text-muted-foreground">{enableAiOrganize ? t('ai.enabled') : t('ai.disabled')}</span>
             <input
               type="checkbox"
               checked={enableAiOrganize}
@@ -265,7 +241,7 @@ export function ImportSection({ onImport }: ImportSectionProps) {
 
       {/* 格式选择 */}
       <div className="space-y-3">
-        <label className="block text-sm font-medium text-foreground">选择格式</label>
+        <label className="block text-sm font-medium text-foreground">{t('import.selectFormat')}</label>
         <div className="grid grid-cols-2 gap-3">
           {formatOptions.map((format) => {
             const Icon = format.icon
@@ -304,7 +280,7 @@ export function ImportSection({ onImport }: ImportSectionProps) {
 
       {/* 文件选择 */}
       <div className="space-y-3">
-        <label className="block text-sm font-medium text-foreground">选择文件</label>
+        <label className="block text-sm font-medium text-foreground">{t('import.selectFile')}</label>
 
         <DragDropUpload
           onFileSelect={handleFileSelect}
@@ -319,7 +295,7 @@ export function ImportSection({ onImport }: ImportSectionProps) {
                   <>
                     <Loader2 className="h-8 w-8 text-primary animate-spin" />
                     <div>
-                      <p className="text-lg font-medium text-foreground">正在验证文件...</p>
+                      <p className="text-lg font-medium text-foreground">{t('import.validating')}</p>
                       <p className="text-sm text-muted-foreground">
                         {selectedFile.name} ({formatFileSize(selectedFile.size)})
                       </p>
@@ -329,7 +305,7 @@ export function ImportSection({ onImport }: ImportSectionProps) {
                   <>
                     <CheckCircle className="h-8 w-8 text-success" />
                     <div>
-                      <p className="text-lg font-medium text-foreground">文件已选择</p>
+                      <p className="text-lg font-medium text-foreground">{t('import.fileSelected')}</p>
                       <p className="text-sm text-muted-foreground">
                         {selectedFile.name} ({formatFileSize(selectedFile.size)})
                       </p>
@@ -338,7 +314,7 @@ export function ImportSection({ onImport }: ImportSectionProps) {
                       onClick={handleFullReset}
                       className="px-4 py-2 text-sm font-medium text-foreground bg-card border border-border rounded-md hover:bg-muted"
                     >
-                      重新选择
+                      {t('import.reselect')}
                     </button>
                   </>
                 )}
@@ -353,7 +329,7 @@ export function ImportSection({ onImport }: ImportSectionProps) {
         <ErrorDisplay
           errors={validationResult.errors}
           variant={validationResult.valid ? 'success' : 'error'}
-          title={validationResult.valid ? '文件验证通过' : '文件验证失败'}
+          title={validationResult.valid ? t('import.validationPassed') : t('import.validationFailed')}
           dismissible={false}
           collapsible={true}
           showDetails={true}
@@ -362,52 +338,37 @@ export function ImportSection({ onImport }: ImportSectionProps) {
 
       {/* 导入选项 */}
       <div className="space-y-3">
-        <label className="block text-sm font-medium text-foreground">导入选项</label>
+        <label className="block text-sm font-medium text-foreground">{t('import.options')}</label>
 
         <div className="grid grid-cols-2 gap-2">
           <label className="flex items-center space-x-2 p-2 rounded-lg border border-border hover:border-muted-foreground/30 cursor-pointer transition-colors">
             <input
               type="checkbox"
               checked={options.skip_duplicates}
-              onChange={(e) =>
-                setOptions((prev) => ({
-                  ...prev,
-                  skip_duplicates: e.target.checked
-                }))
-              }
+              onChange={(e) => setOptions((prev) => ({ ...prev, skip_duplicates: e.target.checked }))}
               className="h-4 w-4 text-primary border-border rounded focus:ring-primary flex-shrink-0"
             />
-            <span className="text-sm text-foreground">跳过重复</span>
+            <span className="text-sm text-foreground">{t('import.skipDuplicates')}</span>
           </label>
 
           <label className="flex items-center space-x-2 p-2 rounded-lg border border-border hover:border-muted-foreground/30 cursor-pointer transition-colors">
             <input
               type="checkbox"
               checked={options.create_missing_tags}
-              onChange={(e) =>
-                setOptions((prev) => ({
-                  ...prev,
-                  create_missing_tags: e.target.checked
-                }))
-              }
+              onChange={(e) => setOptions((prev) => ({ ...prev, create_missing_tags: e.target.checked }))}
               className="h-4 w-4 text-primary border-border rounded focus:ring-primary flex-shrink-0"
             />
-            <span className="text-sm text-foreground">创建标签</span>
+            <span className="text-sm text-foreground">{t('import.createTags')}</span>
           </label>
 
           <label className="flex items-center space-x-2 p-2 rounded-lg border border-border hover:border-muted-foreground/30 cursor-pointer transition-colors">
             <input
               type="checkbox"
               checked={options.preserve_timestamps}
-              onChange={(e) =>
-                setOptions((prev) => ({
-                  ...prev,
-                  preserve_timestamps: e.target.checked
-                }))
-              }
+              onChange={(e) => setOptions((prev) => ({ ...prev, preserve_timestamps: e.target.checked }))}
               className="h-4 w-4 text-primary border-border rounded focus:ring-primary flex-shrink-0"
             />
-            <span className="text-sm text-foreground">保留时间</span>
+            <span className="text-sm text-foreground">{t('import.preserveTime')}</span>
           </label>
 
           {selectedFormat === 'html' && (
@@ -415,15 +376,10 @@ export function ImportSection({ onImport }: ImportSectionProps) {
               <input
                 type="checkbox"
                 checked={options.folder_as_tag}
-                onChange={(e) =>
-                  setOptions((prev) => ({
-                    ...prev,
-                    folder_as_tag: e.target.checked
-                  }))
-                }
+                onChange={(e) => setOptions((prev) => ({ ...prev, folder_as_tag: e.target.checked }))}
                 className="h-4 w-4 text-primary border-border rounded focus:ring-primary flex-shrink-0"
               />
-              <span className="text-sm text-foreground">文件夹转标签</span>
+              <span className="text-sm text-foreground">{t('import.folderAsTag')}</span>
             </label>
           )}
         </div>
@@ -439,7 +395,7 @@ export function ImportSection({ onImport }: ImportSectionProps) {
               className="w-full flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
             >
               <Sparkles className="h-4 w-4" />
-              <span>{parsedBookmarks.length === 0 ? '解析中...' : `下一步：AI 整理 (${parsedBookmarks.length} 个书签)`}</span>
+              <span>{parsedBookmarks.length === 0 ? t('ai.parsing') : t('ai.nextStep', { count: parsedBookmarks.length })}</span>
               <ArrowRight className="h-4 w-4" />
             </button>
           ) : (
@@ -448,12 +404,8 @@ export function ImportSection({ onImport }: ImportSectionProps) {
               disabled={!selectedFile || !validationResult?.valid || isImporting || isValidating}
               className="w-full flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
             >
-              {isImporting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Upload className="h-4 w-4" />
-              )}
-              <span>{isImporting ? '导入中...' : '开始导入'}</span>
+              {isImporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+              <span>{isImporting ? t('import.importing') : t('import.startImport')}</span>
             </button>
           )}
         </div>
@@ -461,19 +413,16 @@ export function ImportSection({ onImport }: ImportSectionProps) {
     </div>
   )
 
-  // 渲染 AI 整理步骤
   const renderAiOrganizeStep = () => (
     <div className="space-y-4">
-      {/* 返回按钮 */}
       <button
         onClick={() => setCurrentStep('upload')}
         className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="w-4 h-4" />
-        返回上一步
+        {tc('button.back')}
       </button>
 
-      {/* AI 整理组件 */}
       <AiOrganizeStep
         bookmarks={parsedBookmarks}
         existingTags={[]}
@@ -483,22 +432,19 @@ export function ImportSection({ onImport }: ImportSectionProps) {
     </div>
   )
 
-  // 渲染 AI 预览步骤
   const renderAiPreviewStep = () => {
     if (!organizeResult) return null
 
     return (
       <div className="space-y-4">
-        {/* 返回按钮 */}
         <button
           onClick={handleBackToOrganize}
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="w-4 h-4" />
-          返回 AI 整理
+          {tc('button.back')}
         </button>
 
-        {/* 预览组件 */}
         <AiPreviewStep
           result={organizeResult}
           onConfirm={handleImportWithAiTags}
@@ -509,10 +455,8 @@ export function ImportSection({ onImport }: ImportSectionProps) {
     )
   }
 
-  // 渲染导入进度和结果
   const renderImportProgress = () => (
     <div className="space-y-6">
-      {/* 导入进度 */}
       {importProgress && (
         <ProgressIndicator
           progress={{
@@ -520,7 +464,7 @@ export function ImportSection({ onImport }: ImportSectionProps) {
             total: importProgress.total,
             percentage: (importProgress.current / importProgress.total) * 100,
             status: importProgress.status,
-            message: `正在处理第 ${importProgress.current} / ${importProgress.total} 项`
+            message: `${importProgress.current} / ${importProgress.total}`
           }}
           variant="detailed"
           showSpeed={true}
@@ -528,35 +472,32 @@ export function ImportSection({ onImport }: ImportSectionProps) {
         />
       )}
 
-      {/* 导入结果 */}
       {importResult && (
         <div className="bg-muted rounded-lg p-3 sm:p-4">
-          <h4 className="text-sm font-semibold text-foreground mb-3">导入结果</h4>
+          <h4 className="text-sm font-semibold text-foreground mb-3">{t('result.title')}</h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             <div className="text-center sm:text-left">
               <div className="text-lg sm:text-xl font-bold text-success">{importResult.success}</div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">成功导入</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">{t('result.success')}</div>
             </div>
             <div className="text-center sm:text-left">
-              <div className="text-lg sm:text-xl font-bold text-destructive">
-                {importResult.failed}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">导入失败</div>
+              <div className="text-lg sm:text-xl font-bold text-destructive">{importResult.failed}</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">{t('result.failed')}</div>
             </div>
             <div className="text-center sm:text-left">
               <div className="text-lg sm:text-xl font-bold text-warning">{importResult.skipped}</div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">跳过重复</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">{t('result.skipped')}</div>
             </div>
             <div className="text-center sm:text-left">
               <div className="text-lg sm:text-xl font-bold text-primary">{importResult.total}</div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">总计处理</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">{t('result.total')}</div>
             </div>
           </div>
 
           {importResult.total > 0 && (
             <div className="mt-4">
               <div className="flex items-center justify-between text-xs sm:text-sm mb-2">
-                <span className="text-muted-foreground">成功率</span>
+                <span className="text-muted-foreground">{t('result.successRate')}</span>
                 <span className="font-medium text-foreground">
                   {Math.round((importResult.success / importResult.total) * 100)}%
                 </span>
@@ -576,10 +517,10 @@ export function ImportSection({ onImport }: ImportSectionProps) {
                 errors={importResult.errors.map((error) => ({
                   message: error.error,
                   code: error.code,
-                  details: `书签: ${error.item.title || error.item.url}`
+                  details: `${error.item.title || error.item.url}`
                 }))}
                 variant="error"
-                title={`导入错误 (${importResult.errors.length})`}
+                title={`${t('result.errors')} (${importResult.errors.length})`}
                 dismissible={false}
                 collapsible={true}
                 maxVisible={2}
@@ -593,14 +534,14 @@ export function ImportSection({ onImport }: ImportSectionProps) {
                 onClick={() => navigate('/bookmarks')}
                 className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary touch-manipulation"
               >
-                <span>查看导入的书签</span>
+                <span>{t('result.viewBookmarks')}</span>
                 <ArrowRight className="h-4 w-4" />
               </button>
               <button
                 onClick={handleFullReset}
                 className="flex-1 px-4 py-3 sm:py-2 text-sm font-medium text-foreground bg-card border border-border rounded-md hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary touch-manipulation"
               >
-                继续导入
+                {t('result.continueImport')}
               </button>
             </div>
           )}
@@ -609,7 +550,6 @@ export function ImportSection({ onImport }: ImportSectionProps) {
     </div>
   )
 
-  // 根据当前步骤渲染内容
   if (importResult || importProgress) {
     return renderImportProgress()
   }

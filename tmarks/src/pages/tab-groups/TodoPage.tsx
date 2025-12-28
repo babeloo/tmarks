@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { tabGroupsService } from '@/services/tab-groups'
 import type { TabGroup } from '@/lib/types'
 import { TodoSidebar } from '@/components/tab-groups/TodoSidebar'
@@ -10,6 +11,8 @@ import { logger } from '@/lib/logger'
  * 待办事项页面（移动端独立页面）
  */
 export function TodoPage() {
+  const { t } = useTranslation('tabGroups')
+  const { t: tc } = useTranslation('common')
   const [tabGroups, setTabGroups] = useState<TabGroup[]>([])
   const [loading, setLoading] = useState(true)
   const isMobile = useIsMobile()
@@ -33,7 +36,7 @@ export function TodoPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="text-muted-foreground">加载中...</div>
+        <div className="text-muted-foreground">{tc('status.loading')}</div>
       </div>
     )
   }
@@ -43,7 +46,7 @@ export function TodoPage() {
       {/* 移动端顶部工具栏 */}
       {isMobile && (
         <MobileHeader
-          title="待办事项"
+          title={t('todo.title')}
           showMenu={false}
           showSearch={false}
           showMore={false}

@@ -4,6 +4,7 @@
  */
 
 import { useState, useRef, useEffect, memo } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface LazyImageProps {
   src: string
@@ -22,6 +23,7 @@ export const LazyImage = memo(function LazyImage({
   onLoad,
   onError,
 }: LazyImageProps) {
+  const { t } = useTranslation('common')
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
   const [isInView, setIsInView] = useState(false)
@@ -63,7 +65,7 @@ export const LazyImage = memo(function LazyImage({
   if (hasError) {
     return placeholder ? (
       <div className={`${className} bg-base-200 flex items-center justify-center`}>
-        <span className="text-base-content/50 text-xs">加载失败</span>
+        <span className="text-base-content/50 text-xs">{t('status.loadFailed')}</span>
       </div>
     ) : null
   }

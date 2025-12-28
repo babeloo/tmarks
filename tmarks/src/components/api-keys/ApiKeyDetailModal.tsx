@@ -3,11 +3,13 @@
  * 显示 API Key 的详细信息和使用日志
  */
 
+import { useTranslation } from 'react-i18next'
 import { useApiKey, useApiKeyLogs } from '@/hooks/useApiKeys'
 import { getPermissionLabel } from '@shared/permissions'
 import type { ApiKey } from '@/services/api-keys'
 import { formatDistanceToNow } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
+import { zhCN, enUS } from 'date-fns/locale'
+import { Z_INDEX } from '@/lib/constants/z-index'
 
 interface ApiKeyDetailModalProps {
   apiKey: ApiKey
@@ -15,6 +17,8 @@ interface ApiKeyDetailModalProps {
 }
 
 export function ApiKeyDetailModal({ apiKey, onClose }: ApiKeyDetailModalProps) {
+  const { t, i18n } = useTranslation('settings')
+  const dateLocale = i18n.language === 'zh-CN' ? zhCN : enUS
   const { data: keyData } = useApiKey(apiKey.id)
   const { data: logsData } = useApiKeyLogs(apiKey.id, 10)
 
@@ -28,61 +32,57 @@ export function ApiKeyDetailModal({ apiKey, onClose }: ApiKeyDetailModalProps) {
     expired: '🟠',
   }[key.status]
 
-  const statusText = {
-    active: '活跃',
-    revoked: '已撤销',
-    expired: '已过期',
-  }[key.status]
+  const statusText = t(`apiKey.status.${key.status}`)
 
   return (
-    <div className="fixed inset-0 bg-background flex items-center justify-center" style={{ zIndex: 200 }}>
-      <div className="card rounded-2xl shadow-2xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center" style={{ zIndex: Z_INDEX.API_KEY_MODAL }}>
+      <div className="card rounded-2xl shadow-2xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto" style={{ backgroundColor: 'var(--card)' }}>
         <div className="p-6">
           {/* 标题 */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-foreground">{key.name}</h2>
             <button className="btn btn-sm" onClick={onClose}>
-              关闭
+              {t('apiKey.detail.close')}
             </button>
           </div>
 
           {/* 基本信息 */}
           <div className="mb-6">
             <h3 className="text-sm font-medium text-foreground mb-3">
-              基本信息:
+              {t('apiKey.detail.basicInfo')}
             </h3>
             <div className="space-y-2 text-sm">
               <div className="flex">
-                <span className="text-muted-foreground w-28">Key 前缀:</span>
+                <span className="text-muted-foreground w-28">{t('apiKey.detail.keyPrefix')}</span>
                 <code className="font-mono">{key.key_prefix}...</code>
               </div>
               <div className="flex">
-                <span className="text-muted-foreground w-28">状态:</span>
+                <span className="text-muted-foreground w-28">{t('apiKey.status.label')}:</span>
                 <span>
                   {statusIcon} {statusText}
                 </span>
               </div>
               <div className="flex">
-                <span className="text-muted-foreground w-28">创建时间:</span>
-                <span>{new Date(key.created_at).toLocaleString('zh-CN')}</span>
+                <span className="text-muted-foreground w-28">{t('apiKey.detail.createdAt')}</span>
+                <span>{new Date(key.created_at).toLocaleString(i18n.language)}</span>
               </div>
               {key.expires_at && (
                 <div className="flex">
-                  <span className="text-muted-foreground w-28">过期时间:</span>
+                  <span className="text-muted-foreground w-28">{t('apiKey.detail.expiresAt')}</span>
                   <span>
-                    {new Date(key.expires_at).toLocaleString('zh-CN')}
+                    {new Date(key.expires_at).toLocaleString(i18n.language)}
                   </span>
                 </div>
               )}
               {!key.expires_at && (
                 <div className="flex">
-                  <span className="text-muted-foreground w-28">过期时间:</span>
-                  <span>永不过期</span>
+                  <span className="text-muted-foreground w-28">{t('apiKey.detail.expiresAt')}</span>
+                  <span>{t('apiKey.detail.neverExpire')}</span>
                 </div>
               )}
               {key.description && (
                 <div className="flex">
-                  <span className="text-muted-foreground w-28">描述:</span>
+                  <span className="text-muted-foreground w-28">{t('apiKey.detail.description')}</span>
                   <span>{key.description}</span>
                 </div>
               )}
@@ -91,7 +91,7 @@ export function ApiKeyDetailModal({ apiKey, onClose }: ApiKeyDetailModalProps) {
 
           {/* 权限列表 */}
           <div className="mb-6">
-            <h3 className="text-sm font-medium text-foreground mb-3">权限:</h3>
+            <h3 className="text-sm font-medium text-foreground mb-3">{t('apiKey.detail.permissions')}</h3>
             <div className="grid grid-cols-1 gap-2">
               {key.permissions.map((perm) => (
                 <div
@@ -110,27 +110,27 @@ export function ApiKeyDetailModal({ apiKey, onClose }: ApiKeyDetailModalProps) {
           {stats && (
             <div className="mb-6">
               <h3 className="text-sm font-medium text-foreground mb-3">
-                使用情况:
+                {t('apiKey.detail.usage')}
               </h3>
               <div className="space-y-2 text-sm">
                 <div className="flex">
-                  <span className="text-muted-foreground w-28">最后使用:</span>
+                  <span className="text-muted-foreground w-28">{t('apiKey.detail.lastUsed')}</span>
                   <span>
                     {stats.last_used_at
                       ? formatDistanceToNow(new Date(stats.last_used_at), {
                           addSuffix: true,
-                          locale: zhCN,
+                          locale: dateLocale,
                         })
-                      : '从未使用'}
+                      : t('apiKey.detail.neverUsed')}
                   </span>
                 </div>
                 <div className="flex">
-                  <span className="text-muted-foreground w-28">使用次数:</span>
-                  <span>{stats.total_requests} 次</span>
+                  <span className="text-muted-foreground w-28">{t('apiKey.detail.totalRequests')}</span>
+                  <span>{t('apiKey.detail.requestCount', { count: stats.total_requests })}</span>
                 </div>
                 {stats.last_used_ip && (
                   <div className="flex">
-                    <span className="text-muted-foreground w-28">最后 IP:</span>
+                    <span className="text-muted-foreground w-28">{t('apiKey.detail.lastIp')}</span>
                     <span>{stats.last_used_ip}</span>
                   </div>
                 )}
@@ -142,16 +142,16 @@ export function ApiKeyDetailModal({ apiKey, onClose }: ApiKeyDetailModalProps) {
           {logs.length > 0 && (
             <div>
               <h3 className="text-sm font-medium text-foreground mb-3">
-                最近活动: (最多显示 10 条)
+                {t('apiKey.detail.recentActivity')} {t('apiKey.detail.recentActivityLimit', { count: 10 })}
               </h3>
               <div className="bg-muted/30 border border-border rounded-lg overflow-hidden">
                 <table className="w-full text-xs">
                   <thead className="bg-muted">
                     <tr>
-                      <th className="text-left px-3 py-2 font-medium">时间</th>
-                      <th className="text-left px-3 py-2 font-medium">方法</th>
-                      <th className="text-left px-3 py-2 font-medium">端点</th>
-                      <th className="text-left px-3 py-2 font-medium">状态</th>
+                      <th className="text-left px-3 py-2 font-medium">{t('apiKey.detail.tableTime')}</th>
+                      <th className="text-left px-3 py-2 font-medium">{t('apiKey.detail.tableMethod')}</th>
+                      <th className="text-left px-3 py-2 font-medium">{t('apiKey.detail.tableEndpoint')}</th>
+                      <th className="text-left px-3 py-2 font-medium">{t('apiKey.detail.tableStatus')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -161,7 +161,7 @@ export function ApiKeyDetailModal({ apiKey, onClose }: ApiKeyDetailModalProps) {
                         className="border-t border-border hover:bg-muted/50"
                       >
                         <td className="px-3 py-2 text-muted-foreground">
-                          {new Date(log.created_at).toLocaleString('zh-CN', {
+                          {new Date(log.created_at).toLocaleString(i18n.language, {
                             month: '2-digit',
                             day: '2-digit',
                             hour: '2-digit',
@@ -195,7 +195,7 @@ export function ApiKeyDetailModal({ apiKey, onClose }: ApiKeyDetailModalProps) {
 
           {logs.length === 0 && (
             <div className="text-center text-sm text-muted-foreground py-6">
-              暂无使用记录
+              {t('apiKey.detail.noLogs')}
             </div>
           )}
         </div>

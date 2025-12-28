@@ -3,6 +3,8 @@
  * 使用 KV 存储请求计数
  */
 
+import type { KVNamespace } from '@cloudflare/workers-types'
+
 interface RateLimitConfig {
   per_minute: number
   per_hour: number

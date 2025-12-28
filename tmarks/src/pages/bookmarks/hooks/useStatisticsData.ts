@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { bookmarksService } from '@/services/bookmarks'
 import { logger } from '@/lib/logger'
 
@@ -49,6 +50,7 @@ export interface BookmarkStatistics {
 export type Granularity = 'day' | 'week' | 'month' | 'year'
 
 export function useStatisticsData(granularity: Granularity, currentDate: Date) {
+  const { t } = useTranslation('bookmarks')
   const [statistics, setStatistics] = useState<BookmarkStatistics | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -105,7 +107,7 @@ export function useStatisticsData(granularity: Granularity, currentDate: Date) {
       setStatistics(data)
     } catch (err) {
       logger.error('Failed to load bookmark statistics:', err)
-      setError('加载统计数据失败')
+      setError(t('statistics.loadFailed'))
     } finally {
       setIsLoading(false)
     }

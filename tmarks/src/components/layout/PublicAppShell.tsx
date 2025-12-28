@@ -1,10 +1,12 @@
 import { Outlet, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { BookOpen, Download } from 'lucide-react'
 import { useThemeStore } from '@/stores/themeStore'
 import { ThemeToggle } from '@/components/common/ThemeToggle'
 import { ColorThemeSelector } from '@/components/common/ColorThemeSelector'
 
 export function PublicAppShell() {
+  const { t } = useTranslation('common')
   const { theme, colorTheme } = useThemeStore()
   const navigate = useNavigate()
 
@@ -17,7 +19,7 @@ export function PublicAppShell() {
           <button
             onClick={() => navigate('/')}
             className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity duration-200 focus:outline-none"
-            title="回到首页"
+            title={t('nav.home')}
           >
             <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-float">
               <BookOpen
@@ -29,7 +31,7 @@ export function PublicAppShell() {
               <h1 className="text-lg sm:text-2xl font-bold" style={{color: 'var(--primary)'}}>
                 TMarks
               </h1>
-              <p className="text-xs font-medium hidden sm:block" style={{color: 'var(--muted-foreground)'}}>智能书签管理</p>
+              <p className="text-xs font-medium hidden sm:block" style={{color: 'var(--muted-foreground)'}}>{t('nav.smartBookmarkManagement')}</p>
             </div>
           </button>
 
@@ -50,10 +52,10 @@ export function PublicAppShell() {
               }}
               className="hidden sm:flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border border-border hover:border-primary hover:bg-card/50"
               style={{color: 'var(--foreground)'}}
-              title="下载浏览器插件"
+              title={t('nav.extension')}
             >
               <Download className="w-4 h-4" />
-              <span className="hidden md:inline">插件</span>
+              <span className="hidden md:inline">{t('nav.extension')}</span>
             </button>
             
             {/* 登录按钮 */}
@@ -61,7 +63,7 @@ export function PublicAppShell() {
               onClick={() => navigate('/login')}
               className="px-3 py-2 sm:px-4 sm:py-2 text-sm font-medium rounded-lg transition-all duration-200 bg-primary text-primary-content hover:bg-primary/90 shadow-float"
             >
-              登录
+              {t('action.login')}
             </button>
           </div>
         </div>

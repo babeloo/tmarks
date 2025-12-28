@@ -36,7 +36,27 @@ export const AI_AVAILABLE_MODELS: Record<AIProvider, string[]> = {
   deepseek: ['deepseek-chat', 'deepseek-coder'],
   zhipu: ['glm-4-flash', 'glm-4', 'glm-4-plus'],
   modelscope: ['qwen-turbo', 'qwen-plus', 'qwen-max'],
-  siliconflow: ['Qwen/Qwen2.5-7B-Instruct', 'Qwen/Qwen2.5-72B-Instruct', 'deepseek-ai/DeepSeek-V2.5'],
+  siliconflow: [
+    // Qwen 系列
+    'Qwen/Qwen2.5-7B-Instruct',
+    'Qwen/Qwen2.5-14B-Instruct',
+    'Qwen/Qwen2.5-32B-Instruct',
+    'Qwen/Qwen2.5-72B-Instruct',
+    'Qwen/Qwen2.5-Coder-7B-Instruct',
+    'Qwen/Qwen2.5-Coder-32B-Instruct',
+    // DeepSeek 系列
+    'deepseek-ai/DeepSeek-V2.5',
+    'deepseek-ai/DeepSeek-V3',
+    'deepseek-ai/DeepSeek-R1-Distill-Qwen-7B',
+    'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B',
+    // GLM 系列
+    'THUDM/glm-4-9b-chat',
+    // Yi 系列
+    'Pro/01-ai/Yi-1.5-9B-Chat-16K',
+    // InternLM 系列
+    'internlm/internlm2_5-7b-chat',
+    'internlm/internlm2_5-20b-chat',
+  ],
   iflow: ['gpt-4o-mini', 'gpt-4o'],
   custom: []
 }
@@ -62,7 +82,7 @@ export const AI_PROVIDER_NAMES: Record<AIProvider, string> = {
   modelscope: 'ModelScope',
   siliconflow: 'SiliconFlow',
   iflow: 'iFlow',
-  custom: '自定义'
+  custom: 'Custom'
 }
 
 // 超时配置

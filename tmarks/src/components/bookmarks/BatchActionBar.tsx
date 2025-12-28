@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { BatchActionType } from '@/lib/types'
 import { useBatchAction } from '@/hooks/useBookmarks'
 import { useTags } from '@/hooks/useTags'
@@ -17,6 +18,8 @@ export function BatchActionBar({
   onClearSelection,
   onSuccess,
 }: BatchActionBarProps) {
+  const { t } = useTranslation('bookmarks')
+  const { t: tc } = useTranslation('common')
   const [showTagMenu, setShowTagMenu] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
@@ -32,7 +35,6 @@ export function BatchActionBar({
   const handleAction = async (action: BatchActionType) => {
     if (selectedIds.length === 0) return
 
-    // 需要确认的操作
     if (action === 'delete' || action === 'pin' || action === 'archive') {
       setPendingAction(action)
       setShowConfirmDialog(true)
@@ -43,15 +45,16 @@ export function BatchActionBar({
   }
 
   const getSuccessMessage = (action: BatchActionType) => {
+    const count = selectedIds.length
     switch (action) {
       case 'delete':
-        return `成功删除 ${selectedIds.length} 个书签`
+        return t('batch.deleteSuccess', { count })
       case 'pin':
-        return `成功置顶 ${selectedIds.length} 个书签`
+        return t('batch.pinSuccess', { count })
       case 'archive':
-        return `成功归档 ${selectedIds.length} 个书签`
+        return t('batch.archiveSuccess', { count })
       default:
-        return '操作成功'
+        return tc('message.operationSuccess')
     }
   }
 
@@ -85,29 +88,30 @@ export function BatchActionBar({
   }
 
   const getConfirmDialogConfig = () => {
+    const count = selectedIds.length
     switch (pendingAction) {
       case 'delete':
         return {
-          title: '批量删除',
-          message: `确定要删除这 ${selectedIds.length} 个书签吗？`,
+          title: t('batch.deleteTitle'),
+          message: t('batch.deleteMessage', { count }),
           type: 'warning' as const,
         }
       case 'pin':
         return {
-          title: '批量置顶',
-          message: `确定要置顶这 ${selectedIds.length} 个书签吗？`,
+          title: t('batch.pinTitle'),
+          message: t('batch.pinMessage', { count }),
           type: 'info' as const,
         }
       case 'archive':
         return {
-          title: '批量归档',
-          message: `确定要归档这 ${selectedIds.length} 个书签吗？`,
+          title: t('batch.archiveTitle'),
+          message: t('batch.archiveMessage', { count }),
           type: 'info' as const,
         }
       default:
         return {
-          title: '确认操作',
-          message: '确定要执行此操作吗？',
+          title: t('batch.confirmAction'),
+          message: t('batch.confirmMessage'),
           type: 'info' as const,
         }
     }
@@ -124,11 +128,10 @@ export function BatchActionBar({
         remove_tag_ids: mode === 'remove' ? selectedTagIds : undefined,
       })
       const message = mode === 'add'
-        ? `成功为 ${selectedIds.length} 个书签添加标签`
-        : `成功为 ${selectedIds.length} 个书签移除标签`
+        ? t('batch.addTagsSuccess', { count: selectedIds.length })
+        : t('batch.removeTagsSuccess', { count: selectedIds.length })
       setSuccessMessage(message)
       setShowSuccessAlert(true)
-      // 操作成功后清除选择
       setSelectedTagIds([])
       setShowTagMenu(false)
       onClearSelection()
@@ -151,42 +154,38 @@ export function BatchActionBar({
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 animate-slide-up" style={{ zIndex: Z_INDEX.BATCH_ACTION_BAR }}>
       <div className="card bg-primary text-primary-content shadow-2xl">
         <div className="flex items-center gap-4">
-          {/* 选中计数 */}
           <div className="text-sm font-medium">
-            已选 {selectedIds.length} 个书签
+            {t('batch.selected', { count: selectedIds.length })}
           </div>
 
-          {/* 分隔线 */}
           <div className="w-px h-6 bg-primary-content/20"></div>
 
-          {/* 操作按钮 */}
           <div className="flex gap-2">
             <button
               onClick={() => handleAction('pin')}
               className="btn btn-sm bg-primary-content/10 hover:bg-primary-content/20 border-none text-primary-content"
               disabled={batchAction.isPending}
-              title="置顶"
+              title={t('batch.pin')}
             >
-              置顶
+              {t('batch.pin')}
             </button>
 
             <button
               onClick={() => handleAction('archive')}
               className="btn btn-sm bg-primary-content/10 hover:bg-primary-content/20 border-none text-primary-content"
               disabled={batchAction.isPending}
-              title="归档"
+              title={t('batch.archive')}
             >
-              归档
+              {t('batch.archive')}
             </button>
 
-            {/* 标签菜单 */}
             <div className="relative">
               <button
                 onClick={() => setShowTagMenu(!showTagMenu)}
                 className="btn btn-sm bg-primary-content/10 hover:bg-primary-content/20 border-none text-primary-content"
                 disabled={batchAction.isPending}
               >
-                标签
+                {t('batch.tags')}
               </button>
 
               {showTagMenu && (
@@ -194,7 +193,7 @@ export function BatchActionBar({
                   className="absolute bottom-full mb-2 left-0 w-64 text-base-content rounded-lg shadow-xl p-3 border"
                   style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
                 >
-                  <div className="text-sm font-medium mb-2">选择标签</div>
+                  <div className="text-sm font-medium mb-2">{t('batch.selectTags')}</div>
                   <div className="max-h-48 overflow-y-auto space-y-1 mb-3">
                     {tags.map((tag) => (
                       <label
@@ -217,14 +216,14 @@ export function BatchActionBar({
                       className="btn btn-sm flex-1"
                       disabled={selectedTagIds.length === 0 || batchAction.isPending}
                     >
-                      添加
+                      {t('batch.addTags')}
                     </button>
                     <button
                       onClick={() => handleUpdateTags('remove')}
                       className="btn btn-sm btn-outline flex-1"
                       disabled={selectedTagIds.length === 0 || batchAction.isPending}
                     >
-                      移除
+                      {t('batch.removeTags')}
                     </button>
                   </div>
                 </div>
@@ -235,27 +234,24 @@ export function BatchActionBar({
               onClick={() => handleAction('delete')}
               className="btn btn-sm bg-error/10 hover:bg-error/20 border-none text-primary-content"
               disabled={batchAction.isPending}
-              title="删除"
+              title={t('batch.delete')}
             >
-              删除
+              {t('batch.delete')}
             </button>
           </div>
 
-          {/* 分隔线 */}
           <div className="w-px h-6 bg-primary-content/20"></div>
 
-          {/* 取消选择 */}
           <button
             onClick={onClearSelection}
             className="btn btn-sm btn-ghost text-primary-content"
             disabled={batchAction.isPending}
           >
-            取消
+            {t('batch.cancel')}
           </button>
         </div>
       </div>
 
-      {/* 确认对话框 */}
       {pendingAction && (
         <ConfirmDialog
           isOpen={showConfirmDialog}
@@ -267,20 +263,18 @@ export function BatchActionBar({
         />
       )}
 
-      {/* 成功提示对话框 */}
       <AlertDialog
         isOpen={showSuccessAlert}
-        title="操作成功"
+        title={tc('dialog.successTitle')}
         message={successMessage}
         type="success"
         onConfirm={() => setShowSuccessAlert(false)}
       />
 
-      {/* 错误提示对话框 */}
       <AlertDialog
         isOpen={showErrorAlert}
-        title="操作失败"
-        message="操作失败，请重试"
+        title={tc('dialog.errorTitle')}
+        message={t('action.failed')}
         type="error"
         onConfirm={() => setShowErrorAlert(false)}
       />

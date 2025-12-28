@@ -4,9 +4,9 @@
  */
 
 import type { PagesFunction } from '@cloudflare/workers-types'
-import type { Env, RouteParams } from '../../../lib/types'
-import { success, badRequest, notFound, internalError } from '../../../lib/response'
-import { requireAuth, AuthContext } from '../../../middleware/auth'
+import type { Env, RouteParams } from '../../../../lib/types'
+import { success, badRequest, internalError } from '../../../../lib/response'
+import { requireAuth, AuthContext } from '../../../../middleware/auth'
 
 // AI 服务商类型
 type AIProvider = 'openai' | 'claude' | 'deepseek' | 'zhipu' | 'modelscope' | 'siliconflow' | 'iflow' | 'custom'
@@ -42,7 +42,6 @@ const VALID_PROVIDERS: AIProvider[] = ['openai', 'claude', 'deepseek', 'zhipu', 
 
 /**
  * 简单的 API Key 加密（使用 AES-GCM）
- * 生产环境应使用更安全的密钥管理
  */
 async function encryptApiKeys(
   apiKeys: Record<string, string>,
@@ -51,7 +50,6 @@ async function encryptApiKeys(
   const encoder = new TextEncoder()
   const data = encoder.encode(JSON.stringify(apiKeys))
   
-  // 从环境变量派生密钥
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
     encoder.encode(encryptionKey.padEnd(32, '0').slice(0, 32)),
@@ -60,22 +58,18 @@ async function encryptApiKeys(
     ['encrypt']
   )
   
-  // 生成随机 IV
   const iv = crypto.getRandomValues(new Uint8Array(12))
   
-  // 加密
   const encrypted = await crypto.subtle.encrypt(
     { name: 'AES-GCM', iv },
     keyMaterial,
     data
   )
   
-  // 组合 IV 和密文
   const combined = new Uint8Array(iv.length + encrypted.byteLength)
   combined.set(iv)
   combined.set(new Uint8Array(encrypted), iv.length)
   
-  // Base64 编码
   return btoa(String.fromCharCode(...combined))
 }
 
@@ -90,14 +84,11 @@ async function decryptApiKeys(
     const encoder = new TextEncoder()
     const decoder = new TextDecoder()
     
-    // Base64 解码
     const combined = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0))
     
-    // 分离 IV 和密文
     const iv = combined.slice(0, 12)
     const encrypted = combined.slice(12)
     
-    // 从环境变量派生密钥
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
       encoder.encode(encryptionKey.padEnd(32, '0').slice(0, 32)),
@@ -106,7 +97,6 @@ async function decryptApiKeys(
       ['decrypt']
     )
     
-    // 解密
     const decrypted = await crypto.subtle.decrypt(
       { name: 'AES-GCM', iv },
       keyMaterial,
@@ -120,7 +110,7 @@ async function decryptApiKeys(
 }
 
 /**
- * 脱敏 API Key（只显示前缀和后缀）
+ * 脱敏 API Key
  */
 function maskApiKey(key: string): string {
   if (!key || key.length < 8) return '***'
@@ -150,10 +140,8 @@ export const onRequestGet: PagesFunction<Env, RouteParams, AuthContext>[] = [
       const userId = context.data.user_id
       const encryptionKey = context.env.ENCRYPTION_KEY || 'default-key-change-me'
       
-      // 检查表是否存在
       const tableExists = await hasAISettingsTable(context.env.DB)
       if (!tableExists) {
-        // 返回默认配置
         return success({
           ai_settings: {
             provider: 'openai',
@@ -174,7 +162,6 @@ export const onRequestGet: PagesFunction<Env, RouteParams, AuthContext>[] = [
         .first<AISettingsRow>()
       
       if (!settings) {
-        // 返回默认配置
         return success({
           ai_settings: {
             provider: 'openai',
@@ -188,7 +175,6 @@ export const onRequestGet: PagesFunction<Env, RouteParams, AuthContext>[] = [
         })
       }
       
-      // 解密并脱敏 API Keys
       let maskedApiKeys: Record<string, string | null> = {}
       if (settings.api_keys_encrypted) {
         const decrypted = await decryptApiKeys(settings.api_keys_encrypted, encryptionKey)
@@ -197,7 +183,6 @@ export const onRequestGet: PagesFunction<Env, RouteParams, AuthContext>[] = [
         }
       }
       
-      // 解析 API URLs
       let apiUrls: Record<string, string> = {}
       if (settings.api_urls) {
         try {
@@ -234,18 +219,15 @@ export const onRequestPut: PagesFunction<Env, RouteParams, AuthContext>[] = [
       const encryptionKey = context.env.ENCRYPTION_KEY || 'default-key-change-me'
       const body = await context.request.json() as UpdateAISettingsRequest
       
-      // 检查表是否存在
       const tableExists = await hasAISettingsTable(context.env.DB)
       if (!tableExists) {
         return badRequest('AI settings feature not available. Please run database migrations.')
       }
       
-      // 验证 provider
       if (body.provider && !VALID_PROVIDERS.includes(body.provider)) {
         return badRequest(`Invalid provider. Must be one of: ${VALID_PROVIDERS.join(', ')}`)
       }
       
-      // 获取现有设置
       const existing = await context.env.DB.prepare(
         'SELECT * FROM ai_settings WHERE user_id = ?'
       )
@@ -254,16 +236,13 @@ export const onRequestPut: PagesFunction<Env, RouteParams, AuthContext>[] = [
       
       const now = new Date().toISOString()
       
-      // 处理 API Keys 更新
       let apiKeysEncrypted: string | null = existing?.api_keys_encrypted || null
       if (body.api_keys) {
-        // 获取现有的 keys
         let existingKeys: Record<string, string> = {}
         if (existing?.api_keys_encrypted) {
           existingKeys = await decryptApiKeys(existing.api_keys_encrypted, encryptionKey)
         }
         
-        // 合并新的 keys（只更新提供的 keys）
         for (const [provider, key] of Object.entries(body.api_keys)) {
           if (key === null || key === '') {
             delete existingKeys[provider]
@@ -272,7 +251,6 @@ export const onRequestPut: PagesFunction<Env, RouteParams, AuthContext>[] = [
           }
         }
         
-        // 加密存储
         if (Object.keys(existingKeys).length > 0) {
           apiKeysEncrypted = await encryptApiKeys(existingKeys, encryptionKey)
         } else {
@@ -280,7 +258,6 @@ export const onRequestPut: PagesFunction<Env, RouteParams, AuthContext>[] = [
         }
       }
       
-      // 处理 API URLs 更新
       let apiUrlsJson: string | null = existing?.api_urls || null
       if (body.api_urls) {
         let existingUrls: Record<string, string> = {}
@@ -292,7 +269,6 @@ export const onRequestPut: PagesFunction<Env, RouteParams, AuthContext>[] = [
           }
         }
         
-        // 合并新的 URLs
         for (const [provider, url] of Object.entries(body.api_urls)) {
           if (url === null || url === '') {
             delete existingUrls[provider]
@@ -305,7 +281,6 @@ export const onRequestPut: PagesFunction<Env, RouteParams, AuthContext>[] = [
       }
       
       if (existing) {
-        // 更新现有记录
         await context.env.DB.prepare(`
           UPDATE ai_settings SET
             provider = ?,
@@ -329,7 +304,6 @@ export const onRequestPut: PagesFunction<Env, RouteParams, AuthContext>[] = [
           userId
         ).run()
       } else {
-        // 创建新记录
         const id = crypto.randomUUID()
         await context.env.DB.prepare(`
           INSERT INTO ai_settings (

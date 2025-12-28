@@ -1,0 +1,31 @@
+{
+  "network": {
+    "connectionFailed": "Network connection failed, please check your network",
+    "timeout": "Request timed out, please try again later",
+    "serverError": "Server error, please try again later"
+  },
+  "auth": {
+    "invalidCredentials": "Invalid username or password",
+    "sessionExpired": "Session expired, please sign in again",
+    "unauthorized": "Unauthorized access"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidFormat": "Invalid format",
+    "tooLong": "Content is too long",
+    "tooShort": "Content is too short"
+  },
+  "share": {
+    "loadFailed": "Failed to load public share content",
+    "notFound": "Public content not found"
+  },
+  "ai": {
+    "modelListFailed": "Failed to fetch model list",
+    "modelListInvalid": "Invalid model list response format",
+    "modelListEmpty": "Model list is empty",
+    "providerNotSupported": "Current AI service does not support automatic model list fetching",
+    "missingApiKey": "Missing API Key",
+    "missingApiUrl": "Missing API URL"
+  },
+  "unknown": "Unknown error"
+}

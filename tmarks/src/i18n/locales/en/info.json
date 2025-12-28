@@ -1,0 +1,337 @@
+{
+  "extension": {
+    "title": "TMarks Browser Extension",
+    "subtitle": "Save tab groups with one click for efficient bookmark management",
+    "download": {
+      "title": "Choose your browser to download",
+      "button": "Download"
+    },
+    "browsers": {
+      "title": "Supported Browsers",
+      "speedMode": "Speed Mode"
+    },
+    "version": "Version: {{version}} | Size: ~{{size}} | Updated: {{date}}",
+    "tip": "💡 8 browser-specific versions available, or use Chrome version (supports all Chrome-based browsers)",
+    "features": {
+      "title": "✨ Key Features",
+      "saveTabGroups": {
+        "title": "One-click Tab Group Saving",
+        "description": "Save all open tabs to TMarks with one click, including titles, URLs, and favicons"
+      },
+      "restoreTabs": {
+        "title": "Quick Tab Restoration",
+        "description": "Restore previously saved tab groups from TMarks website to continue your work"
+      },
+      "autoSync": {
+        "title": "Auto Sync",
+        "description": "Tab groups automatically sync to cloud for seamless multi-device access"
+      }
+    },
+    "install": {
+      "title": "📦 Installation Steps",
+      "step1": {
+        "title": "Download Extension Package",
+        "description": "Click the download button above to get the tmarks-extension.zip file"
+      },
+      "step2": {
+        "title": "Extract Files",
+        "description": "Extract the downloaded zip file to any folder (preferably a permanent location)"
+      },
+      "step3": {
+        "title": "Open Extension Management Page",
+        "description": "Enter in browser address bar:"
+      },
+      "step4": {
+        "title": "Enable Developer Mode",
+        "description": "Toggle on 'Developer mode' in the top right corner of the extension management page"
+      },
+      "step5": {
+        "title": "Load Extension",
+        "description": "Click 'Load unpacked' and select the extracted folder"
+      },
+      "step6": {
+        "title": "Installation Complete",
+        "description": "The extension icon will appear in the browser toolbar, click to use"
+      }
+    },
+    "tips": {
+      "title": "💡 Usage Tips",
+      "tip1": "First-time use requires configuring TMarks website URL and API Key in the extension",
+      "tip2": "API Key can be created on the website's 'API Keys' page",
+      "tip3": "Pin the extension icon to toolbar for quick access",
+      "tip4": "Extension automatically saves tab titles, URLs, and favicons"
+    },
+    "faq": {
+      "title": "❓ FAQ",
+      "q1": "Can't find the extension icon after installation?",
+      "a1": "Click the puzzle icon on the right side of the browser toolbar, find TMarks extension and click the pin button to show it in the toolbar.",
+      "q2": "How to get an API Key?",
+      "a2": "After logging into TMarks website, click 'API Keys' in the user menu at the top right, create a new API Key and copy it to the extension settings.",
+      "q3": "Which browsers are supported?",
+      "a3": "Supports Chrome, Edge, Firefox, Brave, Opera and other major browsers. Chrome and Edge use the same version (based on same technology), Firefox uses a dedicated version.",
+      "q4": "Can Chrome and Edge use the same version?",
+      "a4": "Yes! Chrome, Edge, Brave, Opera all use the Chrome version. Only Firefox needs the dedicated version.",
+      "q5": "Where to view saved tab groups?",
+      "a5": "View and manage all saved tab groups on the 'Tab Groups' page of TMarks website."
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: {{date}}",
+    "commitment": {
+      "title": "Our Commitment",
+      "description": "TMarks is committed to protecting user privacy and data security. This privacy policy explains how we collect, use, store, and protect your personal information."
+    },
+    "collection": {
+      "title": "Information We Collect",
+      "account": {
+        "title": "Account Information",
+        "description": "When you register a TMarks account, we collect your username, email address, and encrypted password."
+      },
+      "bookmarks": {
+        "title": "Bookmark Data",
+        "description": "Bookmarks, tags, tab groups and other content you create, used only to provide service functionality."
+      },
+      "usage": {
+        "title": "Usage Data",
+        "description": "We may collect information about your use of the service, such as access time, IP address, browser type, etc., to improve service quality."
+      }
+    },
+    "usage": {
+      "title": "How We Use Information",
+      "item1": "Provide, maintain, and improve TMarks services",
+      "item2": "Process your requests and transactions",
+      "item3": "Send service-related notifications and updates",
+      "item4": "Detect, prevent, and resolve technical issues",
+      "item5": "Comply with legal obligations"
+    },
+    "security": {
+      "title": "Data Security",
+      "description": "We take multiple security measures to protect your personal information:",
+      "item1": "All data transmission uses HTTPS encryption",
+      "item2": "Passwords are stored using industry-standard hashing algorithms",
+      "item3": "JWT tokens are used for authentication",
+      "item4": "Data is stored on Cloudflare's secure infrastructure",
+      "item5": "Regular security audits and updates"
+    },
+    "rights": {
+      "title": "Your Rights",
+      "access": "Access: You can access and view your personal information at any time",
+      "modify": "Modify: You can update or modify your personal information",
+      "delete": "Delete: You can request deletion of your account and all related data",
+      "export": "Export: You can export your bookmark data"
+    },
+    "cookies": {
+      "title": "Cookies and Similar Technologies",
+      "description": "We use cookies and similar technologies to:",
+      "item1": "Keep you logged in",
+      "item2": "Remember your preferences",
+      "item3": "Analyze service usage"
+    },
+    "thirdParty": {
+      "title": "Third-Party Services",
+      "description": "TMarks uses the following third-party services:",
+      "cloudflare": "Cloudflare: Provides hosting, database, and CDN services",
+      "note": "These service providers have their own privacy policies, we recommend reviewing them."
+    },
+    "updates": {
+      "title": "Policy Updates",
+      "description": "We may update this privacy policy from time to time. For significant changes, we will notify you via email or in-service notification. Continued use of the service indicates acceptance of the updated policy."
+    },
+    "contact": {
+      "title": "Contact Us",
+      "description": "If you have any questions or suggestions about this privacy policy, please contact us:",
+      "email": "Email:"
+    }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: {{date}}",
+    "welcome": {
+      "title": "Welcome to TMarks",
+      "description": "Thank you for using TMarks bookmark management service. By using our service, you agree to comply with the following terms of service. Please read these terms carefully. If you do not agree, please do not use our service."
+    },
+    "service": {
+      "title": "1. Service Description",
+      "description": "TMarks provides online bookmark management services, including but not limited to:",
+      "item1": "Creating, editing, deleting, and organizing bookmarks",
+      "item2": "Tag system and tab group management",
+      "item3": "Bookmark import, export, and sharing",
+      "item4": "Browser extension and API access"
+    },
+    "responsibility": {
+      "title": "2. User Responsibilities",
+      "description": "When using TMarks services, you agree to:",
+      "item1": "Provide accurate and complete registration information",
+      "item2": "Protect your account security and not share login credentials",
+      "item3": "Be responsible for all activities under your account",
+      "item4": "Comply with all applicable laws and regulations",
+      "item5": "Not abuse the service or interfere with other users"
+    },
+    "prohibited": {
+      "title": "3. Prohibited Activities",
+      "description": "When using TMarks, you must not:",
+      "item1": "Upload or share illegal, harmful, threatening, abusive, or infringing content",
+      "item2": "Attempt unauthorized access to other users' accounts or data",
+      "item3": "Interfere with or disrupt normal service operation",
+      "item4": "Use automated tools to excessively access the service",
+      "item5": "Copy, modify, or distribute any part of the service"
+    },
+    "ip": {
+      "title": "4. Intellectual Property",
+      "description1": "TMarks service and its original content, features, and functionality are owned by TMarks and its licensors, protected by international copyright, trademark, and other intellectual property laws.",
+      "description2": "You retain all rights to content you create and upload. By using the service, you grant TMarks a license to use, store, and display your content to provide the service."
+    },
+    "changes": {
+      "title": "5. Service Changes and Termination",
+      "description1": "We reserve the right to modify, suspend, or terminate the service (or any part thereof) at any time, with or without notice. We are not liable to you or any third party for any modification, suspension, or termination of the service.",
+      "description2": "You may stop using the service and delete your account at any time. We may also suspend or terminate your account for violating these terms."
+    },
+    "disclaimer": {
+      "title": "6. Disclaimer",
+      "description": "TMarks service is provided on an 'as is' and 'as available' basis without any express or implied warranties, including but not limited to:",
+      "item1": "The service will be uninterrupted, timely, secure, or error-free",
+      "item2": "Results obtained through the service will be accurate or reliable",
+      "item3": "Any errors in the service will be corrected"
+    },
+    "liability": {
+      "title": "7. Limitation of Liability",
+      "description": "To the maximum extent permitted by law, TMarks shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits, revenue, data, or use, whether based on contract, tort (including negligence), strict liability, or any other theory, even if we have been advised of the possibility of such damages."
+    },
+    "termChanges": {
+      "title": "8. Changes to Terms",
+      "description": "We reserve the right to modify these terms at any time. For significant changes, we will notify you via email or in-service notification. Continued use of the service after changes take effect indicates acceptance of the modified terms."
+    },
+    "law": {
+      "title": "9. Governing Law",
+      "description": "These terms are governed by and construed in accordance with the laws of the People's Republic of China, without regard to its conflict of law provisions."
+    },
+    "contact": {
+      "title": "Contact Us",
+      "description": "If you have any questions about these terms of service, please contact us:",
+      "email": "Email:"
+    }
+  },
+  "share": {
+    "loading": "Loading public bookmarks...",
+    "error": "Share link is invalid or content has been taken offline.",
+    "defaultTitle": "{{username}}'s Bookmark Collection",
+    "totalBookmarks": "{{count}} bookmarks",
+    "filteredBookmarks": "Filtered {{filtered}} / {{total}} bookmarks",
+    "noResults": "No matching bookmarks found",
+    "noResultsHint": "Try adjusting filters or search keywords",
+    "openTags": "Open Tags",
+    "searchBookmarks": "Search bookmarks...",
+    "searchTags": "Search tags...",
+    "switchToTagSearch": "Switch to tag search",
+    "switchToBookmarkSearch": "Switch to bookmark search",
+    "sort": {
+      "created": "By creation time",
+      "updated": "By update time",
+      "pinned": "Pinned first",
+      "popular": "By popularity"
+    },
+    "visibility": {
+      "all": "All bookmarks",
+      "public": "Public only",
+      "private": "Private only"
+    },
+    "viewMode": {
+      "list": "List view",
+      "card": "Card view",
+      "minimal": "Minimal list",
+      "title": "Title waterfall"
+    }
+  },
+  "about": {
+    "title": "About TMarks",
+    "subtitle": "A modern smart bookmark management system to keep your bookmarks organized",
+    "version": "Version",
+    "releaseNote": "Migration Automation Release",
+    "features": {
+      "title": "Core Features",
+      "fast": {
+        "title": "Fast & Efficient",
+        "description": "Powered by Cloudflare's global network for lightning-fast access"
+      },
+      "secure": {
+        "title": "Secure & Reliable",
+        "description": "Encrypted data storage with JWT authentication to protect your privacy"
+      },
+      "sync": {
+        "title": "Multi-device Sync",
+        "description": "Browser extension support for seamless bookmark sync across devices"
+      },
+      "opensource": {
+        "title": "Open Source",
+        "description": "MIT licensed, fully open source, contributions welcome"
+      }
+    },
+    "techStack": {
+      "title": "Tech Stack",
+      "frontend": "Frontend",
+      "backend": "Backend"
+    },
+    "opensource": {
+      "title": "Open Source Project",
+      "description": "TMarks is an open source project under MIT license. We welcome all forms of contributions, including but not limited to:",
+      "contribute1": "Bug reports and feature suggestions",
+      "contribute2": "Documentation and translation improvements",
+      "contribute3": "Code contributions and bug fixes",
+      "contribute4": "Sharing experiences and best practices",
+      "visitGithub": "Visit GitHub Repository"
+    },
+    "thanks": {
+      "title": "Acknowledgments",
+      "description": "Thanks to all developers and users who contributed to TMarks, and the following excellent open source projects and services:"
+    }
+  },
+  "help": {
+    "title": "Help Center",
+    "subtitle": "Find answers to common questions or browse user guides",
+    "guides": {
+      "title": "Quick Guides",
+      "quickStart": {
+        "title": "Quick Start",
+        "description": "Learn how to create your first bookmark and use basic features"
+      },
+      "extension": {
+        "title": "Browser Extension",
+        "description": "Install and configure browser extension for quick bookmark saving"
+      },
+      "importExport": {
+        "title": "Import & Export",
+        "description": "Migrate data from other bookmark management tools"
+      },
+      "share": {
+        "title": "Public Sharing",
+        "description": "Create public links to share your bookmark collection"
+      }
+    },
+    "faq": {
+      "title": "FAQ",
+      "q1": "How to create a bookmark?",
+      "a1": "Click the 'Add Bookmark' button in the top right corner, fill in the bookmark information and save. You can also use the browser extension to quickly save the current page.",
+      "q2": "How to use tags?",
+      "a2": "When creating or editing a bookmark, you can add tags to it. Click on tags in the sidebar to filter corresponding bookmarks.",
+      "q3": "How to import browser bookmarks?",
+      "a3": "Go to 'General Settings' → 'Data' tab, select 'Import Data', and upload the HTML bookmark file exported from your browser.",
+      "q4": "How to share my bookmarks?",
+      "a4": "Go to 'General Settings' → 'Share' tab, enable public sharing, and the system will generate a public link for others to access.",
+      "q5": "How to get an API Key?",
+      "a5": "Go to 'General Settings' → 'API' tab, click 'Create' button to generate a new API Key for browser extension or third-party apps.",
+      "q6": "How to install the browser extension?",
+      "a6": "Visit the 'Browser' page, download the extension file for your browser, and follow the instructions to install.",
+      "q7": "How to switch themes?",
+      "a7": "Go to 'General Settings' → 'Basic' tab, choose light, dark, or system theme.",
+      "q8": "Is my data secure?",
+      "a8": "All data is encrypted and stored in Cloudflare D1 database, using JWT for authentication to ensure data security."
+    },
+    "contact": {
+      "title": "Need More Help?",
+      "description": "If you haven't found the answer to your question, you can contact us through:",
+      "submitIssue": "Submit Issue",
+      "contactSupport": "Contact Support"
+    }
+  }
+}

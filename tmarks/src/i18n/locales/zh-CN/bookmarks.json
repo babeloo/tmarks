@@ -1,0 +1,229 @@
+{
+  "title": "书签",
+  "search": {
+    "placeholder": "搜索书签...",
+    "tagPlaceholder": "搜索标签...",
+    "noResults": "没有找到匹配的书签"
+  },
+  "filter": {
+    "all": "全部书签",
+    "public": "仅公开",
+    "private": "仅私密",
+    "clickToSwitch": "(点击切换)"
+  },
+  "sort": {
+    "created": "按创建时间",
+    "updated": "按更新时间",
+    "pinned": "置顶优先",
+    "popular": "按热门程度",
+    "clickToSwitch": "(点击切换)"
+  },
+  "viewMode": {
+    "list": "列表视图",
+    "card": "卡片视图",
+    "minimal": "极简列表",
+    "title": "标题瀑布",
+    "clickToSwitch": "(点击切换)"
+  },
+  "toolbar": {
+    "openTags": "打开标签",
+    "switchToTagSearch": "切换到标签搜索",
+    "switchToBookmarkSearch": "切换到书签搜索",
+    "batchMode": "批量操作",
+    "exitBatchMode": "退出批量操作",
+    "trash": "回收站",
+    "addBookmark": "新增书签"
+  },
+  "empty": {
+    "title": "暂无书签",
+    "description": "点击右上角 \"新增书签\" 按钮开始收藏精彩内容",
+    "readOnlyDescription": "发布者尚未公开任何书签，或公开内容已取消"
+  },
+  "loading": "加载中...",
+  "status": {
+    "pinned": "置顶",
+    "archived": "归档"
+  },
+  "view": {
+    "header": {
+      "title": "标题",
+      "url": "网址",
+      "note": "备注"
+    },
+    "noDescription": "—"
+  },
+  "snapshot": {
+    "title": "快照",
+    "count": "共 {{count}} 个快照",
+    "viewCount": "查看 {{count}} 个快照",
+    "loading": "加载快照中...",
+    "empty": "暂无快照",
+    "emptyHint": "使用浏览器插件可以保存网页快照",
+    "version": "版本 {{version}}",
+    "close": "关闭",
+    "delete": "删除快照",
+    "deleteTitle": "删除快照",
+    "deleteMessage": "确定要删除版本 {{version}} 的快照吗？\n\n删除后将无法恢复。",
+    "deleteConfirm": "确定要删除该快照吗？",
+    "deleteSuccess": "快照已删除",
+    "deleteFailed": "删除快照失败"
+  },
+  "batch": {
+    "selected": "已选 {{count}} 个书签",
+    "selectedCount": "已选择 {{count}} 个",
+    "pleaseSelect": "请选择书签",
+    "selectAll": "全选 ({{count}})",
+    "delete": "删除",
+    "deleteTitle": "批量删除",
+    "deleteMessage": "确定要删除这 {{count}} 个书签吗？",
+    "deleteSuccess": "成功删除 {{count}} 个书签",
+    "pin": "置顶",
+    "pinTitle": "批量置顶",
+    "pinMessage": "确定要置顶这 {{count}} 个书签吗？",
+    "pinSuccess": "成功置顶 {{count}} 个书签",
+    "archive": "归档",
+    "archiveTitle": "批量归档",
+    "archiveMessage": "确定要归档这 {{count}} 个书签吗？",
+    "archiveSuccess": "成功归档 {{count}} 个书签",
+    "tags": "标签",
+    "selectTags": "选择标签",
+    "addTags": "添加",
+    "removeTags": "移除",
+    "addTagsSuccess": "成功为 {{count}} 个书签添加标签",
+    "removeTagsSuccess": "成功为 {{count}} 个书签移除标签",
+    "cancel": "取消",
+    "confirmAction": "确认操作",
+    "confirmMessage": "确定要执行此操作吗?",
+    "select": "选择",
+    "deselect": "取消选择"
+  },
+  "action": {
+    "success": "操作成功",
+    "failed": "操作失败，请重试",
+    "edit": "编辑",
+    "open": "打开书签 {{title}}"
+  },
+  "form": {
+    "addTitle": "新增书签",
+    "editTitle": "编辑书签",
+    "title": "标题",
+    "titleRequired": "标题",
+    "titlePlaceholder": "书签标题",
+    "url": "URL",
+    "urlRequired": "URL",
+    "urlPlaceholder": "https://example.com",
+    "description": "描述",
+    "descriptionPlaceholder": "书签描述（可选）",
+    "coverImage": "封面图 URL",
+    "coverImagePlaceholder": "https://example.com/image.jpg",
+    "tags": "标签",
+    "tagsBatchHint": "（支持逗号批量添加）",
+    "tagsSelected": "已选 {{count}} 个",
+    "tagsInputPlaceholder": "输入标签名称（多个用逗号分隔），按 Enter 添加...",
+    "noTags": "暂无标签，在上方输入框输入后按 Enter 创建",
+    "pinned": "置顶",
+    "archived": "归档",
+    "public": "公开分享",
+    "save": "保存",
+    "create": "创建",
+    "saving": "保存中...",
+    "delete": "删除",
+    "deleting": "删除中...",
+    "cancel": "取消",
+    "deleteTitle": "删除书签",
+    "deleteMessage": "确定要删除这个书签吗？此操作无法撤销。",
+    "deleteFailed": "删除失败，请重试",
+    "validation": {
+      "titleRequired": "请输入书签标题",
+      "urlRequired": "请输入书签URL",
+      "urlInvalid": "URL 格式不正确",
+      "urlExists": "该 URL 已存在于书签中"
+    },
+    "urlWarning": {
+      "title": "该 URL 已存在",
+      "bookmark": "书签：{{title}}"
+    },
+    "createTagFailed": "创建标签\"{{name}}\"失败，请重试",
+    "operationFailed": "操作失败，请重试"
+  },
+  "statistics": {
+    "title": "书签统计",
+    "backToBookmarks": "返回书签",
+    "loading": "加载中...",
+    "loadFailed": "加载失败",
+    "retry": "重试",
+    "granularity": {
+      "day": "按日",
+      "week": "按周",
+      "month": "按月",
+      "year": "按年"
+    },
+    "navigation": {
+      "prevDay": "上一天",
+      "nextDay": "下一天",
+      "prevWeek": "上一周",
+      "nextWeek": "下一周",
+      "prevMonth": "上一月",
+      "nextMonth": "下一月",
+      "prevYear": "上一年",
+      "nextYear": "下一年",
+      "today": "今天"
+    },
+    "summary": {
+      "totalBookmarks": "书签总数",
+      "totalTags": "标签数量",
+      "totalClicks": "总点击数",
+      "publicBookmarks": "公开书签",
+      "archived": "已归档"
+    },
+    "charts": {
+      "topBookmarks": "热门书签 Top 10",
+      "topTags": "热门标签 Top 10",
+      "topDomains": "热门域名 Top 10",
+      "currentRangeClicks": "当前时间范围内书签点击统计",
+      "recentVisits": "最近访问",
+      "creationTrend": "书签创建趋势",
+      "visitTrend": "书签访问趋势"
+    },
+    "noData": "暂无数据",
+    "noClicksInRange": "当前时间范围内暂无点击数据",
+    "times": "{{count}} 次",
+    "items": "{{count}} 个",
+    "dateFormat": {
+      "year": "{{year}} 年",
+      "month": "{{year}} 年 {{month}} 月",
+      "week": "{{year}} 年第 {{week}} 周"
+    }
+  },
+  "trash": {
+    "title": "书签回收站",
+    "backToBookmarks": "返回书签",
+    "loading": "加载中...",
+    "loadFailed": "加载回收站失败",
+    "retry": "重试",
+    "empty": "清空",
+    "emptyTrash": "清空回收站",
+    "emptyState": {
+      "title": "回收站是空的",
+      "description": "没有已删除的书签"
+    },
+    "warning": "回收站中的书签将在 30 天后自动永久删除。",
+    "deletedAt": "删除于 {{time}}",
+    "restore": "恢复",
+    "delete": "删除",
+    "restoreTitle": "恢复书签",
+    "restoreMessage": "确定要恢复\"{{title}}\"吗？",
+    "restoreSuccess": "书签已恢复",
+    "restoreFailed": "恢复失败，请重试",
+    "permanentDeleteTitle": "永久删除",
+    "permanentDeleteMessage": "确定要永久删除\"{{title}}\"吗？此操作不可撤销！",
+    "permanentDeleteSuccess": "书签已永久删除",
+    "permanentDeleteFailed": "删除失败，请重试",
+    "emptyTrashTitle": "清空回收站",
+    "emptyTrashMessage": "确定要永久删除回收站中的 {{count}} 个书签吗？此操作不可撤销！",
+    "emptyTrashSuccess": "已清空回收站，删除了 {{count}} 个书签",
+    "emptyTrashFailed": "清空回收站失败，请重试",
+    "confirmDelete": "确认删除",
+    "confirm": "确认"
+  }
+}

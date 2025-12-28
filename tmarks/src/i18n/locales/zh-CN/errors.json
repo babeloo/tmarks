@@ -1,0 +1,31 @@
+{
+  "network": {
+    "connectionFailed": "网络连接失败，请检查网络",
+    "timeout": "请求超时，请稍后重试",
+    "serverError": "服务器错误，请稍后重试"
+  },
+  "auth": {
+    "invalidCredentials": "用户名或密码错误",
+    "sessionExpired": "登录已过期，请重新登录",
+    "unauthorized": "未授权访问"
+  },
+  "validation": {
+    "required": "此字段为必填项",
+    "invalidFormat": "格式不正确",
+    "tooLong": "内容过长",
+    "tooShort": "内容过短"
+  },
+  "share": {
+    "loadFailed": "无法加载公开分享内容",
+    "notFound": "公开内容不存在"
+  },
+  "ai": {
+    "modelListFailed": "获取模型列表失败",
+    "modelListInvalid": "模型列表响应格式无效",
+    "modelListEmpty": "模型列表为空",
+    "providerNotSupported": "当前 AI 服务暂不支持自动获取模型列表",
+    "missingApiKey": "缺少 API Key",
+    "missingApiUrl": "缺少 API 地址"
+  },
+  "unknown": "未知错误"
+}

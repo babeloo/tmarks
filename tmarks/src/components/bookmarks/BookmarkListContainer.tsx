@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { Bookmark } from '@/lib/types'
 import { BookmarkListView } from './BookmarkListView'
 import { BookmarkCardView } from './BookmarkCardView'
@@ -27,9 +28,9 @@ export function BookmarkListContainer({
   selectedIds = [],
   onToggleSelect,
 }: BookmarkListContainerProps) {
+  const { t } = useTranslation('bookmarks')
 
   if (isLoading && bookmarks.length === 0) {
-    // 使用上次的书签数量，如果没有则默认显示3个
     const skeletonCount = previousCount > 0 ? Math.min(previousCount, 10) : 3
 
     return (
@@ -52,10 +53,10 @@ export function BookmarkListContainer({
           </svg>
         </div>
         <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          暂无书签
+          {t('empty.title')}
         </h3>
         <p className="text-base-content/60 text-base">
-          {readOnly ? '发布者尚未公开任何书签，或公开内容已取消' : '点击右上角 "新增书签" 按钮开始收藏精彩内容'}
+          {readOnly ? t('empty.readOnlyDescription') : t('empty.description')}
         </p>
       </div>
     )
@@ -70,7 +71,7 @@ export function BookmarkListContainer({
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <span>加载中...</span>
+          <span>{t('loading')}</span>
         </div>
       )}
 

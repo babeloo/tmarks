@@ -4,42 +4,45 @@
  */
 
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { BookOpen, Layers, Database, Download } from 'lucide-react'
+import { Z_INDEX } from '@/lib/constants/z-index'
 
 interface NavItem {
   id: string
-  label: string
+  labelKey: string
   icon: React.ComponentType<{ className?: string }>
   path: string
   badge?: number
 }
 
 export function MobileBottomNav() {
+  const { t } = useTranslation('common')
   const navigate = useNavigate()
   const location = useLocation()
 
   const navItems: NavItem[] = [
     {
       id: 'bookmarks',
-      label: '书签',
+      labelKey: 'nav.bookmarks',
       icon: BookOpen,
       path: '/'
     },
     {
       id: 'tab-groups',
-      label: '标签页',
+      labelKey: 'nav.tabGroups',
       icon: Layers,
       path: '/tab'
     },
     {
       id: 'data',
-      label: '数据',
+      labelKey: 'nav.data',
       icon: Database,
       path: '/import-export'
     },
     {
       id: 'extension',
-      label: '插件',
+      labelKey: 'nav.extension',
       icon: Download,
       path: '/extension'
     }
@@ -53,7 +56,7 @@ export function MobileBottomNav() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border sm:hidden" style={{ zIndex: 20 }}>
+    <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border sm:hidden" style={{ zIndex: Z_INDEX.MOBILE_BOTTOM_NAV }}>
       <div className="grid grid-cols-4 h-16">
         {navItems.map((item) => {
           const Icon = item.icon
@@ -82,7 +85,7 @@ export function MobileBottomNav() {
               <span className={`text-xs font-medium ${
                 active ? 'text-primary' : ''
               }`}>
-                {item.label}
+                {t(item.labelKey)}
               </span>
             </button>
           )

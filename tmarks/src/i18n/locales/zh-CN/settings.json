@@ -1,0 +1,585 @@
+{
+  "title": "通用设置",
+  "description": "配置应用的通用行为和用户体验",
+  "tabs": {
+    "basic": "基础",
+    "automation": "自动化",
+    "appearance": "外观",
+    "snapshot": "快照",
+    "ai": "AI",
+    "browser": "浏览器",
+    "api": "API",
+    "share": "分享",
+    "data": "数据",
+    "statistics": "数据分析",
+    "language": "语言"
+  },
+  "action": {
+    "save": "保存设置",
+    "saving": "保存中...",
+    "reset": "重置",
+    "logout": "登出"
+  },
+  "message": {
+    "saveSuccess": "设置已保存",
+    "saveFailed": "保存失败",
+    "saveFailedWithError": "保存失败：{{error}}",
+    "resetSuccess": "已重置为上次保存的设置",
+    "logoutFailed": "登出失败"
+  },
+  "language": {
+    "title": "语言设置",
+    "description": "选择界面显示语言",
+    "label": "界面语言",
+    "hint": "更改语言后界面将立即切换"
+  },
+  "permissions": {
+    "bookmarks": "书签",
+    "tags": "标签",
+    "tabGroups": "收纳",
+    "other": "其他",
+    "bookmarksCreate": "创建书签",
+    "bookmarksRead": "读取书签",
+    "bookmarksUpdate": "更新书签",
+    "bookmarksDelete": "删除书签",
+    "bookmarksAll": "所有书签权限",
+    "tagsCreate": "创建标签",
+    "tagsRead": "读取标签",
+    "tagsUpdate": "更新标签",
+    "tagsDelete": "删除标签",
+    "tagsAssign": "分配标签",
+    "tagsAll": "所有标签权限",
+    "tabGroupsCreate": "创建收纳",
+    "tabGroupsRead": "读取收纳",
+    "tabGroupsUpdate": "更新收纳",
+    "tabGroupsDelete": "删除收纳",
+    "tabGroupsAll": "所有收纳权限",
+    "aiSuggest": "AI 智能建议",
+    "userRead": "读取用户信息",
+    "userPreferencesRead": "读取用户偏好",
+    "templates": {
+      "readOnly": "只读",
+      "readOnlyDesc": "仅查看数据，不能修改",
+      "basic": "基础使用",
+      "basicDesc": "可以添加书签和标签，但不能删除",
+      "full": "完整权限",
+      "fullDesc": "拥有所有操作权限"
+    }
+  },
+  "browserPermissions": {
+    "title": "浏览器权限设置",
+    "description": "配置 TMarks 所需的浏览器权限，以获得最佳使用体验",
+    "popup": {
+      "title": "弹窗权限",
+      "description": "允许 TMarks 打开弹窗，以便使用\"一键打开全部标签页\"功能。"
+    },
+    "howTo": {
+      "title": "如何允许弹窗？",
+      "step1": "在标签页组详情页面，点击\"全部恢复\"按钮",
+      "step2": "浏览器地址栏会出现弹窗拦截图标（通常在右侧）",
+      "step3": "点击该图标，选择\"始终允许 [网站] 显示弹出式窗口\"",
+      "step4": "刷新页面后，再次点击\"全部恢复\"即可正常使用"
+    },
+    "browsers": {
+      "title": "各浏览器设置方法",
+      "chrome": {
+        "title": "Chrome / Edge",
+        "description": "地址栏右侧会出现 🚫 图标，点击后选择\"始终允许弹出式窗口和重定向\""
+      },
+      "firefox": {
+        "title": "Firefox",
+        "description": "地址栏左侧会出现弹窗拦截提示，点击\"选项\" → \"允许 [网站] 的弹出式窗口\""
+      },
+      "safari": {
+        "title": "Safari",
+        "description": "菜单栏：Safari → 设置 → 网站 → 弹出式窗口 → 找到当前网站 → 选择\"允许\""
+      }
+    },
+    "why": {
+      "title": "💡 为什么需要弹窗权限？",
+      "description": "\"一键打开全部标签页\"功能需要同时打开多个网页。浏览器为了安全考虑，默认会拦截批量打开的弹窗。允许 TMarks 的弹窗权限后，您就可以一次性打开标签页组中的所有网页，大大提高工作效率。"
+    }
+  },
+  "ai": {
+    "custom": "自定义"
+  },
+  "apiKey": {
+    "page": {
+      "title": "API Keys 管理",
+      "description": "管理您的 API 密钥，用于第三方应用访问",
+      "createNew": "创建新的 API Key",
+      "info": "API Keys 用于第三方应用（如浏览器插件）安全访问您的 TMarks 数据。您可以随时撤销不需要的 Key。",
+      "currentUsage": "当前使用",
+      "unlimited": "无限制",
+      "empty": "还没有创建任何 API Key",
+      "createFirst": "创建第一个 API Key",
+      "tipsTitle": "💡 提示：",
+      "tip1": "每个账户最多创建 {{limit}} 个 API Key",
+      "tip2": "API Key 创建后仅显示一次，请妥善保存",
+      "tip3": "如果 Key 泄露，请立即撤销",
+      "revokeTitle": "撤销 API Key",
+      "revokeMessage": "确定要撤销此 API Key 吗？撤销后无法恢复。",
+      "revokeSuccess": "API Key 已撤销",
+      "revokeFailed": "撤销失败，请重试",
+      "deleteTitle": "删除 API Key",
+      "deleteMessage": "确定要彻底删除此 API Key 吗？该操作不可恢复，并会清除所有使用记录。",
+      "deleteSuccess": "API Key 已永久删除",
+      "deleteFailed": "删除失败，请重试"
+    },
+    "status": {
+      "label": "状态",
+      "active": "活跃",
+      "revoked": "已撤销",
+      "expired": "已过期"
+    },
+    "permissions": "权限",
+    "permissionsCount": "{{count}} 项",
+    "lastUsed": "最后使用",
+    "neverUsed": "从未使用",
+    "createdAt": "创建于",
+    "expiresAt": "过期时间",
+    "viewDetails": "查看详情",
+    "revoke": "撤销",
+    "delete": "删除",
+    "copyPrefix": "复制密钥前缀",
+    "create": {
+      "title": "创建 API Key",
+      "step": "步骤 {{current}}/{{total}}",
+      "name": "名称",
+      "nameRequired": "名称 *",
+      "namePlaceholder": "例如：Chrome 插件 - 工作电脑",
+      "nameHint": "用于识别此 Key 的用途",
+      "description": "描述 (可选)",
+      "descriptionPlaceholder": "例如：用于浏览器插件访问",
+      "quickSelect": "快速选择:",
+      "recommended": "推荐",
+      "includedPermissions": "包含的权限:",
+      "expiration": "过期时间:",
+      "neverExpire": "永不过期",
+      "expireIn30Days": "30 天后",
+      "expireIn90Days": "90 天后",
+      "cancel": "取消",
+      "prev": "← 上一步",
+      "next": "下一步 →",
+      "creating": "创建中...",
+      "createButton": "创建 API Key",
+      "failed": "创建失败",
+      "failedMessage": "创建失败，请重试"
+    },
+    "success": {
+      "title": "创建成功！请妥善保存此 Key",
+      "yourKey": "您的 API Key:",
+      "copy": "📋 复制",
+      "copied": "✓ 已复制",
+      "warning": "⚠️ 重要提示：",
+      "warningList": {
+        "showOnce": "此 Key 仅显示一次，关闭后无法再查看",
+        "saveNow": "请立即复制并保存到安全的地方",
+        "prefixOnly": "后续您只能看到前缀: {{prefix}}..."
+      },
+      "close": "我已保存，关闭"
+    },
+    "detail": {
+      "close": "关闭",
+      "basicInfo": "基本信息:",
+      "keyPrefix": "Key 前缀:",
+      "createdAt": "创建时间:",
+      "expiresAt": "过期时间:",
+      "neverExpire": "永不过期",
+      "description": "描述:",
+      "permissions": "权限:",
+      "usage": "使用情况:",
+      "lastUsed": "最后使用:",
+      "neverUsed": "从未使用",
+      "totalRequests": "使用次数:",
+      "requestCount": "{{count}} 次",
+      "lastIp": "最后 IP:",
+      "recentActivity": "最近活动:",
+      "recentActivityLimit": "(最多显示 {{count}} 条)",
+      "tableTime": "时间",
+      "tableMethod": "方法",
+      "tableEndpoint": "端点",
+      "tableStatus": "状态",
+      "noLogs": "暂无使用记录"
+    },
+    "infoBox": {
+      "usageTitle": "使用说明",
+      "usageTip1": "API Keys 用于第三方应用（如浏览器插件）安全访问您的数据",
+      "usageTip2": "每个 Key 可以设置不同的权限范围",
+      "usageTip3": "建议为不同用途创建不同的 Key",
+      "securityTitle": "安全提示",
+      "securityTip1": "不要在公开场合分享你的 API Key",
+      "securityTip2": "如果 Key 泄露，请立即撤销",
+      "securityTip3": "定期检查 Key 的使用记录"
+    }
+  },
+  "snapshot": {
+    "title": "快照设置",
+    "retention": {
+      "title": "快照保留策略",
+      "description": "控制每个书签保留的快照数量",
+      "count": "保留快照数量",
+      "countHint": "每个书签最多保留的快照版本数（-1 表示无限制）",
+      "unit": "个",
+      "tip": "💡 当快照数量超过限制时，会自动删除最旧的快照。设置为 -1 表示不限制数量。"
+    },
+    "maxCount": {
+      "title": "最大快照数量",
+      "description": "每个书签最多保存的快照数量",
+      "hint": "当快照数量超过限制时，会自动删除最旧的快照。设置为 -1 表示不限制数量。"
+    },
+    "autoCreate": {
+      "title": "自动创建快照",
+      "description": "添加书签时自动创建网页快照",
+      "enable": "启用自动创建",
+      "enableHint": "添加新书签时自动保存网页快照（需要浏览器扩展支持）"
+    },
+    "dedup": {
+      "title": "智能去重",
+      "description": "避免保存重复的快照内容",
+      "enable": "启用智能去重",
+      "tip1": "通过内容哈希检测重复快照",
+      "tip2": "如果内容相同，不会创建新快照",
+      "tip3": "节省存储空间，提高效率"
+    },
+    "autoClean": {
+      "title": "自动清理",
+      "description": "定期清理过期的快照",
+      "days": "自动清理天数",
+      "daysHint": "自动删除超过指定天数的快照（0 表示不自动清理）",
+      "unit": "天",
+      "warning": "⚠️ 自动清理功能会永久删除快照，请谨慎设置。设置为 0 表示不自动清理。"
+    },
+    "automation": {
+      "title": "自动化选项",
+      "description": "配置快照的自动创建和去重功能"
+    },
+    "infoBox": {
+      "title": "快照功能说明",
+      "tip1": "快照功能可以保存网页的完整内容，即使原网页被删除也可查看",
+      "tip2": "建议启用智能去重，避免保存重复内容，节省存储空间"
+    }
+  },
+  "share": {
+    "title": "分享设置",
+    "publicShare": {
+      "title": "公开分享",
+      "description": "创建公开链接，让其他人查看你的书签",
+      "enable": "启用公开分享",
+      "enableHint": "开启后，其他人可以通过链接访问你的公开书签"
+    },
+    "slug": {
+      "label": "分享链接后缀",
+      "placeholder": "例如：my-bookmarks",
+      "hint": "仅支持字母、数字与短横线，留空将自动生成",
+      "regenerate": "重新生成"
+    },
+    "pageTitle": {
+      "label": "页面标题",
+      "placeholder": "公开页面标题，用于向访客介绍"
+    },
+    "pageDescription": {
+      "label": "页面描述",
+      "placeholder": "可选描述，向访客说明书签集合内容"
+    },
+    "shareLink": {
+      "label": "分享链接",
+      "placeholder": "生成后显示分享链接",
+      "copy": "复制",
+      "copied": "已复制"
+    },
+    "reset": "重置",
+    "saveSuccess": "分享设置已保存",
+    "saveFailed": "保存失败",
+    "regenerateSuccess": "链接已重新生成",
+    "regenerateFailed": "生成失败",
+    "copySuccess": "链接已复制",
+    "copyFailed": "复制失败",
+    "resetSuccess": "已重置为上次保存的设置",
+    "infoBox": {
+      "title": "分享功能说明",
+      "tip1": "只有标记为\"公开\"的书签才会在分享页面显示",
+      "tip2": "你可以随时修改分享链接或关闭分享功能",
+      "tip3": "分享页面不需要登录即可访问"
+    }
+  },
+  "data": {
+    "title": "数据管理",
+    "r2Storage": {
+      "title": "R2 存储使用情况（全局）",
+      "description": "包含所有快照和封面图在 R2 中的总占用",
+      "currentUsage": "当前使用",
+      "unlimited": "无限制"
+    },
+    "importExport": {
+      "title": "数据导入导出",
+      "description": "导入、导出和备份你的书签数据",
+      "export": "导出数据",
+      "import": "导入数据"
+    },
+    "lastOperation": {
+      "export": "数据导出",
+      "import": "数据导入",
+      "cleanup": "快照清理"
+    },
+    "snapshotManagement": {
+      "title": "快照管理",
+      "description": "清理和维护书签快照数据",
+      "cleanOrphan": "清理孤立快照记录",
+      "cleaning": "清理中...",
+      "cleanButton": "清理孤立记录"
+    },
+    "exportFeature": {
+      "title": "导出功能",
+      "description": "支持多种格式，满足不同需求",
+      "jsonTitle": "JSON 格式",
+      "htmlTitle": "HTML 格式"
+    },
+    "importFeature": {
+      "title": "导入功能",
+      "description": "从多种来源导入书签数据",
+      "supportedFormats": "支持的格式",
+      "smartProcessing": "智能处理",
+      "formatTip1": "浏览器导出的 HTML 书签文件",
+      "formatTip2": "JSON 格式的书签数据",
+      "formatTip3": "自动检测和跳过重复书签",
+      "formatTip4": "可将文件夹结构转换为标签",
+      "processTip1": "支持批量处理大文件",
+      "processTip2": "自动提取书签元数据",
+      "processTip3": "保留创建时间和描述信息",
+      "processTip4": "显示详细的导入结果报告"
+    },
+    "importSuccess": "成功导入 {{success}} 个书签，创建 {{tags}} 个标签{{failed}}",
+    "importFailed": "，{{count}} 个失败",
+    "fetchBookmarksFailed": "获取书签列表失败",
+    "cleanSnapshotsFailed": "清理快照失败",
+    "cleanSnapshotsSuccess": "成功清理 {{count}} 条孤立快照记录",
+    "cleanSnapshotsNone": "没有发现孤立的快照记录",
+    "cleanSnapshotsConfirmTitle": "清理快照记录",
+    "cleanSnapshotsConfirmMessage": "确定要清理所有书签的孤立快照记录吗？\n\n这将检查所有快照记录，删除 R2 文件不存在的记录。",
+    "loading": "加载中...",
+    "cleanSnapshots": {
+      "title": "清理孤立快照",
+      "tip1": "检查所有快照记录，验证 R2 文件是否存在",
+      "tip2": "删除 R2 文件不存在的数据库记录",
+      "tip3": "自动更新书签的快照计数",
+      "tip4": "适用于手动删除 R2 文件后的数据修复"
+    },
+    "export": {
+      "tip1": "包含完整数据，适合备份和迁移",
+      "tip2": "可选择包含标签、元数据等信息",
+      "tip3": "支持重新导入到本系统",
+      "htmlTip1": "兼容浏览器标准格式",
+      "htmlTip2": "可直接导入 Chrome、Firefox、Edge 等浏览器",
+      "htmlTip3": "保留文件夹结构和书签层级"
+    },
+    "aiSettings": {
+      "title": "AI 智能整理",
+      "description": "配置 AI 服务，用于导入书签时的智能标签生成和分类"
+    }
+  },
+  "browser": {
+    "title": "浏览器设置",
+    "download": {
+      "title": "浏览器插件下载",
+      "description": "选择您的浏览器，下载对应的扩展程序",
+      "clickToDownload": "点击下载",
+      "tip": "💡 提供 8 个浏览器专用版本，也可以使用 Chrome 通用版（支持所有基于 Chrome 的浏览器）"
+    },
+    "permissions": {
+      "title": "浏览器权限设置",
+      "description": "配置 TMarks 所需的浏览器权限，以获得最佳使用体验",
+      "bookmarks": {
+        "title": "书签访问权限",
+        "description": "允许扩展读取和保存浏览器书签"
+      },
+      "tabs": {
+        "title": "标签页访问权限",
+        "description": "允许扩展访问当前打开的标签页信息"
+      },
+      "storage": {
+        "title": "存储权限",
+        "description": "允许扩展在本地存储数据"
+      }
+    },
+    "popup": {
+      "title": "弹窗权限",
+      "description": "允许 TMarks 打开弹窗，以便使用\"一键打开全部标签页\"功能。",
+      "howTo": "如何允许弹窗？",
+      "step1": "在标签页组详情页面，点击\"全部恢复\"按钮",
+      "step2": "浏览器地址栏会出现弹窗拦截图标（通常在右侧）",
+      "step3": "点击该图标，选择\"始终允许显示弹出式窗口\"",
+      "step4": "刷新页面后，再次点击\"全部恢复\"即可正常使用",
+      "chromeTitle": "Chrome / Edge",
+      "chromeDesc": "地址栏右侧会出现 🚫 图标，点击后选择\"始终允许弹出式窗口和重定向\"",
+      "firefoxTitle": "Firefox",
+      "firefoxDesc": "地址栏左侧会出现弹窗拦截提示，点击\"选项\" → \"允许弹出式窗口\"",
+      "safariTitle": "Safari",
+      "safariDesc": "菜单栏：Safari → 设置 → 网站 → 弹出式窗口 → 找到当前网站 → 选择\"允许\"",
+      "whyTitle": "💡 为什么需要弹窗权限？",
+      "whyDesc": "\"一键打开全部标签页\"功能需要同时打开多个网页。浏览器为了安全考虑，默认会拦截批量打开的弹窗。允许 TMarks 的弹窗权限后，您就可以一次性打开标签页组中的所有网页，大大提高工作效率。"
+    },
+    "install": {
+      "title": "安装步骤",
+      "description": "按照以下步骤安装浏览器扩展",
+      "step1Title": "下载插件压缩包",
+      "step1Desc": "点击上方下载按钮，获取对应浏览器的扩展文件",
+      "step2Title": "解压文件",
+      "step2Desc": "将下载的 zip 文件解压到任意文件夹（建议放在不会删除的位置）",
+      "step3Title": "打开扩展管理页面",
+      "step3Desc": "Chrome: chrome://extensions/ | Edge: edge://extensions/ | Firefox: about:debugging",
+      "step4Title": "启用开发者模式",
+      "step4Desc": "在扩展管理页面右上角，打开\"开发者模式\"开关",
+      "step5Title": "加载插件",
+      "step5Desc": "点击\"加载已解压的扩展程序\"，选择刚才解压的文件夹",
+      "step6Title": "完成安装",
+      "step6Desc": "插件图标会出现在浏览器工具栏，点击即可使用"
+    },
+    "faq": {
+      "title": "常见问题",
+      "iconNotFound": "Q: 插件安装后找不到图标？",
+      "iconNotFoundAnswer": "A: 点击浏览器工具栏右侧的拼图图标，找到 TMarks 插件并点击固定按钮，图标就会显示在工具栏上。",
+      "howToGetApiKey": "Q: 如何获取 API Key？",
+      "howToGetApiKeyAnswer": "A: 在通用设置的\"API\"标签页中创建一个新的 API Key 并复制到插件配置中。",
+      "supportedBrowsers": "Q: 插件支持哪些浏览器？",
+      "supportedBrowsersAnswer": "A: 支持 Chrome、Edge、Firefox、Brave、Opera、360、QQ、搜狗等主流浏览器。",
+      "whereToView": "保存的标签页组在哪里查看？",
+      "whereToViewAnswer": "在 TMarks 网站的\"标签页\"页面可以查看和管理所有保存的标签页组。"
+    },
+    "infoBox": {
+      "title": "使用提示",
+      "tip1": "首次使用需要在插件中配置 TMarks 网站地址和 API Key",
+      "tip2": "建议将插件图标固定到工具栏，方便快速访问",
+      "tip3": "插件会自动保存标签页的标题、URL 和网站图标",
+      "tip4": "所有数据自动同步到云端，多设备无缝切换"
+    }
+  },
+  "basic": {
+    "accountInfo": {
+      "title": "账户信息",
+      "description": "查看您的账户基本信息"
+    },
+    "username": "用户名",
+    "email": "邮箱",
+    "registeredAt": "注册时间",
+    "role": "账户角色",
+    "roleAdmin": "管理员",
+    "roleUser": "普通用户",
+    "notSet": "未设置",
+    "unknown": "未知",
+    "security": {
+      "title": "安全设置",
+      "description": "修改您的登录密码"
+    },
+    "password": {
+      "change": "修改密码",
+      "current": "当前密码",
+      "currentPlaceholder": "请输入当前密码",
+      "new": "新密码",
+      "newPlaceholder": "请输入新密码（至少 6 个字符）",
+      "confirm": "确认新密码",
+      "confirmPlaceholder": "请再次输入新密码",
+      "cancel": "取消",
+      "submit": "确认修改",
+      "changing": "修改中...",
+      "changeSuccess": "密码修改成功",
+      "changeFailed": "密码修改失败",
+      "fillAllFields": "请填写所有字段",
+      "mismatch": "两次输入的新密码不一致",
+      "tooShort": "新密码至少需要 6 个字符",
+      "infoBoxTitle": "账户安全提示",
+      "tip1": "请定期修改密码以保护账户安全",
+      "tip2": "密码至少需要 6 个字符",
+      "tip3": "建议使用字母、数字和符号的组合",
+      "tip4": "不要与他人分享您的密码"
+    }
+  },
+  "automation": {
+    "search": {
+      "title": "搜索框自动清空",
+      "description": "设置搜索框在无操作后自动清空的时间",
+      "enable": "启用搜索框自动清空",
+      "enableHint": "搜索框在指定时间无操作后会自动清空",
+      "delay": "延迟时间",
+      "unit": "秒"
+    },
+    "tag": {
+      "title": "标签选中自动清空",
+      "description": "设置标签选中状态在无操作后自动清空的时间",
+      "enable": "启用标签选中自动清空",
+      "enableHint": "标签选中状态在指定时间无操作后会自动清空",
+      "delay": "延迟时间",
+      "unit": "秒"
+    },
+    "infoBox": {
+      "title": "自动化功能说明",
+      "tip1": "自动清空功能可以帮助你快速回到初始状态，提高操作效率"
+    }
+  },
+  "appearance": {
+    "icon": {
+      "title": "默认书签图标",
+      "description": "选择当书签没有封面图和网站图标时显示的默认图标",
+      "favicon": "网站图标",
+      "letter": "首字母",
+      "hash": "哈希图标",
+      "none": "无图标"
+    },
+    "view": {
+      "title": "默认视图",
+      "description": "选择书签列表的默认显示方式",
+      "list": "列表",
+      "grid": "网格",
+      "card": "卡片"
+    },
+    "density": {
+      "title": "列表密度",
+      "description": "调整书签列表的显示密度",
+      "compact": "紧凑",
+      "normal": "标准",
+      "comfortable": "宽松"
+    },
+    "infoBox": {
+      "title": "外观定制说明",
+      "tip1": "这些设置会影响书签列表的显示效果，可以根据个人喜好调整"
+    }
+  },
+  "tips": {
+    "title": "💡 使用提示"
+  },
+  "ai": {
+    "custom": "自定义",
+    "title": "AI 服务配置",
+    "description": "配置 AI 服务用于智能导入、标签推荐等功能",
+    "enable": "启用 AI 功能",
+    "enabled": "已开启",
+    "enableHint": "开启后可使用 AI 智能整理等功能",
+    "provider": "服务商",
+    "apiKey": "API Key",
+    "getApiKey": "获取 API Key",
+    "apiKeyPlaceholder": "输入 {{provider}} API Key",
+    "model": "模型",
+    "selectModel": "选择",
+    "refreshModels": "刷新模型",
+    "refreshingModels": "获取中...",
+    "modelsFetched": "已获取 {{count}} 个模型，可直接选择或手动输入",
+    "modelsFetchError": "模型列表加载失败：{{error}}",
+    "modelsHint": "输入 API Key 后可自动获取可用模型列表，推荐使用 {{model}}",
+    "modelsRecommend": "推荐使用 {{model}}，性价比较高",
+    "apiUrl": "API 地址",
+    "apiUrlOptional": "API 地址 (可选)",
+    "apiUrlHint": "留空使用默认地址，或输入自定义 API 端点",
+    "testConnection": "测试连接",
+    "testSuccess": "连接成功 ({{latency}}ms)",
+    "testFailed": "连接失败",
+    "enterApiKeyFirst": "请先输入完整的 API Key",
+    "saveSuccess": "AI 设置已保存",
+    "infoBox": {
+      "title": "使用说明",
+      "tip1": "API Key 会加密存储在服务器，不会泄露",
+      "tip2": "AI 调用直接从浏览器发起，数据不经过 TMarks 服务器",
+      "tip3": "推荐使用 DeepSeek 或 gpt-4o-mini，性价比高",
+      "tip4": "导入 100 个书签约消耗 0.01-0.05 美元"
+    }
+  }
+}

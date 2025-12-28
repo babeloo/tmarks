@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { X, Copy, Check, Share2, Eye } from 'lucide-react'
 import { tabGroupsService } from '@/services/tab-groups'
 import type { Share } from '@/lib/types'
@@ -15,6 +16,8 @@ interface ShareDialogProps {
 }
 
 export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) {
+  const { t } = useTranslation('tabGroups')
+  const { t: tc } = useTranslation('common')
   const isMobile = useIsMobile()
   const [share, setShare] = useState<Share | null>(null)
   const [shareUrl, setShareUrl] = useState('')
@@ -24,7 +27,6 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showCopyError, setShowCopyError] = useState(false)
 
-  // 阻止背景滚动
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     return () => {
@@ -32,7 +34,6 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
     }
   }, [])
 
-  // ESC 键关闭
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -48,24 +49,22 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
       setIsLoading(true)
       setError(null)
 
-      // Try to get existing share
       try {
         const response = await tabGroupsService.getShare(groupId)
         setShare(response.share)
         setShareUrl(response.share_url)
       } catch {
-        // If no share exists, create one
         const response = await tabGroupsService.createShare(groupId, { is_public: true })
         setShare(response.share)
         setShareUrl(response.share_url)
       }
     } catch (error) {
       console.error('Failed to load/create share:', error)
-      setError('创建分享链接失败')
+      setError(t('share.createFailed'))
     } finally {
       setIsLoading(false)
     }
-  }, [groupId])
+  }, [groupId, t])
 
   useEffect(() => {
     loadOrCreateShare()
@@ -88,7 +87,7 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
       onClose()
     } catch (err) {
       console.error('Failed to delete share:', err)
-      setError('删除失败')
+      setError(t('share.deleteFailed'))
     }
   }
 
@@ -97,8 +96,8 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
       <div className="rounded-2xl sm:rounded-3xl shadow-xl max-w-md w-full border border-border" style={{backgroundColor: 'var(--card)'}} onClick={(e) => e.stopPropagation()}>
         <ConfirmDialog
           isOpen={showDeleteConfirm}
-          title="确认删除"
-          message="确定要删除分享链接吗？删除后链接将失效。"
+          title={tc('dialog.confirmTitle')}
+          message={t('share.confirmDelete')}
           type="warning"
           onConfirm={() => {
             setShowDeleteConfirm(false)
@@ -109,8 +108,8 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
 
         <AlertDialog
           isOpen={showCopyError}
-          title="复制失败"
-          message="无法复制到剪贴板，请手动复制链接。"
+          title={tc('dialog.errorTitle')}
+          message={t('share.copyFailed')}
           type="error"
           onConfirm={() => setShowCopyError(false)}
         />
@@ -119,7 +118,7 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
         <div className={`flex items-center justify-between border-b border-border ${isMobile ? 'p-4' : 'p-6'}`}>
           <div className="flex items-center gap-2 sm:gap-3">
             <Share2 className={`text-primary ${isMobile ? 'w-5 h-5' : 'w-6 h-6'}`} />
-            <h2 className={`font-semibold text-foreground ${isMobile ? 'text-lg' : 'text-xl'}`}>分享标签页组</h2>
+            <h2 className={`font-semibold text-foreground ${isMobile ? 'text-lg' : 'text-xl'}`}>{t('share.title')}</h2>
           </div>
           <button
             onClick={onClose}
@@ -134,7 +133,7 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
           {isLoading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">生成分享链接中...</p>
+              <p className="text-muted-foreground">{t('share.generating')}</p>
             </div>
           ) : error ? (
             <div className="text-center py-8">
@@ -143,13 +142,13 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
                 onClick={loadOrCreateShare}
                 className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
               >
-                重试
+                {tc('button.retry')}
               </button>
             </div>
           ) : (
             <>
               <div className="mb-4">
-                <p className="text-sm text-muted-foreground mb-2">标签页组名称</p>
+                <p className="text-sm text-muted-foreground mb-2">{t('share.groupName')}</p>
                 <p className="text-foreground font-medium">{groupTitle}</p>
               </div>
 
@@ -157,13 +156,13 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
                 <div className="mb-4">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                     <Eye className="w-4 h-4" />
-                    <span>浏览次数: {share.view_count}</span>
+                    <span>{t('share.viewCount')}: {share.view_count}</span>
                   </div>
                 </div>
               )}
 
               <div className="mb-4 sm:mb-6">
-                <p className="text-sm text-muted-foreground mb-2">分享链接</p>
+                <p className="text-sm text-muted-foreground mb-2">{t('share.link')}</p>
                 <div className={`flex gap-2 ${isMobile ? 'flex-col' : ''}`}>
                   <input
                     type="text"
@@ -178,12 +177,12 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
                     {isCopied ? (
                       <>
                         <Check className="w-4 h-4" />
-                        <span>已复制</span>
+                        <span>{t('share.copied')}</span>
                       </>
                     ) : (
                       <>
                         <Copy className="w-4 h-4" />
-                        <span>复制</span>
+                        <span>{t('share.copy')}</span>
                       </>
                     )}
                   </button>
@@ -192,7 +191,7 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
 
               <div className="bg-primary/10 border border-primary/20 rounded p-3 sm:p-4 mb-4">
                 <p className="text-xs sm:text-sm text-foreground">
-                  💡 任何人都可以通过此链接查看您的标签页组，但无法编辑。
+                  {t('share.tip')}
                 </p>
               </div>
 
@@ -201,13 +200,13 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
                   onClick={() => setShowDeleteConfirm(true)}
                   className={`text-destructive hover:bg-destructive/10 rounded transition-colors ${isMobile ? 'py-3 min-h-[44px]' : 'px-4 py-2'}`}
                 >
-                  删除分享
+                  {t('share.delete')}
                 </button>
                 <button
                   onClick={onClose}
                   className={`bg-muted text-foreground rounded hover:bg-muted/80 transition-colors ${isMobile ? 'py-3 min-h-[44px]' : 'px-4 py-2'}`}
                 >
-                  关闭
+                  {t('share.close')}
                 </button>
               </div>
             </>
@@ -219,4 +218,3 @@ export function ShareDialog({ groupId, groupTitle, onClose }: ShareDialogProps) 
 
   return createPortal(dialogContent, document.body)
 }
-

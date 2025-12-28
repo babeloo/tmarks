@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { Bookmark } from '@/lib/types'
 import { AdaptiveImage } from '@/components/common/AdaptiveImage'
 import { useRecordClick } from '@/hooks/useBookmarks'
@@ -170,6 +171,7 @@ function BookmarkCard({
   onToggleSelect,
   showEditHint = false,
 }: BookmarkCardProps) {
+  const { t } = useTranslation('bookmarks')
   const [imageType, setImageType] = useState<ImageType>('unknown')
   const [coverImageError, setCoverImageError] = useState(false)
   const [faviconError, setFaviconError] = useState(false)
@@ -245,7 +247,7 @@ function BookmarkCard({
           }
         }
       }}
-      aria-label={`打开书签 ${bookmark.title}`}
+      aria-label={t('action.open', { title: bookmark.title })}
     >
       {/* 批量选择复选框 */}
       {batchMode && onToggleSelect && (
@@ -274,7 +276,7 @@ function BookmarkCard({
           }}
           className={`absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:scale-110 z-10 touch-manipulation ${showEditHint ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 active:opacity-100'
             }`}
-          title="编辑"
+          title={t('action.edit')}
         >
           <svg className="w-4 h-4 text-base-content drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -346,12 +348,12 @@ function BookmarkCard({
           <div className="flex gap-1.5 mb-1">
             {!!bookmark.is_pinned && (
               <span className="bg-warning text-warning-content text-xs px-2 py-0.5 rounded-full font-medium">
-                置顶
+                {t('status.pinned')}
               </span>
             )}
             {!!bookmark.is_archived && (
               <span className="bg-base-content/40 text-base-100 text-xs px-2 py-0.5 rounded-full font-medium">
-                归档
+                {t('status.archived')}
               </span>
             )}
           </div>

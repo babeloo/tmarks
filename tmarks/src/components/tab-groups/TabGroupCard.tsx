@@ -1,8 +1,9 @@
+import { useTranslation } from 'react-i18next'
 import { Calendar, Layers, Trash2, Edit2, FolderOpen, Download, Palette, Tag, Share2, Check, X } from 'lucide-react'
 import type { TabGroup } from '@/lib/types'
 import { formatDistanceToNow } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
-import { getColorClasses } from './colorUtils'
+import { zhCN, enUS } from 'date-fns/locale'
+import { getColorClasses, getLeftBorderColor } from './colorUtils'
 import { TagsList } from './TagsInput'
 
 interface TabItem {
@@ -45,22 +46,9 @@ export function TabGroupCard({
   onTitleChange,
   children,
 }: TabGroupCardProps) {
+  const { t, i18n } = useTranslation('tabGroups')
+  const dateLocale = i18n.language === 'zh-CN' ? zhCN : enUS
   const colorClasses = getColorClasses(group.color)
-
-  // 获取左侧色条颜色
-  const getLeftBorderColor = (color: string | null) => {
-    switch (color) {
-      case '红色': return 'border-l-red-500'
-      case '橙色': return 'border-l-orange-500'
-      case '黄色': return 'border-l-yellow-500'
-      case '绿色': return 'border-l-green-500'
-      case '蓝色': return 'border-l-blue-500'
-      case '紫色': return 'border-l-purple-500'
-      case '粉色': return 'border-l-pink-500'
-      default: return 'border-l-border'
-    }
-  }
-
   const leftBorderColor = getLeftBorderColor(group.color)
 
   return (
@@ -109,14 +97,14 @@ export function TabGroupCard({
           <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
             <div className="flex items-center gap-1">
               <Layers className="w-4 h-4" />
-              <span>{group.item_count || 0} 个标签页</span>
+              <span>{t('header.tabCount', { count: group.item_count || 0 })}</span>
             </div>
             <div className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
               <span>
                 {formatDistanceToNow(new Date(group.created_at), {
                   addSuffix: true,
-                  locale: zhCN,
+                  locale: dateLocale,
                 })}
               </span>
             </div>
@@ -134,42 +122,42 @@ export function TabGroupCard({
           <button
             onClick={() => onColorClick(group.id)}
             className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
-            title="设置颜色"
+            title={t('menu.setColor')}
           >
             <Palette className="w-5 h-5" />
           </button>
           <button
             onClick={() => onTagsClick(group.id)}
             className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
-            title="管理标签"
+            title={t('export.tags')}
           >
             <Tag className="w-5 h-5" />
           </button>
           <button
             onClick={() => onShareClick(group.id)}
             className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
-            title="分享"
+            title={t('action.share')}
           >
             <Share2 className="w-5 h-5" />
           </button>
           <button
             onClick={() => onOpenAll(group.items || [])}
             className="p-2 text-success hover:bg-success/10 rounded-lg transition-colors"
-            title="打开所有"
+            title={t('action.openAll')}
           >
             <FolderOpen className="w-5 h-5" />
           </button>
           <button
             onClick={() => onExport(group)}
             className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
-            title="导出 Markdown"
+            title={t('action.export')}
           >
             <Download className="w-5 h-5" />
           </button>
           <button
             onClick={() => onDelete(group.id, group.title)}
             className="p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-            title="删除"
+            title={t('action.delete')}
           >
             <Trash2 className="w-5 h-5" />
           </button>

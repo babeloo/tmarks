@@ -1,6 +1,7 @@
 import { Calendar, Edit2, Check, X, Share2, FolderOpen, Download, Trash2, MoreVertical } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { formatDistanceToNow } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
+import { zhCN, enUS } from 'date-fns/locale'
 import type { TabGroup } from '@/lib/types'
 import { useIsMobile } from '@/hooks/useMediaQuery'
 import { DropdownMenu } from '@/components/common/DropdownMenu'
@@ -34,7 +35,12 @@ export function TabGroupHeader({
   onDelete,
   isDeleting,
 }: TabGroupHeaderProps) {
+  const { t, i18n } = useTranslation('tabGroups')
+  const { t: tc } = useTranslation('common')
   const isMobile = useIsMobile()
+
+  // 根据当前语言选择 date-fns locale
+  const dateLocale = i18n.language === 'zh-CN' ? zhCN : enUS
 
   return (
     <div className="flex items-start justify-between mb-4">
@@ -60,14 +66,14 @@ export function TabGroupHeader({
               <button
                 onClick={onSaveTitle}
                 className="p-2 text-success hover:bg-success/10 rounded transition-colors"
-                title="保存"
+                title={tc('button.save')}
               >
                 <Check className="w-5 h-5" />
               </button>
               <button
                 onClick={onCancelEdit}
                 className="p-2 text-muted-foreground hover:bg-muted rounded transition-colors"
-                title="取消"
+                title={tc('button.cancel')}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -80,7 +86,7 @@ export function TabGroupHeader({
               <button
                 onClick={onEditTitle}
                 className="p-2 text-muted-foreground hover:bg-muted rounded transition-colors"
-                title="重命名"
+                title={t('action.rename')}
               >
                 <Edit2 className="w-5 h-5" />
               </button>
@@ -95,12 +101,12 @@ export function TabGroupHeader({
             <span>
               {formatDistanceToNow(new Date(group.created_at), {
                 addSuffix: true,
-                locale: zhCN,
+                locale: dateLocale,
               })}
             </span>
           </div>
           <div className="flex items-center gap-1">
-            <span>{group.items?.length || 0} 个标签页</span>
+            <span>{t('header.tabCount', { count: group.items?.length || 0 })}</span>
           </div>
         </div>
       </div>
@@ -108,7 +114,6 @@ export function TabGroupHeader({
       {/* Action Buttons */}
       <div className="flex items-center gap-2 ml-4">
         {isMobile ? (
-          /* 移动端：使用下拉菜单 */
           <DropdownMenu
             trigger={
               <button className="p-2 text-muted-foreground hover:bg-muted rounded transition-colors">
@@ -117,24 +122,24 @@ export function TabGroupHeader({
             }
             items={[
               {
-                label: '打开全部',
+                label: t('action.openAll'),
                 icon: <FolderOpen className="w-4 h-4" />,
                 onClick: onOpenAll,
                 disabled: !group.items || group.items.length === 0,
               },
               {
-                label: '导出 Markdown',
+                label: t('action.export'),
                 icon: <Download className="w-4 h-4" />,
                 onClick: onExport,
                 disabled: !group.items || group.items.length === 0,
               },
               {
-                label: '分享',
+                label: t('action.share'),
                 icon: <Share2 className="w-4 h-4" />,
                 onClick: onShareClick,
               },
               {
-                label: isDeleting ? '删除中...' : '删除',
+                label: isDeleting ? t('action.deleting') : t('action.delete'),
                 icon: <Trash2 className="w-4 h-4" />,
                 onClick: onDelete,
                 disabled: isDeleting,
@@ -143,13 +148,12 @@ export function TabGroupHeader({
             ]}
           />
         ) : (
-          /* 桌面端：显示所有按钮 */
           <>
             <button
               onClick={onOpenAll}
               disabled={!group.items || group.items.length === 0}
               className="p-2 text-muted-foreground hover:bg-muted rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              title="打开全部"
+              title={t('action.openAll')}
             >
               <FolderOpen className="w-5 h-5" />
             </button>
@@ -157,14 +161,14 @@ export function TabGroupHeader({
               onClick={onExport}
               disabled={!group.items || group.items.length === 0}
               className="p-2 text-muted-foreground hover:bg-muted rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              title="导出 Markdown"
+              title={t('action.export')}
             >
               <Download className="w-5 h-5" />
             </button>
             <button
               onClick={onShareClick}
               className="p-2 text-muted-foreground hover:bg-muted rounded transition-colors"
-              title="分享"
+              title={t('action.share')}
             >
               <Share2 className="w-5 h-5" />
             </button>
@@ -172,7 +176,7 @@ export function TabGroupHeader({
               onClick={onDelete}
               disabled={isDeleting}
               className="p-2 text-destructive hover:bg-destructive/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              title={isDeleting ? '删除中...' : '删除'}
+              title={isDeleting ? t('action.deleting') : t('action.delete')}
             >
               <Trash2 className="w-5 h-5" />
             </button>
@@ -182,4 +186,3 @@ export function TabGroupHeader({
     </div>
   )
 }
-

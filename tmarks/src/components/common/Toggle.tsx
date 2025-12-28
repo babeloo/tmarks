@@ -25,7 +25,7 @@ export function Toggle({ checked, onChange, disabled = false, label, description
         className={`
           w-11 h-6 rounded-full transition-colors duration-200 ease-in-out
           relative
-          ${checked ? 'bg-primary' : 'bg-muted'}
+          ${checked ? 'bg-primary' : 'bg-muted-foreground/30'}
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20
         `}
@@ -34,7 +34,7 @@ export function Toggle({ checked, onChange, disabled = false, label, description
           className={`
             absolute top-[2px] left-[2px]
             w-5 h-5 rounded-full
-            bg-background border border-border
+            bg-white shadow-md
             transition-transform duration-200 ease-in-out
             ${checked ? 'translate-x-5' : 'translate-x-0'}
           `}

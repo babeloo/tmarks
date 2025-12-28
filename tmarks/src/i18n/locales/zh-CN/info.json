@@ -1,0 +1,337 @@
+{
+  "extension": {
+    "title": "TMarks 浏览器插件",
+    "subtitle": "一键保存标签页组，让书签管理更高效",
+    "download": {
+      "title": "选择你的浏览器下载",
+      "button": "下载"
+    },
+    "browsers": {
+      "title": "支持的浏览器",
+      "speedMode": "极速模式"
+    },
+    "version": "版本：{{version}} | 大小：约 {{size}} | 更新时间：{{date}}",
+    "tip": "💡 提供 8 个浏览器专用版本，也可以使用 Chrome 通用版（支持所有基于 Chrome 的浏览器）",
+    "features": {
+      "title": "✨ 主要功能",
+      "saveTabGroups": {
+        "title": "一键保存标签页组",
+        "description": "将当前浏览器打开的所有标签页一键保存到 TMarks，包括标题、URL 和网站图标"
+      },
+      "restoreTabs": {
+        "title": "快速恢复标签页",
+        "description": "从 TMarks 网站一键恢复之前保存的标签页组，继续之前的工作"
+      },
+      "autoSync": {
+        "title": "自动同步",
+        "description": "标签页组自动同步到云端，多设备无缝切换"
+      }
+    },
+    "install": {
+      "title": "📦 安装步骤",
+      "step1": {
+        "title": "下载插件压缩包",
+        "description": "点击上方下载按钮，获取 tmarks-extension.zip 文件"
+      },
+      "step2": {
+        "title": "解压文件",
+        "description": "将下载的 zip 文件解压到任意文件夹（建议放在不会删除的位置）"
+      },
+      "step3": {
+        "title": "打开扩展管理页面",
+        "description": "在浏览器地址栏输入："
+      },
+      "step4": {
+        "title": "启用开发者模式",
+        "description": "在扩展管理页面右上角，打开「开发者模式」开关"
+      },
+      "step5": {
+        "title": "加载插件",
+        "description": "点击「加载已解压的扩展程序」，选择刚才解压的文件夹"
+      },
+      "step6": {
+        "title": "完成安装",
+        "description": "插件图标会出现在浏览器工具栏，点击即可使用"
+      }
+    },
+    "tips": {
+      "title": "💡 使用提示",
+      "tip1": "首次使用需要在插件中配置 TMarks 网站地址和 API Key",
+      "tip2": "API Key 可以在网站的「API Keys」页面创建",
+      "tip3": "建议将插件图标固定到工具栏，方便快速访问",
+      "tip4": "插件会自动保存标签页的标题、URL 和网站图标"
+    },
+    "faq": {
+      "title": "❓ 常见问题",
+      "q1": "插件安装后找不到图标？",
+      "a1": "点击浏览器工具栏右侧的拼图图标，找到 TMarks 插件并点击固定按钮，图标就会显示在工具栏上。",
+      "q2": "如何获取 API Key？",
+      "a2": "登录 TMarks 网站后，点击右上角用户菜单中的「API Keys」，创建一个新的 API Key 并复制到插件配置中。",
+      "q3": "插件支持哪些浏览器？",
+      "a3": "支持 Chrome、Edge、Firefox、Brave、Opera 等主流浏览器。Chrome 和 Edge 使用同一个版本（基于相同技术），Firefox 使用专用版本。",
+      "q4": "Chrome 和 Edge 可以用同一个版本吗？",
+      "a4": "是的！Chrome、Edge、Brave、Opera 等浏览器都使用 Chrome 版本。只有 Firefox 需要下载专用版本。",
+      "q5": "保存的标签页组在哪里查看？",
+      "a5": "在 TMarks 网站的「标签页」页面可以查看和管理所有保存的标签页组。"
+    }
+  },
+  "privacy": {
+    "title": "隐私政策",
+    "lastUpdated": "最后更新：{{date}}",
+    "commitment": {
+      "title": "我们的承诺",
+      "description": "TMarks 致力于保护用户的隐私和数据安全。本隐私政策说明了我们如何收集、使用、存储和保护您的个人信息。"
+    },
+    "collection": {
+      "title": "我们收集的信息",
+      "account": {
+        "title": "账户信息",
+        "description": "当您注册 TMarks 账户时，我们会收集您的用户名、电子邮件地址和加密后的密码。"
+      },
+      "bookmarks": {
+        "title": "书签数据",
+        "description": "您创建的书签、标签、标签页组等内容数据，这些数据仅用于提供服务功能。"
+      },
+      "usage": {
+        "title": "使用数据",
+        "description": "我们可能收集您使用服务的相关信息，如访问时间、IP 地址、浏览器类型等，用于改进服务质量。"
+      }
+    },
+    "usage": {
+      "title": "信息使用方式",
+      "item1": "提供、维护和改进 TMarks 服务",
+      "item2": "处理您的请求和交易",
+      "item3": "发送服务相关的通知和更新",
+      "item4": "检测、预防和解决技术问题",
+      "item5": "遵守法律义务"
+    },
+    "security": {
+      "title": "数据安全",
+      "description": "我们采取多种安全措施来保护您的个人信息：",
+      "item1": "所有数据传输使用 HTTPS 加密",
+      "item2": "密码使用行业标准的哈希算法加密存储",
+      "item3": "使用 JWT 令牌进行身份认证",
+      "item4": "数据存储在 Cloudflare 的安全基础设施上",
+      "item5": "定期进行安全审计和更新"
+    },
+    "rights": {
+      "title": "您的权利",
+      "access": "访问权：您可以随时访问和查看您的个人信息",
+      "modify": "修改权：您可以更新或修改您的个人信息",
+      "delete": "删除权：您可以请求删除您的账户和所有相关数据",
+      "export": "导出权：您可以导出您的书签数据"
+    },
+    "cookies": {
+      "title": "Cookie 和类似技术",
+      "description": "我们使用 Cookie 和类似技术来：",
+      "item1": "保持您的登录状态",
+      "item2": "记住您的偏好设置",
+      "item3": "分析服务使用情况"
+    },
+    "thirdParty": {
+      "title": "第三方服务",
+      "description": "TMarks 使用以下第三方服务：",
+      "cloudflare": "Cloudflare：提供托管、数据库和 CDN 服务",
+      "note": "这些服务提供商有自己的隐私政策，我们建议您查阅它们的政策。"
+    },
+    "updates": {
+      "title": "政策更新",
+      "description": "我们可能会不时更新本隐私政策。重大变更时，我们会通过电子邮件或服务内通知告知您。继续使用服务即表示您接受更新后的政策。"
+    },
+    "contact": {
+      "title": "联系我们",
+      "description": "如果您对本隐私政策有任何疑问或建议，请通过以下方式联系我们：",
+      "email": "电子邮件："
+    }
+  },
+  "terms": {
+    "title": "服务条款",
+    "lastUpdated": "最后更新：{{date}}",
+    "welcome": {
+      "title": "欢迎使用 TMarks",
+      "description": "感谢您使用 TMarks 书签管理服务。使用我们的服务即表示您同意遵守以下服务条款。请仔细阅读这些条款，如果您不同意，请不要使用我们的服务。"
+    },
+    "service": {
+      "title": "1. 服务说明",
+      "description": "TMarks 提供在线书签管理服务，包括但不限于：",
+      "item1": "书签的创建、编辑、删除和组织",
+      "item2": "标签系统和标签页组管理",
+      "item3": "书签的导入、导出和分享",
+      "item4": "浏览器扩展和 API 访问"
+    },
+    "responsibility": {
+      "title": "2. 用户责任",
+      "description": "使用 TMarks 服务时，您同意：",
+      "item1": "提供准确、完整的注册信息",
+      "item2": "保护您的账户安全，不与他人分享登录凭证",
+      "item3": "对您账户下的所有活动负责",
+      "item4": "遵守所有适用的法律法规",
+      "item5": "不滥用服务或干扰其他用户的使用"
+    },
+    "prohibited": {
+      "title": "3. 禁止行为",
+      "description": "使用 TMarks 时，您不得：",
+      "item1": "上传或分享非法、有害、威胁性、辱骂性或侵权的内容",
+      "item2": "尝试未经授权访问其他用户的账户或数据",
+      "item3": "干扰或破坏服务的正常运行",
+      "item4": "使用自动化工具过度访问服务",
+      "item5": "复制、修改或分发服务的任何部分"
+    },
+    "ip": {
+      "title": "4. 知识产权",
+      "description1": "TMarks 服务及其原创内容、功能和特性归 TMarks 及其许可方所有，受国际版权、商标和其他知识产权法律保护。",
+      "description2": "您保留对您创建和上传的内容的所有权利。通过使用服务，您授予 TMarks 使用、存储和展示您的内容以提供服务的许可。"
+    },
+    "changes": {
+      "title": "5. 服务变更和终止",
+      "description1": "我们保留随时修改、暂停或终止服务（或其任何部分）的权利，无论是否通知。我们不对您或任何第三方因服务的修改、暂停或终止承担责任。",
+      "description2": "您可以随时停止使用服务并删除您的账户。我们也可能因违反这些条款而暂停或终止您的账户。"
+    },
+    "disclaimer": {
+      "title": "6. 免责声明",
+      "description": "TMarks 服务按「现状」和「可用」基础提供，不提供任何明示或暗示的保证，包括但不限于：",
+      "item1": "服务将不间断、及时、安全或无错误",
+      "item2": "通过服务获得的结果将准确或可靠",
+      "item3": "服务中的任何错误都将被纠正"
+    },
+    "liability": {
+      "title": "7. 责任限制",
+      "description": "在法律允许的最大范围内，TMarks 不对任何间接、偶然、特殊、后果性或惩罚性损害，或任何利润、收入、数据或使用损失承担责任，无论是基于合同、侵权（包括过失）、严格责任还是其他理论，即使我们已被告知此类损害的可能性。"
+    },
+    "termChanges": {
+      "title": "8. 条款变更",
+      "description": "我们保留随时修改这些条款的权利。重大变更时，我们会通过电子邮件或服务内通知告知您。在变更生效后继续使用服务即表示您接受修改后的条款。"
+    },
+    "law": {
+      "title": "9. 适用法律",
+      "description": "这些条款受中华人民共和国法律管辖并按其解释，不考虑其法律冲突规定。"
+    },
+    "contact": {
+      "title": "联系我们",
+      "description": "如果您对这些服务条款有任何疑问，请通过以下方式联系我们：",
+      "email": "电子邮件："
+    }
+  },
+  "share": {
+    "loading": "正在加载公开书签...",
+    "error": "分享链接无效或内容已下线。",
+    "defaultTitle": "{{username}}的书签精选",
+    "totalBookmarks": "共 {{count}} 个书签",
+    "filteredBookmarks": "筛选出 {{filtered}} / {{total}} 个书签",
+    "noResults": "没有找到匹配的书签",
+    "noResultsHint": "尝试调整筛选条件或搜索关键词",
+    "openTags": "打开标签",
+    "searchBookmarks": "搜索书签...",
+    "searchTags": "搜索标签...",
+    "switchToTagSearch": "切换到标签搜索",
+    "switchToBookmarkSearch": "切换到书签搜索",
+    "sort": {
+      "created": "按创建时间",
+      "updated": "按更新时间",
+      "pinned": "置顶优先",
+      "popular": "按热门程度"
+    },
+    "visibility": {
+      "all": "全部书签",
+      "public": "仅公开",
+      "private": "仅私密"
+    },
+    "viewMode": {
+      "list": "列表视图",
+      "card": "卡片视图",
+      "minimal": "极简列表",
+      "title": "标题瀑布"
+    }
+  },
+  "about": {
+    "title": "关于 TMarks",
+    "subtitle": "现代化的智能书签管理系统，让你的书签井井有条",
+    "version": "版本",
+    "releaseNote": "Migration Automation Release",
+    "features": {
+      "title": "核心特性",
+      "fast": {
+        "title": "快速高效",
+        "description": "基于 Cloudflare 全球网络，提供极速访问体验"
+      },
+      "secure": {
+        "title": "安全可靠",
+        "description": "数据加密存储，支持 JWT 认证，保护你的隐私"
+      },
+      "sync": {
+        "title": "多端同步",
+        "description": "支持浏览器扩展，多设备无缝同步你的书签"
+      },
+      "opensource": {
+        "title": "开源免费",
+        "description": "MIT 许可证，完全开源，欢迎贡献代码"
+      }
+    },
+    "techStack": {
+      "title": "技术栈",
+      "frontend": "前端",
+      "backend": "后端"
+    },
+    "opensource": {
+      "title": "开源项目",
+      "description": "TMarks 是一个开源项目，采用 MIT 许可证。我们欢迎任何形式的贡献，包括但不限于：",
+      "contribute1": "提交 Bug 报告和功能建议",
+      "contribute2": "改进文档和翻译",
+      "contribute3": "贡献代码和修复问题",
+      "contribute4": "分享使用经验和最佳实践",
+      "visitGithub": "访问 GitHub 仓库"
+    },
+    "thanks": {
+      "title": "致谢",
+      "description": "感谢所有为 TMarks 做出贡献的开发者和用户，以及以下优秀的开源项目和服务："
+    }
+  },
+  "help": {
+    "title": "帮助中心",
+    "subtitle": "查找常见问题的答案，或浏览使用指南",
+    "guides": {
+      "title": "快速指南",
+      "quickStart": {
+        "title": "快速开始",
+        "description": "了解如何创建第一个书签和使用基本功能"
+      },
+      "extension": {
+        "title": "浏览器扩展",
+        "description": "安装和配置浏览器扩展，快速保存书签"
+      },
+      "importExport": {
+        "title": "导入导出",
+        "description": "从其他书签管理工具迁移数据"
+      },
+      "share": {
+        "title": "公开分享",
+        "description": "创建公开链接，分享你的书签集合"
+      }
+    },
+    "faq": {
+      "title": "常见问题",
+      "q1": "如何创建书签？",
+      "a1": "点击页面右上角的「添加书签」按钮，填写书签信息后保存即可。你也可以使用浏览器扩展快速保存当前页面。",
+      "q2": "如何使用标签？",
+      "a2": "在创建或编辑书签时，可以为书签添加标签。点击侧边栏的标签可以筛选对应的书签。",
+      "q3": "如何导入浏览器书签？",
+      "a3": "进入「通用设置」→「数据」标签页，选择「导入数据」，上传浏览器导出的 HTML 书签文件即可。",
+      "q4": "如何分享我的书签？",
+      "a4": "进入「通用设置」→「分享」标签页，启用公开分享功能，系统会生成一个公开链接供他人访问。",
+      "q5": "如何获取 API Key？",
+      "a5": "进入「通用设置」→「API」标签页，点击「创建」按钮生成新的 API Key，用于浏览器扩展或第三方应用。",
+      "q6": "浏览器扩展如何安装？",
+      "a6": "访问「浏览器」页面，下载对应浏览器的扩展文件，按照说明安装即可。",
+      "q7": "如何切换主题？",
+      "a7": "进入「通用设置」→「基础」标签页，选择浅色、深色或跟随系统主题。",
+      "q8": "数据安全吗？",
+      "a8": "所有数据都加密存储在 Cloudflare D1 数据库中，使用 JWT 进行身份认证，确保数据安全。"
+    },
+    "contact": {
+      "title": "需要更多帮助？",
+      "description": "如果你没有找到问题的答案，可以通过以下方式联系我们：",
+      "submitIssue": "提交问题",
+      "contactSupport": "联系支持"
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
 import { X, FolderOpen } from 'lucide-react'
 import type { TabGroup } from '@/lib/types'
@@ -22,6 +23,8 @@ export function MoveItemDialog({
   onMove,
   onClose,
 }: MoveItemDialogProps) {
+  const { t } = useTranslation('tabGroups')
+  const { t: tc } = useTranslation('common')
   const isMobile = useIsMobile()
   const [selectedGroupId, setSelectedGroupId] = useState<string>('')
 
@@ -67,7 +70,7 @@ export function MoveItemDialog({
       <div className="border border-border rounded-2xl sm:rounded-3xl shadow-xl w-full max-w-md" style={{ backgroundColor: 'var(--card)' }} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className={`flex items-center justify-between border-b border-border ${isMobile ? 'p-4' : 'p-5'}`}>
-          <h2 className={`font-semibold text-foreground ${isMobile ? 'text-base' : 'text-lg'}`}>移动标签页</h2>
+          <h2 className={`font-semibold text-foreground ${isMobile ? 'text-base' : 'text-lg'}`}>{t('todo.moveTab')}</h2>
           <button
             onClick={onClose}
             className="p-1 text-muted-foreground hover:text-foreground rounded transition-colors"
@@ -80,7 +83,7 @@ export function MoveItemDialog({
         <div className={`space-y-4 ${isMobile ? 'p-4' : 'p-5'}`}>
           <div>
             <p className="text-sm text-muted-foreground mb-2">
-              将 <span className="font-medium text-foreground">"{itemTitle}"</span> 移动到：
+              {t('todo.moveTabTo', { title: itemTitle })}
             </p>
           </div>
 
@@ -89,7 +92,7 @@ export function MoveItemDialog({
             {targetGroups.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <FolderOpen className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                <p>没有可用的目标组</p>
+                <p>{t('todo.noGroupsToMove')}</p>
               </div>
             ) : (
               targetGroups.map((group) => (
@@ -105,7 +108,7 @@ export function MoveItemDialog({
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-foreground truncate">{group.title}</p>
                       <p className="text-xs text-muted-foreground">
-                        {group.item_count || 0} 个标签页
+                        {t('header.tabCount', { count: group.item_count || 0 })}
                       </p>
                     </div>
                     {selectedGroupId === group.id && (
@@ -128,14 +131,14 @@ export function MoveItemDialog({
             onClick={onClose}
             className={`text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-colors ${isMobile ? 'w-full py-3 min-h-[44px]' : 'px-4 py-2 text-sm'}`}
           >
-            取消
+            {tc('button.cancel')}
           </button>
           <button
             onClick={handleMove}
             disabled={!selectedGroupId}
             className={`bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${isMobile ? 'w-full py-3 min-h-[44px]' : 'px-4 py-2 text-sm'}`}
           >
-            移动
+            {t('menu.move')}
           </button>
         </div>
       </div>

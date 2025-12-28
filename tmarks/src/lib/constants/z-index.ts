@@ -32,6 +32,9 @@ export const Z_INDEX = {
   // 模态框层 (100-299)
   MODAL_BACKDROP: 100,
   MODAL_CONTENT: 200,
+  BOOKMARK_FORM: 200,
+  SNAPSHOT_VIEWER: 200,
+  API_KEY_MODAL: 200,
   TAG_MANAGE_MODAL: 200,
   MOVE_ITEM_DIALOG: 200,
   SHARE_DIALOG: 200,
@@ -49,4 +52,3 @@ export const Z_INDEX = {
 } as const
 
 export type ZIndexKey = keyof typeof Z_INDEX
-

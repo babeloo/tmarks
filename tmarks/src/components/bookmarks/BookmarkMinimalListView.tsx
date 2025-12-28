@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { Bookmark } from '@/lib/types'
 import { useRecordClick } from '@/hooks/useBookmarks'
 
@@ -18,14 +19,16 @@ export function BookmarkMinimalListView({
   selectedIds = [],
   onToggleSelect,
 }: BookmarkMinimalListViewProps) {
+  const { t } = useTranslation('bookmarks')
+  
   return (
     <div className="rounded-xl border border-base-300 overflow-hidden overflow-x-auto">
       {/* 表头 - 移动端只显示标题和操作 */}
       <div className={`grid ${batchMode ? 'grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_minmax(0,2fr)_minmax(0,2fr)_minmax(0,2fr)_auto]' : 'grid-cols-[1fr_auto] sm:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,2fr)_auto]'} gap-2 sm:gap-4 px-3 sm:px-4 py-2 text-xs uppercase tracking-wide text-base-content/50 bg-base-200`}>
         {batchMode && <span></span>}
-        <span>标题</span>
-        <span className="hidden sm:block">网址</span>
-        <span className="hidden sm:block">备注</span>
+        <span>{t('view.header.title')}</span>
+        <span className="hidden sm:block">{t('view.header.url')}</span>
+        <span className="hidden sm:block">{t('view.header.note')}</span>
         <span className="text-right sm:block">{readOnly ? '' : ''}</span>
       </div>
       <div>
@@ -62,6 +65,7 @@ function MinimalRow({
   isSelected = false,
   onToggleSelect,
 }: MinimalRowProps) {
+  const { t } = useTranslation('bookmarks')
   const recordClick = useRecordClick()
 
   const handleVisit = () => {
@@ -88,7 +92,7 @@ function MinimalRow({
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-card border-2 border-border hover:border-primary'
             }`}
-            title={isSelected ? '取消选择' : '选择'}
+            title={isSelected ? t('batch.deselect') : t('batch.select')}
           >
             {isSelected && (
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
@@ -122,7 +126,7 @@ function MinimalRow({
       
       {/* 备注 - 移动端隐藏 */}
       <span className="hidden sm:block text-xs text-base-content/70 truncate min-w-0" title={bookmark.description || undefined}>
-        {bookmark.description || '—'}
+        {bookmark.description || t('view.noDescription')}
       </span>
       
       {/* 操作按钮 */}
@@ -136,7 +140,7 @@ function MinimalRow({
               onEdit()
             }}
             className="w-8 h-8 rounded-md flex items-center justify-center hover:bg-base-300 transition-colors text-base-content/70 hover:text-base-content"
-            title="编辑"
+            title={t('action.edit')}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />

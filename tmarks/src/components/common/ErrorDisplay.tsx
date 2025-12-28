@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { 
   AlertCircle, 
   AlertTriangle, 
@@ -50,6 +51,7 @@ export function ErrorDisplay({
   onRetry,
   className = ''
 }: ErrorDisplayProps) {
+  const { t } = useTranslation('common')
   const [isExpanded, setIsExpanded] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
@@ -97,11 +99,11 @@ export function ErrorDisplay({
   // 复制错误信息
   const copyError = async (error: ErrorItem, index: number) => {
     const errorText = [
-      `错误: ${error.message}`,
-      error.code && `代码: ${error.code}`,
-      error.field && `字段: ${error.field}`,
-      error.details && `详情: ${error.details}`,
-      error.timestamp && `时间: ${error.timestamp}`
+      `${t('error.error')}: ${error.message}`,
+      error.code && `${t('error.code')}: ${error.code}`,
+      error.field && `${t('error.field')}: ${error.field}`,
+      error.details && `${t('error.details')}: ${error.details}`,
+      error.timestamp && `${t('error.time')}: ${error.timestamp}`
     ].filter(Boolean).join('\n')
 
     try {
@@ -121,7 +123,7 @@ export function ErrorDisplay({
           <Icon className={`h-4 w-4 sm:h-5 sm:w-5 mt-0.5 flex-shrink-0 ${config.iconClass}`} />
           <div className="flex-1 min-w-0">
             <h3 className={`text-sm sm:text-base font-semibold ${config.titleClass}`}>
-              {title || getDefaultTitle(variant, errors.length)}
+              {title || getDefaultTitle(variant, errors.length, t)}
             </h3>
 
             {/* 错误列表 */}
@@ -148,13 +150,13 @@ export function ErrorDisplay({
                 {isExpanded ? (
                   <>
                     <ChevronUp className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>收起</span>
+                    <span>{t('action.collapse')}</span>
                   </>
                 ) : (
                   <>
                     <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="hidden sm:inline">显示更多 ({errors.length - maxVisible} 个)</span>
-                    <span className="sm:hidden">更多 ({errors.length - maxVisible})</span>
+                    <span className="hidden sm:inline">{t('error.showMore', { count: errors.length - maxVisible })}</span>
+                    <span className="sm:hidden">{t('error.more', { count: errors.length - maxVisible })}</span>
                   </>
                 )}
               </button>
@@ -168,7 +170,7 @@ export function ErrorDisplay({
             <button
               onClick={onRetry}
               className={`p-1.5 sm:p-2 rounded-md ${config.textClass} hover:bg-muted/50 touch-manipulation`}
-              title="重试"
+              title={t('action.retry')}
             >
               <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4" />
             </button>
@@ -178,7 +180,7 @@ export function ErrorDisplay({
             <button
               onClick={onDismiss}
               className={`p-1.5 sm:p-2 rounded-md ${config.textClass} hover:bg-muted/50 touch-manipulation`}
-              title="关闭"
+              title={t('action.close')}
             >
               <X className="h-3 w-3 sm:h-4 sm:w-4" />
             </button>
@@ -202,6 +204,7 @@ interface ErrorItemProps {
 }
 
 function ErrorItem({ error, variant, showDetails, onCopy, isCopied }: ErrorItemProps) {
+  const { t } = useTranslation('common')
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false)
 
   const variantConfig = {
@@ -241,7 +244,7 @@ function ErrorItem({ error, variant, showDetails, onCopy, isCopied }: ErrorItemP
             <button
               onClick={() => setIsDetailsExpanded(!isDetailsExpanded)}
               className={`p-1.5 rounded text-xs ${textClass} hover:bg-muted/50 touch-manipulation`}
-              title="查看详情"
+              title={t('action.viewDetails')}
             >
               {isDetailsExpanded ? (
                 <ChevronUp className="h-3 w-3" />
@@ -254,7 +257,7 @@ function ErrorItem({ error, variant, showDetails, onCopy, isCopied }: ErrorItemP
           <button
             onClick={onCopy}
             className={`p-1.5 rounded text-xs ${textClass} hover:bg-muted/50 touch-manipulation`}
-            title={isCopied ? "已复制" : "复制错误信息"}
+            title={isCopied ? t('status.copied') : t('action.copyError')}
           >
             {isCopied ? (
               <CheckCircle className="h-3 w-3" />
@@ -319,14 +322,14 @@ export function InlineError({ message, className = '' }: InlineErrorProps) {
   )
 }
 
-// 工具函数：获取默认标题
-function getDefaultTitle(variant: string, count: number): string {
+// 工具函数：获取默认标题 - 需要传入 t 函数
+export function getDefaultTitle(variant: string, count: number, t: (key: string, options?: Record<string, unknown>) => string): string {
   const titles = {
-    error: count === 1 ? '发生错误' : `发生 ${count} 个错误`,
-    warning: count === 1 ? '警告' : `${count} 个警告`,
-    info: count === 1 ? '信息' : `${count} 条信息`,
-    success: count === 1 ? '成功' : `${count} 个成功操作`
+    error: count === 1 ? t('error.occurred') : t('error.occurredCount', { count }),
+    warning: count === 1 ? t('error.warning') : t('error.warningCount', { count }),
+    info: count === 1 ? t('error.info') : t('error.infoCount', { count }),
+    success: count === 1 ? t('error.success') : t('error.successCount', { count })
   }
   
-  return titles[variant as keyof typeof titles] || '通知'
+  return titles[variant as keyof typeof titles] || t('error.notification')
 }

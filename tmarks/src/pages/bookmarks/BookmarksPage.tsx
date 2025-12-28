@@ -1,4 +1,5 @@
 import { useMemo, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TagSidebar } from '@/components/tags/TagSidebar'
 import { BookmarkListContainer } from '@/components/bookmarks/BookmarkListContainer'
 import { BookmarkForm } from '@/components/bookmarks/BookmarkForm'
@@ -17,6 +18,7 @@ const SORT_OPTIONS: SortOption[] = ['created', 'updated', 'pinned', 'popular']
 const VIEW_MODES = ['list', 'card', 'minimal', 'title'] as const
 
 export function BookmarksPage() {
+  const { t } = useTranslation('bookmarks')
   // 状态管理
   const state = useBookmarksState()
   const {
@@ -263,8 +265,8 @@ export function BookmarksPage() {
                     <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                       <span className="font-medium text-foreground whitespace-nowrap">
                         {selectedIds.length > 0
-                          ? `已选择 ${selectedIds.length} 个`
-                          : '请选择书签'}
+                          ? t('batch.selectedCount', { count: selectedIds.length })
+                          : t('batch.pleaseSelect')}
                       </span>
                       {selectedIds.length < filteredBookmarks.length && (
                         <>
@@ -273,7 +275,7 @@ export function BookmarksPage() {
                             onClick={handleSelectAll}
                             className="text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
                           >
-                            全选 ({filteredBookmarks.length})
+                            {t('batch.selectAll', { count: filteredBookmarks.length })}
                           </button>
                         </>
                       )}
@@ -284,7 +286,7 @@ export function BookmarksPage() {
                             onClick={handleClearSelection}
                             className="text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
                           >
-                            取消
+                            {t('batch.cancel')}
                           </button>
                         </>
                       )}
@@ -332,11 +334,11 @@ export function BookmarksPage() {
 
             <div className="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-background border-r border-border shadow-xl animate-in slide-in-from-left duration-300 flex flex-col">
               <div className="flex items-center justify-between p-4 border-b border-border bg-background flex-shrink-0">
-                <h3 className="text-lg font-semibold text-foreground">标签筛选</h3>
+                <h3 className="text-lg font-semibold text-foreground">{t('tags:filter.title')}</h3>
                 <button
                   onClick={() => setIsTagSidebarOpen(false)}
                   className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
-                  aria-label="关闭标签抽屉"
+                  aria-label={t('tags:filter.close')}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { Folder, Home, ChevronRight, ChevronDown } from 'lucide-react'
 import type { TabGroup } from '@/lib/types'
 import { Z_INDEX } from '@/lib/constants/z-index'
@@ -20,11 +21,12 @@ export function MoveToFolderDialog({
   onConfirm,
   onCancel,
 }: MoveToFolderDialogProps) {
+  const { t } = useTranslation('tabGroups')
+  const { t: tc } = useTranslation('common')
   const isMobile = useIsMobile()
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null)
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set())
 
-  // 阻止背景滚动
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -36,7 +38,6 @@ export function MoveToFolderDialog({
     }
   }, [isOpen])
 
-  // ESC 键关闭
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -47,19 +48,6 @@ export function MoveToFolderDialog({
     return () => window.removeEventListener('keydown', handleEsc)
   }, [isOpen, onCancel])
 
-  // 阻止背景滚动
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
-
-  // 获取所有子孙节点的 ID（用于排除循环嵌套）
   const getDescendantIds = (groupId: string): Set<string> => {
     const descendants = new Set<string>([groupId])
     const children = allGroups.filter(g => g.parent_id === groupId)
@@ -69,13 +57,11 @@ export function MoveToFolderDialog({
     return descendants
   }
 
-  // 排除当前项及其所有子孙项
   const excludedIds = getDescendantIds(currentGroup.id)
   const availableFolders = allGroups.filter(
     g => g.is_folder === 1 && !excludedIds.has(g.id)
   )
 
-  // 构建树形结构
   const buildTree = (parentId: string | null = null): TabGroup[] => {
     return availableFolders
       .filter(g => (g.parent_id || null) === parentId)
@@ -103,7 +89,6 @@ export function MoveToFolderDialog({
 
   if (!isOpen) return null
 
-  // 递归渲染文件夹树
   const renderFolderTree = (folders: TabGroup[], level: number = 0) => {
     return folders.map(folder => {
       const isExpanded = expandedFolders.has(folder.id)
@@ -122,7 +107,6 @@ export function MoveToFolderDialog({
             style={{ paddingLeft: `${level * 20 + 12}px` }}
             onClick={() => setSelectedFolderId(folder.id)}
           >
-            {/* 展开/折叠图标 */}
             {hasChildren ? (
               <button
                 onClick={(e) => {
@@ -140,22 +124,12 @@ export function MoveToFolderDialog({
             ) : (
               <div className="w-4" />
             )}
-
-            {/* 文件夹图标 */}
             <Folder className="w-4 h-4 flex-shrink-0" />
-
-            {/* 文件夹名称 */}
             <span className="flex-1 truncate text-sm">{folder.title}</span>
-
-            {/* 项目数量 */}
             {folder.item_count !== undefined && (
-              <span className="text-xs opacity-60">
-                {folder.item_count}
-              </span>
+              <span className="text-xs opacity-60">{folder.item_count}</span>
             )}
           </div>
-
-          {/* 子文件夹 */}
           {isExpanded && hasChildren && (
             <div>{renderFolderTree(children, level + 1)}</div>
           )}
@@ -168,21 +142,20 @@ export function MoveToFolderDialog({
 
   const dialogContent = (
     <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6 animate-fade-in" style={{ zIndex: Z_INDEX.MOVE_TO_FOLDER_DIALOG }} onClick={handleCancel}>
-      {/* 弹窗内容 */}
       <div
         className={`relative card rounded-2xl sm:rounded-3xl shadow-2xl border max-w-lg w-full animate-scale-in ${isMobile ? 'p-4' : 'p-6'}`}
         style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* 标题 */}
         <div className={isMobile ? 'mb-4' : 'mb-6'}>
-          <h3 className={`font-bold text-base-content ${isMobile ? 'text-lg' : 'text-2xl'}`}>移动到文件夹</h3>
+          <h3 className={`font-bold text-base-content ${isMobile ? 'text-lg' : 'text-2xl'}`}>
+            {t('moveToFolder.title')}
+          </h3>
           <p className={`text-base-content/70 mt-2 ${isMobile ? 'text-xs' : 'text-sm'}`}>
-            选择目标文件夹，将"{currentGroup.title}"移动到该位置
+            {t('moveToFolder.description', { title: currentGroup.title })}
           </p>
         </div>
 
-        {/* 文件夹列表 */}
         <div
           className={`border rounded-xl ${isMobile ? 'mb-4' : 'mb-6'}`}
           style={{
@@ -191,7 +164,6 @@ export function MoveToFolderDialog({
             overflowY: 'auto',
           }}
         >
-          {/* 根目录选项 */}
           <div className="p-1 border-b" style={{ borderColor: 'var(--border)' }}>
             <div
               className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all ${
@@ -202,33 +174,31 @@ export function MoveToFolderDialog({
               onClick={() => setSelectedFolderId(null)}
             >
               <Home className="w-4 h-4 flex-shrink-0" />
-              <span className="flex-1 text-sm font-medium">根目录</span>
+              <span className="flex-1 text-sm font-medium">{t('moveToFolder.rootFolder')}</span>
             </div>
           </div>
 
-          {/* 文件夹树 */}
           <div className="p-1">
             {rootFolders.length > 0 ? (
               renderFolderTree(rootFolders)
             ) : (
               <div className="px-3 py-8 text-center text-sm text-muted-foreground">
-                没有可用的文件夹
+                {t('moveToFolder.noFolders')}
               </div>
             )}
           </div>
         </div>
 
-        {/* 按钮组 */}
         <div className={`flex gap-2 sm:gap-3 ${isMobile ? 'flex-col-reverse' : ''}`}>
           <button onClick={handleCancel} className={`btn btn-outline flex-1 ${isMobile ? 'min-h-[44px]' : ''}`}>
-            取消
+            {tc('button.cancel')}
           </button>
           <button
             onClick={handleConfirm}
             className={`btn flex-1 ${isMobile ? 'min-h-[44px]' : ''}`}
             disabled={selectedFolderId === currentGroup.parent_id}
           >
-            确定移动
+            {t('moveToFolder.confirm')}
           </button>
         </div>
       </div>
@@ -237,4 +207,3 @@ export function MoveToFolderDialog({
 
   return createPortal(dialogContent, document.body)
 }
-

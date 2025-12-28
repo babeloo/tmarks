@@ -1,5 +1,6 @@
 import { Search, CheckCircle, Archive, ArrowUpDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import type { SortOption } from './sortUtils'
 import { useIsMobile } from '@/hooks/useMediaQuery'
 
@@ -20,15 +21,16 @@ export function SearchBar({
   onBatchModeToggle,
   batchMode,
 }: SearchBarProps) {
+  const { t } = useTranslation('tabGroups')
   const isMobile = useIsMobile()
 
   const sortOptions: { value: SortOption; label: string }[] = [
-    { value: 'created', label: '按创建时间' },
-    { value: 'title', label: '按标题' },
-    { value: 'count', label: '按标签页数量' },
+    { value: 'created', label: t('sort.created') },
+    { value: 'title', label: t('sort.title') },
+    { value: 'count', label: t('sort.count') },
   ]
 
-  const currentSortLabel = sortOptions.find(opt => opt.value === sortBy)?.label || '排序'
+  const currentSortLabel = sortOptions.find(opt => opt.value === sortBy)?.label || t('sort.label')
 
   return (
     <div className="flex items-center gap-2 flex-1">
@@ -37,7 +39,7 @@ export function SearchBar({
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
         <input
           type="text"
-          placeholder="搜索标签页组..."
+          placeholder={t('search.placeholder')}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="input w-full pl-10"
@@ -71,7 +73,7 @@ export function SearchBar({
             ? 'bg-primary text-primary-foreground'
             : 'border border-border hover:bg-muted text-muted-foreground'
         }`}
-        title={batchMode ? '退出批量操作' : '批量操作'}
+        title={batchMode ? t('batch.exit') : t('batch.enter')}
       >
         <CheckCircle className="w-5 h-5" />
       </button>
@@ -81,7 +83,7 @@ export function SearchBar({
         <Link
           to="/tab/trash"
           className="w-10 h-10 flex-shrink-0 flex items-center justify-center border border-border rounded hover:bg-muted transition-colors text-muted-foreground"
-          title="回收站"
+          title={t('trash.title')}
         >
           <Archive className="w-5 h-5" />
         </Link>
@@ -89,4 +91,3 @@ export function SearchBar({
     </div>
   )
 }
-

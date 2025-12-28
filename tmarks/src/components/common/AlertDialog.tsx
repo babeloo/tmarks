@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { Z_INDEX } from '@/lib/constants/z-index'
 
 interface AlertDialogProps {
@@ -13,12 +14,18 @@ interface AlertDialogProps {
 
 export function AlertDialog({
   isOpen,
-  title = '提示',
+  title,
   message,
-  confirmText = '确定',
+  confirmText,
   type = 'info',
   onConfirm,
 }: AlertDialogProps) {
+  const { t } = useTranslation('common')
+
+  // 使用翻译的默认值
+  const displayTitle = title ?? t('dialog.infoTitle')
+  const displayConfirmText = confirmText ?? t('button.confirm')
+
   // 阻止背景滚动
   useEffect(() => {
     if (isOpen) {
@@ -41,10 +48,6 @@ export function AlertDialog({
     window.addEventListener('keydown', handleEsc)
     return () => window.removeEventListener('keydown', handleEsc)
   }, [isOpen, onConfirm])
-
-  const handleConfirm = () => {
-    onConfirm()
-  }
 
   const getTypeStyles = () => {
     switch (type) {
@@ -81,15 +84,12 @@ export function AlertDialog({
 
   const dialogContent = (
     <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6 animate-fade-in" style={{ zIndex: Z_INDEX.ALERT_DIALOG }}>
-      {/* 背景遮罩 - 用于点击关闭 */}
       <div
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
-        onClick={handleConfirm}
+        onClick={onConfirm}
       />
 
-      {/* 弹窗内容 */}
       <div className="relative card rounded-2xl sm:rounded-3xl shadow-2xl border max-w-md w-full animate-scale-in p-6 sm:p-8" style={{backgroundColor: 'var(--card)', borderColor: 'var(--border)'}}>
-        {/* 图标区域 */}
         <div className="flex justify-center mb-4 sm:mb-6">
           <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl ${styles.icon} ${styles.iconRing} ring-4 sm:ring-8 flex items-center justify-center shadow-lg`}>
             {type === 'error' && (
@@ -115,15 +115,13 @@ export function AlertDialog({
           </div>
         </div>
 
-        {/* 内容区域 */}
         <div className="text-center mb-6 sm:mb-8">
-          <h3 className="font-bold text-xl sm:text-2xl mb-2 sm:mb-3 text-foreground">{title}</h3>
+          <h3 className="font-bold text-xl sm:text-2xl mb-2 sm:mb-3 text-foreground">{displayTitle}</h3>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{message}</p>
         </div>
 
-        {/* 按钮 */}
-        <button onClick={handleConfirm} className="btn w-full min-h-[44px]">
-          {confirmText}
+        <button onClick={onConfirm} className="btn w-full min-h-[44px]">
+          {displayConfirmText}
         </button>
       </div>
     </div>

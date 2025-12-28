@@ -1,6 +1,12 @@
-import { Info } from 'lucide-react'
-import { SearchAutoClearSettings } from '../SearchAutoClearSettings'
-import { TagSelectionAutoClearSettings } from '../TagSelectionAutoClearSettings'
+/**
+ * 自动化设置标签页
+ * 搜索和标签的自动清除设置
+ */
+
+import { useTranslation } from 'react-i18next'
+import { Search, Tag, Zap } from 'lucide-react'
+import { Toggle } from '@/components/common/Toggle'
+import { SettingsSection, SettingsItem, SettingsDivider } from '../SettingsSection'
 import { InfoBox } from '../InfoBox'
 
 interface AutomationSettingsTabProps {
@@ -24,32 +30,67 @@ export function AutomationSettingsTab({
   onTagEnabledChange,
   onTagSecondsChange,
 }: AutomationSettingsTabProps) {
+  const { t } = useTranslation('settings')
+
   return (
     <div className="space-y-6">
-      <SearchAutoClearSettings
-        enabled={searchEnabled}
-        seconds={searchSeconds}
-        onEnabledChange={onSearchEnabledChange}
-        onSecondsChange={onSearchSecondsChange}
-      />
+      {/* 搜索自动清除 */}
+      <SettingsSection icon={Search} title={t('automation.search.title')} description={t('automation.search.description')}>
+        <div className="p-4 rounded-lg bg-card border border-border space-y-4">
+          <SettingsItem
+            title={t('automation.search.enable')}
+            description={t('automation.search.enableHint')}
+            action={<Toggle checked={searchEnabled} onChange={onSearchEnabledChange} />}
+          />
+          {searchEnabled && (
+            <div className="flex items-center gap-3 pt-3 border-t border-border">
+              <span className="text-sm text-muted-foreground">{t('automation.search.delay')}</span>
+              <input
+                type="number"
+                value={searchSeconds}
+                onChange={(e) => onSearchSecondsChange(parseInt(e.target.value) || 0)}
+                min="1"
+                max="300"
+                className="input w-20 text-center"
+              />
+              <span className="text-sm text-muted-foreground">{t('automation.search.unit')}</span>
+            </div>
+          )}
+        </div>
+      </SettingsSection>
 
-      <div className="border-t border-border"></div>
+      <SettingsDivider />
 
-      <TagSelectionAutoClearSettings
-        enabled={tagEnabled}
-        seconds={tagSeconds}
-        onEnabledChange={onTagEnabledChange}
-        onSecondsChange={onTagSecondsChange}
-      />
+      {/* 标签选择自动清除 */}
+      <SettingsSection icon={Tag} title={t('automation.tag.title')} description={t('automation.tag.description')}>
+        <div className="p-4 rounded-lg bg-card border border-border space-y-4">
+          <SettingsItem
+            title={t('automation.tag.enable')}
+            description={t('automation.tag.enableHint')}
+            action={<Toggle checked={tagEnabled} onChange={onTagEnabledChange} />}
+          />
+          {tagEnabled && (
+            <div className="flex items-center gap-3 pt-3 border-t border-border">
+              <span className="text-sm text-muted-foreground">{t('automation.tag.delay')}</span>
+              <input
+                type="number"
+                value={tagSeconds}
+                onChange={(e) => onTagSecondsChange(parseInt(e.target.value) || 0)}
+                min="1"
+                max="300"
+                className="input w-20 text-center"
+              />
+              <span className="text-sm text-muted-foreground">{t('automation.tag.unit')}</span>
+            </div>
+          )}
+        </div>
+      </SettingsSection>
 
-      <div className="border-t border-border"></div>
+      <SettingsDivider />
 
-      {/* 提示信息 */}
-      <InfoBox icon={Info} title="自动化功能说明" variant="info">
-        <ul className="space-y-1">
-          <li>• 自动清空功能可以帮助你快速回到初始状态</li>
-          <li>• 你可以根据使用习惯调整自动清空的时间</li>
-          <li>• 如果不需要自动清空，可以关闭对应的开关</li>
+      <InfoBox icon={Zap} title={t('automation.infoBox.title')} variant="info">
+        <ul className="space-y-1 text-xs">
+          <li>• {t('automation.infoBox.tip1')}</li>
         </ul>
       </InfoBox>
     </div>

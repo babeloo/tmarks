@@ -4,12 +4,13 @@
  */
 
 import { useState, useRef, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Upload, FileText, AlertCircle, CheckCircle } from 'lucide-react'
 
 interface DragDropUploadProps {
   onFileSelect: (file: File) => void
   accept?: string
-  maxSize?: number // bytes
+  maxSize?: number
   disabled?: boolean
   className?: string
   children?: React.ReactNode
@@ -24,11 +25,12 @@ interface UploadState {
 export function DragDropUpload({
   onFileSelect,
   accept = '*',
-  maxSize = 10 * 1024 * 1024, // 10MB default
+  maxSize = 10 * 1024 * 1024,
   disabled = false,
   className = '',
   children
 }: DragDropUploadProps) {
+  const { t } = useTranslation('common')
   const [state, setState] = useState<UploadState>({
     isDragOver: false,
     isValidDrag: false,
@@ -37,14 +39,11 @@ export function DragDropUpload({
   
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // 验证文件
   const validateFile = useCallback((file: File): string | null => {
-    // 检查文件大小
     if (file.size > maxSize) {
-      return `文件大小超过限制 (${formatFileSize(maxSize)})`
+      return t('upload.fileSizeExceeded', { size: formatFileSize(maxSize) })
     }
 
-    // 检查文件类型
     if (accept !== '*') {
       const acceptedTypes = accept.split(',').map(type => type.trim())
       const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase()
@@ -56,14 +55,13 @@ export function DragDropUpload({
       })
       
       if (!isValidType) {
-        return `不支持的文件类型，请选择: ${acceptedTypes.join(', ')}`
+        return t('upload.fileTypeNotSupported', { types: acceptedTypes.join(', ') })
       }
     }
 
     return null
-  }, [accept, maxSize])
+  }, [accept, maxSize, t])
 
-  // 处理文件选择
   const handleFileSelect = useCallback((file: File) => {
     const error = validateFile(file)
     if (error) {
@@ -75,7 +73,6 @@ export function DragDropUpload({
     onFileSelect(file)
   }, [validateFile, onFileSelect])
 
-  // 拖拽进入
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -92,18 +89,15 @@ export function DragDropUpload({
     }))
   }, [disabled, validateFile])
 
-  // 拖拽悬停
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
   }, [])
 
-  // 拖拽离开
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
     
-    // 只有当离开整个拖拽区域时才重置状态
     if (!e.currentTarget.contains(e.relatedTarget as Node)) {
       setState(prev => ({
         ...prev,
@@ -113,7 +107,6 @@ export function DragDropUpload({
     }
   }, [])
 
-  // 文件放置
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -134,13 +127,11 @@ export function DragDropUpload({
     }
   }, [disabled, handleFileSelect])
 
-  // 点击上传
   const handleClick = useCallback(() => {
     if (disabled) return
     fileInputRef.current?.click()
   }, [disabled])
 
-  // 文件输入变化
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -148,12 +139,10 @@ export function DragDropUpload({
     }
   }, [handleFileSelect])
 
-  // 清除错误
   const clearError = useCallback(() => {
     setState(prev => ({ ...prev, error: null }))
   }, [])
 
-  // 样式类名
   const containerClasses = [
     'relative border-2 border-dashed rounded-lg transition-all duration-200 cursor-pointer',
     'hover:border-muted-foreground/50',
@@ -195,7 +184,6 @@ export function DragDropUpload({
         {children || (
           <div className="p-8 text-center">
             <div className="flex flex-col items-center space-y-4">
-              {/* 图标 */}
               <div className={`p-3 rounded-full ${
                 state.isDragOver
                   ? state.isValidDrag
@@ -214,24 +202,22 @@ export function DragDropUpload({
                 )}
               </div>
 
-              {/* 文本 */}
               <div className="space-y-1">
                 <p className="text-base font-medium text-foreground">
                   {state.isDragOver
                     ? state.isValidDrag
-                      ? '松开以上传文件'
-                      : '文件格式不支持'
-                    : '拖拽文件到此处或点击选择'
+                      ? t('upload.dropToUpload')
+                      : t('upload.formatNotSupported')
+                    : t('upload.dragOrClick')
                   }
                 </p>
                 {accept !== '*' && !state.isDragOver && (
                   <p className="text-sm text-muted-foreground">
-                    支持格式: {accept}
+                    {t('upload.supportedFormats', { formats: accept })}
                   </p>
                 )}
               </div>
 
-              {/* 上传按钮 */}
               {!state.isDragOver && (
                 <button
                   type="button"
@@ -239,20 +225,18 @@ export function DragDropUpload({
                   disabled={disabled}
                 >
                   <FileText className="h-4 w-4 mr-2" />
-                  选择文件
+                  {t('upload.selectFile')}
                 </button>
               )}
             </div>
           </div>
         )}
 
-        {/* 拖拽覆盖层 */}
         {state.isDragOver && (
           <div className="absolute inset-0 bg-muted/20 rounded-lg pointer-events-none" />
         )}
       </div>
 
-      {/* 错误提示 */}
       {state.error && (
         <div className="flex items-center justify-between p-3 bg-destructive/10 border border-destructive/20 rounded-md">
           <div className="flex items-center space-x-2">
@@ -265,7 +249,7 @@ export function DragDropUpload({
             onClick={clearError}
             className="text-destructive hover:text-destructive/80"
           >
-            <span className="sr-only">关闭</span>
+            <span className="sr-only">{t('upload.close')}</span>
             ×
           </button>
         </div>
@@ -274,7 +258,6 @@ export function DragDropUpload({
   )
 }
 
-// 工具函数：格式化文件大小
 function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B'
   

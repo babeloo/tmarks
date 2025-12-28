@@ -1,4 +1,5 @@
 import { apiClient } from '@/lib/api-client'
+import i18n from '@/i18n'
 import type {
   ShareSettingsResponse,
   UpdateShareSettingsRequest,
@@ -29,12 +30,12 @@ export const shareService = {
     })
 
     if (!response.ok) {
-      throw new Error('无法加载公开分享内容')
+      throw new Error(i18n.t('errors:share.loadFailed'))
     }
 
     const data = (await response.json()) as { data?: PublicSharePayload; error?: { message: string } }
     if (!data.data) {
-      throw new Error(data.error?.message || '公开内容不存在')
+      throw new Error(data.error?.message || i18n.t('errors:share.notFound'))
     }
     return data.data
   },
@@ -61,12 +62,12 @@ export const shareService = {
     })
 
     if (!response.ok) {
-      throw new Error('无法加载公开分享内容')
+      throw new Error(i18n.t('errors:share.loadFailed'))
     }
 
     const data = (await response.json()) as { data?: PublicSharePaginatedPayload; error?: { message: string } }
     if (!data.data) {
-      throw new Error(data.error?.message || '公开内容不存在')
+      throw new Error(data.error?.message || i18n.t('errors:share.notFound'))
     }
     return data.data
   },

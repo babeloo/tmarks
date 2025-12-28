@@ -7,6 +7,7 @@ import {
   MoreHorizontal,
 } from 'lucide-react'
 import { useSortable } from '@dnd-kit/sortable'
+import { useTranslation } from 'react-i18next'
 import { DropdownMenu } from '@/components/common/DropdownMenu'
 import { useTabGroupMenu } from '@/hooks/useTabGroupMenu'
 import { buildTreeNodeMenu } from './TreeNodeMenu'
@@ -54,6 +55,7 @@ export function TreeNode({
   dropPosition,
   onOpenMoveDialog,
 }: TreeNodeProps) {
+  const { t } = useTranslation('tabGroups')
   const isSelected = selectedGroupId === group.id
   const isExpanded = expandedGroups.has(group.id)
   const hasChildren = (group.children?.length || 0) > 0
@@ -125,7 +127,8 @@ export function TreeNode({
     group,
     isFolder,
     isLocked,
-    menuActions
+    menuActions,
+    t
   })
 
   // 拖放指示器样式
@@ -263,7 +266,7 @@ export function TreeNode({
           className="mx-2 py-3 border-2 border-dashed border-primary rounded-lg bg-primary/5 text-center"
           style={{ marginLeft: `${(level + 1) * 20 + 12}px` }}
         >
-          <span className="text-xs text-primary font-medium">放置到此文件夹</span>
+          <span className="text-xs text-primary font-medium">{t('folder.dropHere')}</span>
         </div>
       )}
 

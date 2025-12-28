@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { 
   LayoutGrid, 
   List, 
@@ -25,19 +26,6 @@ type ViewMode = typeof VIEW_MODES[number]
 type VisibilityFilter = 'all' | 'public' | 'private'
 
 const SORT_OPTIONS: SortOption[] = ['created', 'updated', 'pinned', 'popular']
-
-const VISIBILITY_LABELS: Record<VisibilityFilter, string> = {
-  all: '全部书签',
-  public: '仅公开',
-  private: '仅私密',
-}
-
-const SORT_LABELS: Record<SortOption, string> = {
-  created: '按创建时间',
-  updated: '按更新时间',
-  pinned: '置顶优先',
-  popular: '按热门程度',
-}
 
 // 分页配置
 const PAGE_SIZE = 30 // 每页显示30个书签
@@ -89,6 +77,7 @@ function SortIcon({ sort }: { sort: SortOption }) {
 }
 
 export function PublicSharePage() {
+  const { t } = useTranslation('share')
   const { slug = '' } = useParams()
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [debouncedSelectedTags, setDebouncedSelectedTags] = useState<string[]>([])
@@ -314,23 +303,26 @@ export function PublicSharePage() {
   }
 
   const getViewModeLabel = (mode: ViewMode) => {
-    switch (mode) {
-      case 'list': return '列表视图'
-      case 'card': return '卡片视图'
-      case 'minimal': return '极简列表'
-      case 'title': return '标题瀑布'
-    }
+    return t(`view.${mode}`)
+  }
+
+  const getVisibilityLabel = (filter: VisibilityFilter) => {
+    return t(`filter.${filter}`)
+  }
+
+  const getSortLabel = (sort: SortOption) => {
+    return t(`sort.${sort}`)
   }
 
   return (
     <>
       <div className="w-full mx-auto py-3 sm:py-4 md:py-6 px-3 sm:px-4 md:px-6">
         {shareQuery.isLoading && (
-          <div className="text-center text-muted-foreground py-24">正在加载公开书签...</div>
+          <div className="text-center text-muted-foreground py-24">{t('loading')}</div>
         )}
 
         {shareQuery.isError && !shareQuery.isLoading && (
-          <div className="text-center text-muted-foreground py-24">分享链接无效或内容已下线。</div>
+          <div className="text-center text-muted-foreground py-24">{t('error')}</div>
         )}
 
         {!shareQuery.isLoading && !shareQuery.isError && (
@@ -358,7 +350,7 @@ export function PublicSharePage() {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div className="flex-1">
                       <h1 className="text-xl sm:text-2xl font-bold text-primary">
-                        {shareInfo?.title || `${shareInfo?.username || '访客'}的书签精选`}
+                        {shareInfo?.title || (shareInfo?.username ? t('defaultTitle', { username: shareInfo.username }) : t('guestTitle'))}
                       </h1>
                       {shareInfo?.description && (
                         <p className="text-sm text-muted-foreground mt-1">{shareInfo.description}</p>
@@ -368,10 +360,10 @@ export function PublicSharePage() {
                     {allBookmarks.length > 0 && (
                       <div className="text-sm text-muted-foreground">
                         {allFilteredBookmarks.length === allBookmarks.length ? (
-                          <span>共 {allBookmarks.length} 个书签</span>
+                          <span>{t('stats.total', { count: allBookmarks.length })}</span>
                         ) : (
                           <span>
-                            筛选出 {allFilteredBookmarks.length} / {allBookmarks.length} 个书签
+                            {t('stats.filtered', { filtered: allFilteredBookmarks.length, total: allBookmarks.length })}
                           </span>
                         )}
                       </div>
@@ -388,8 +380,8 @@ export function PublicSharePage() {
                       <button
                         onClick={() => setIsTagSidebarOpen(true)}
                         className="lg:hidden w-11 h-11 rounded-xl flex items-center justify-center transition-all shadow-float bg-card border border-border hover:bg-muted hover:border-primary/30 text-foreground"
-                        title="打开标签"
-                        aria-label="打开标签"
+                        title={t('filter.openTags')}
+                        aria-label={t('filter.openTags')}
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
@@ -403,8 +395,8 @@ export function PublicSharePage() {
                           <button
                             onClick={() => setSearchMode(searchMode === 'bookmark' ? 'tag' : 'bookmark')}
                             className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center transition-all hover:text-primary"
-                            title={searchMode === 'bookmark' ? '切换到标签搜索' : '切换到书签搜索'}
-                            aria-label={searchMode === 'bookmark' ? '切换到标签搜索' : '切换到书签搜索'}
+                            title={searchMode === 'bookmark' ? t('search.switchToTag') : t('search.switchToBookmark')}
+                            aria-label={searchMode === 'bookmark' ? t('search.switchToTag') : t('search.switchToBookmark')}
                           >
                             {searchMode === 'bookmark' ? (
                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -426,7 +418,7 @@ export function PublicSharePage() {
                           <input
                             type="text"
                             className="input w-full !pl-16 sm:!pl-[4.5rem] h-11 sm:h-auto text-sm sm:text-base"
-                            placeholder={searchMode === 'bookmark' ? '搜索书签...' : '搜索标签...'}
+                            placeholder={searchMode === 'bookmark' ? t('search.bookmarkPlaceholder') : t('search.tagPlaceholder')}
                             value={searchKeyword}
                             onChange={(e) => setSearchKeyword(e.target.value)}
                           />
@@ -440,8 +432,8 @@ export function PublicSharePage() {
                         onClick={handleSortByChange}
                         className="flex items-center justify-center w-8 h-8 rounded-lg transition-all hover:bg-primary/10 flex-shrink-0"
                         style={{color: 'var(--foreground)'}}
-                        title={`${SORT_LABELS[sortBy]} (点击切换)`}
-                        aria-label={`${SORT_LABELS[sortBy]} (点击切换)`}
+                        title={`${getSortLabel(sortBy)} (${t('common:button.confirm')})`}
+                        aria-label={`${getSortLabel(sortBy)}`}
                         type="button"
                       >
                         <SortIcon sort={sortBy} />
@@ -458,8 +450,8 @@ export function PublicSharePage() {
                             : 'text-warning hover:bg-warning/10'
                         }`}
                         style={{color: visibilityFilter === 'all' ? 'var(--foreground)' : undefined}}
-                        title={`${VISIBILITY_LABELS[visibilityFilter]} (点击切换)`}
-                        aria-label={`${VISIBILITY_LABELS[visibilityFilter]} (点击切换)`}
+                        title={getVisibilityLabel(visibilityFilter)}
+                        aria-label={getVisibilityLabel(visibilityFilter)}
                         type="button"
                       >
                         <VisibilityIcon filter={visibilityFilter} />
@@ -470,8 +462,8 @@ export function PublicSharePage() {
                         onClick={handleViewModeChange}
                         className="flex items-center justify-center w-8 h-8 rounded-lg transition-all hover:bg-primary/10 flex-shrink-0"
                         style={{color: 'var(--foreground)'}}
-                        title={`${getViewModeLabel(viewMode)} (点击切换)`}
-                        aria-label={`${getViewModeLabel(viewMode)} (点击切换)`}
+                        title={getViewModeLabel(viewMode)}
+                        aria-label={getViewModeLabel(viewMode)}
                         type="button"
                       >
                         <ViewModeIcon mode={viewMode} />
@@ -504,8 +496,8 @@ export function PublicSharePage() {
                       <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                       </svg>
-                      <p className="text-lg font-medium">没有找到匹配的书签</p>
-                      <p className="text-sm mt-2">尝试调整筛选条件或搜索关键词</p>
+                      <p className="text-lg font-medium">{t('empty.title')}</p>
+                      <p className="text-sm mt-2">{t('empty.hint')}</p>
                     </div>
                   </div>
                 ) : null}
@@ -527,11 +519,11 @@ export function PublicSharePage() {
             <div className="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-background border-r border-border shadow-xl animate-in slide-in-from-left duration-300">
               {/* 抽屉头部 */}
               <div className="flex items-center justify-between p-4 border-b border-border bg-background">
-                <h3 className="text-lg font-semibold text-foreground">标签筛选</h3>
+                <h3 className="text-lg font-semibold text-foreground">{t('filter.tagFilter')}</h3>
                 <button
                   onClick={() => setIsTagSidebarOpen(false)}
                   className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
-                  aria-label="关闭标签抽屉"
+                  aria-label={t('filter.closeTagDrawer')}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

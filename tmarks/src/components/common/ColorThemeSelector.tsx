@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next'
 import { useThemeStore } from '@/stores/themeStore'
 
 export function ColorThemeSelector() {
+  const { t } = useTranslation('common')
   const { colorTheme, setColorTheme } = useThemeStore()
 
   const toggleColorTheme = () => {
@@ -11,8 +13,8 @@ export function ColorThemeSelector() {
     <button
       onClick={toggleColorTheme}
       className="btn btn-sm btn-ghost p-2"
-      aria-label="切换颜色主题"
-      title={colorTheme === 'default' ? '切换到活力橙' : '切换到中性灰'}
+      aria-label={t('nav.toggleColorTheme')}
+      title={colorTheme === 'default' ? t('nav.switchToOrange') : t('nav.switchToDefault')}
     >
       {colorTheme === 'default' ? (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

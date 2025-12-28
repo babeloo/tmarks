@@ -1,0 +1,62 @@
+{
+  "title": "公开分享",
+  "loading": "正在加载公开书签...",
+  "error": "分享链接无效或内容已下线。",
+  "defaultTitle": "{{username}}的书签精选",
+  "guestTitle": "访客的书签精选",
+  "settings": {
+    "title": "公开分享设置",
+    "enableTitle": "启用公开分享",
+    "enableDescription": "开启后可将书签以只读页面公开给任何人访问。",
+    "enableLabel": "开启公开分享",
+    "slugLabel": "分享链接后缀",
+    "slugPlaceholder": "例如：my-bookmarks",
+    "slugHint": "仅支持字母、数字与短横线，留空将自动生成。",
+    "regenerate": "重新生成",
+    "pageTitleLabel": "页面标题",
+    "pageTitlePlaceholder": "公开页面标题，用于向访客介绍",
+    "descriptionLabel": "页面描述",
+    "descriptionPlaceholder": "可选描述，向访客说明书签集合内容",
+    "linkLabel": "分享链接",
+    "linkPlaceholder": "生成后显示分享链接",
+    "copy": "复制",
+    "copied": "已复制",
+    "reset": "重置",
+    "save": "保存设置",
+    "saving": "保存中..."
+  },
+  "stats": {
+    "total": "共 {{count}} 个书签",
+    "filtered": "筛选出 {{filtered}} / {{total}} 个书签"
+  },
+  "search": {
+    "bookmarkPlaceholder": "搜索书签...",
+    "tagPlaceholder": "搜索标签...",
+    "switchToTag": "切换到标签搜索",
+    "switchToBookmark": "切换到书签搜索"
+  },
+  "filter": {
+    "all": "全部书签",
+    "public": "仅公开",
+    "private": "仅私密",
+    "openTags": "打开标签",
+    "tagFilter": "标签筛选",
+    "closeTagDrawer": "关闭标签抽屉"
+  },
+  "sort": {
+    "created": "按创建时间",
+    "updated": "按更新时间",
+    "pinned": "置顶优先",
+    "popular": "按热门程度"
+  },
+  "view": {
+    "list": "列表视图",
+    "card": "卡片视图",
+    "minimal": "极简列表",
+    "title": "标题瀑布"
+  },
+  "empty": {
+    "title": "没有找到匹配的书签",
+    "hint": "尝试调整筛选条件或搜索关键词"
+  }
+}

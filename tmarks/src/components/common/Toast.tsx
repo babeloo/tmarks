@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react'
+import { Z_INDEX } from '@/lib/constants/z-index'
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning'
 
@@ -50,6 +52,7 @@ const COLORS = {
 }
 
 export function Toast({ id, type, message, duration = 3000, onClose }: ToastProps) {
+  const { t } = useTranslation('common')
   const Icon = ICONS[type]
   const colors = COLORS[type]
 
@@ -67,7 +70,6 @@ export function Toast({ id, type, message, duration = 3000, onClose }: ToastProp
     <div
       className={`relative flex items-start gap-3 p-4 rounded-lg border-2 shadow-lg ${colors.bg} ${colors.border} min-w-[320px] max-w-md animate-slide-in backdrop-blur-sm overflow-hidden`}
     >
-      {/* 半透明彩色覆盖层 */}
       <div className={`absolute inset-0 rounded-lg ${colors.bgOverlay} z-0 pointer-events-none`}></div>
       
       <Icon className={`relative z-10 w-5 h-5 ${colors.icon} flex-shrink-0 mt-0.5`} />
@@ -75,7 +77,7 @@ export function Toast({ id, type, message, duration = 3000, onClose }: ToastProp
       <button
         onClick={() => onClose(id)}
         className={`relative z-10 ${colors.icon} hover:opacity-70 transition-opacity flex-shrink-0`}
-        aria-label="关闭"
+        aria-label={t('button.close')}
       >
         <X className="w-5 h-5" />
       </button>
@@ -85,11 +87,10 @@ export function Toast({ id, type, message, duration = 3000, onClose }: ToastProp
 
 export function ToastContainer({ toasts, onClose }: { toasts: ToastProps[]; onClose: (id: string) => void }) {
   return (
-    <div className="fixed top-4 right-4 flex flex-col gap-2" style={{ zIndex: 300 }}>
+    <div className="fixed top-4 right-4 flex flex-col gap-2" style={{ zIndex: Z_INDEX.TOAST }}>
       {toasts.map((toast) => (
         <Toast key={toast.id} {...toast} onClose={onClose} />
       ))}
     </div>
   )
 }
-

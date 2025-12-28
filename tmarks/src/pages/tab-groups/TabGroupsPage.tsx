@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { tabGroupsService } from '@/services/tab-groups'
 import { logger } from '@/lib/logger'
 import type { TabGroup, TabGroupItem } from '@/lib/types'
@@ -38,6 +39,8 @@ import { BottomNav } from '@/components/common/BottomNav'
 import { MobileHeader } from '@/components/common/MobileHeader'
 
 export function TabGroupsPage() {
+  const { t } = useTranslation('tabGroups')
+  const { t: tc } = useTranslation('common')
   const [tabGroups, setTabGroups] = useState<TabGroup[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -194,7 +197,7 @@ export function TabGroupsPage() {
       setTabGroups(groups)
     } catch (err) {
       logger.error('Failed to load tab groups:', err)
-      setError('加载标签页组失败')
+      setError(t('page.loadFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -219,18 +222,18 @@ export function TabGroupsPage() {
       }
     } catch (err) {
       logger.error('Failed to refresh tree:', err)
-      setError('刷新失败')
+      setError(t('page.refreshFailed'))
     }
   }
 
   const handleCreateFolder = async () => {
     try {
-      await tabGroupsService.createFolder('新文件夹')
+      await tabGroupsService.createFolder(t('folder.newFolder'))
       // 只刷新左侧树形列表
       await refreshTreeOnly()
     } catch (err) {
       logger.error('Failed to create folder:', err)
-      setError('创建文件夹失败')
+      setError(t('page.createFolderFailed'))
     }
   }
 
@@ -241,7 +244,7 @@ export function TabGroupsPage() {
       await refreshTreeOnly()
     } catch (err) {
       logger.error('Failed to rename group:', err)
-      setError('重命名失败')
+      setError(t('page.renameFailed'))
     }
   }
 
@@ -296,7 +299,7 @@ export function TabGroupsPage() {
       await refreshTreeOnly()
     } catch (err) {
       logger.error('Failed to move group:', err)
-      setError('移动失败')
+      setError(t('page.moveFailed'))
     }
   }
 
@@ -619,7 +622,7 @@ export function TabGroupsPage() {
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
           <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
-            加载中...
+            {t('page.loading')}
           </p>
         </div>
       </div>
@@ -636,7 +639,7 @@ export function TabGroupsPage() {
             className="px-4 py-2 rounded-lg border border-border hover:bg-muted/50 transition-colors"
             style={{ color: 'var(--foreground)' }}
           >
-            重试
+            {tc('button.retry')}
           </button>
         </div>
       </div>
@@ -649,7 +652,7 @@ export function TabGroupsPage() {
       {/* 移动端顶部工具栏 */}
       {isMobile && (
         <MobileHeader
-          title="标签页组"
+          title={t('title')}
           onMenuClick={() => setIsDrawerOpen(true)}
           showSearch={false}
           showMore={false}
@@ -679,7 +682,7 @@ export function TabGroupsPage() {
         <Drawer
           isOpen={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
-          title="标签页组"
+          title={t('title')}
           side="left"
         >
           <TabGroupTree
@@ -708,7 +711,7 @@ export function TabGroupsPage() {
                 {/* 桌面端显示标题 */}
                 {!isMobile && (
                   <h1 className="text-xl font-semibold text-foreground whitespace-nowrap flex-shrink-0">
-                    标签页组
+                    {t('title')}
                   </h1>
                 )}
                 <SearchBar
@@ -864,7 +867,7 @@ export function TabGroupsPage() {
                             <span>📁</span>
                             <span>{group.title}</span>
                             <span className="text-sm text-muted-foreground">
-                              ({children.reduce((sum, g) => sum + (g.item_count || 0), 0)} 个标签页)
+                              ({t('header.tabCount', { count: children.reduce((sum, g) => sum + (g.item_count || 0), 0) })})
                             </span>
                           </h2>
                           <div className="space-y-6">

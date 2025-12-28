@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useCreateApiKey } from '@/hooks/useApiKeys'
 import { AlertDialog } from '@/components/common/AlertDialog'
 import {
@@ -12,6 +13,7 @@ import {
   type PermissionTemplate,
 } from '@shared/permissions'
 import type { ApiKeyWithKey, CreateApiKeyRequest } from '@/services/api-keys'
+import { Z_INDEX } from '@/lib/constants/z-index'
 
 interface CreateApiKeyModalProps {
   onClose: () => void
@@ -20,6 +22,7 @@ interface CreateApiKeyModalProps {
 type Step = 'basic' | 'permissions' | 'expiration' | 'success'
 
 export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
+  const { t } = useTranslation('settings')
   const createApiKey = useCreateApiKey()
 
   const [step, setStep] = useState<Step>('basic')
@@ -76,49 +79,49 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-background flex items-center justify-center" style={{ zIndex: 200 }}>
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center" style={{ zIndex: Z_INDEX.API_KEY_MODAL }}>
       <AlertDialog
         isOpen={showErrorAlert}
-        title="创建失败"
-        message="创建失败，请重试"
+        title={t('apiKey.create.failed')}
+        message={t('apiKey.create.failedMessage')}
         type="error"
         onConfirm={() => setShowErrorAlert(false)}
       />
 
-      <div className="card rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="card rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto" style={{ backgroundColor: 'var(--card)' }}>
         {/* 步骤 1: 基本信息 */}
         {step === 'basic' && (
           <div className="p-6">
             <h2 className="text-xl font-bold text-foreground mb-4">
-              创建 API Key - 步骤 1/3
+              {t('apiKey.create.title')} - {t('apiKey.create.step', { current: 1, total: 3 })}
             </h2>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  名称 *
+                  {t('apiKey.create.nameRequired')}
                 </label>
                 <input
                   type="text"
                   className="input w-full"
-                  placeholder="例如：Chrome 插件 - 工作电脑"
+                  placeholder={t('apiKey.create.namePlaceholder')}
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  用于识别此 Key 的用途
+                  {t('apiKey.create.nameHint')}
                 </p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  描述 (可选)
+                  {t('apiKey.create.description')}
                 </label>
                 <textarea
                   className="input w-full h-20 resize-none"
-                  placeholder="例如：用于浏览器插件访问"
+                  placeholder={t('apiKey.create.descriptionPlaceholder')}
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
@@ -129,14 +132,14 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
 
             <div className="flex justify-between mt-6">
               <button className="btn" onClick={onClose}>
-                取消
+                {t('apiKey.create.cancel')}
               </button>
               <button
                 className="btn btn-primary"
                 onClick={handleNext}
                 disabled={!canProceed()}
               >
-                下一步 →
+                {t('apiKey.create.next')}
               </button>
             </div>
           </div>
@@ -146,13 +149,13 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
         {step === 'permissions' && (
           <div className="p-6">
             <h2 className="text-xl font-bold text-foreground mb-4">
-              创建 API Key - 步骤 2/3
+              {t('apiKey.create.title')} - {t('apiKey.create.step', { current: 2, total: 3 })}
             </h2>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-3">
-                  快速选择:
+                  {t('apiKey.create.quickSelect')}
                 </label>
                 <div className="space-y-2">
                   {(Object.keys(PERMISSION_TEMPLATES) as PermissionTemplate[]).map(
@@ -172,15 +175,15 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
                         />
                         <div className="flex-1">
                           <div className="font-medium text-foreground">
-                            {PERMISSION_TEMPLATES[template].name}
+                            {t(PERMISSION_TEMPLATES[template].nameKey)}
                             {template === 'BASIC' && (
                               <span className="ml-2 text-xs bg-primary text-primary-content px-2 py-0.5 rounded">
-                                推荐
+                                {t('apiKey.create.recommended')}
                               </span>
                             )}
                           </div>
                           <div className="text-xs text-muted-foreground">
-                            {PERMISSION_TEMPLATES[template].description}
+                            {t(PERMISSION_TEMPLATES[template].descriptionKey)}
                           </div>
                         </div>
                       </label>
@@ -192,7 +195,7 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
               {/* 预览权限 */}
               <div className="p-4 bg-muted/30 border border-border rounded-lg">
                 <div className="text-sm font-medium text-foreground mb-2">
-                  包含的权限:
+                  {t('apiKey.create.includedPermissions')}
                 </div>
                 <div className="space-y-1 text-xs text-muted-foreground">
                   {(formData.template
@@ -211,14 +214,14 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
 
             <div className="flex justify-between mt-6">
               <button className="btn" onClick={handleBack}>
-                ← 上一步
+                {t('apiKey.create.prev')}
               </button>
               <button
                 className="btn btn-primary"
                 onClick={handleNext}
                 disabled={!canProceed()}
               >
-                下一步 →
+                {t('apiKey.create.next')}
               </button>
             </div>
           </div>
@@ -228,13 +231,13 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
         {step === 'expiration' && (
           <div className="p-6">
             <h2 className="text-xl font-bold text-foreground mb-4">
-              创建 API Key - 步骤 3/3
+              {t('apiKey.create.title')} - {t('apiKey.create.step', { current: 3, total: 3 })}
             </h2>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-3">
-                  过期时间:
+                  {t('apiKey.create.expiration')}
                 </label>
                 <div className="space-y-2">
                   <label className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/30">
@@ -246,7 +249,7 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
                         setFormData({ ...formData, expires_at: null })
                       }
                     />
-                    <span className="text-foreground">永不过期</span>
+                    <span className="text-foreground">{t('apiKey.create.neverExpire')}</span>
                   </label>
 
                   <label className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/30">
@@ -258,7 +261,7 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
                         setFormData({ ...formData, expires_at: '30d' })
                       }
                     />
-                    <span className="text-foreground">30 天后</span>
+                    <span className="text-foreground">{t('apiKey.create.expireIn30Days')}</span>
                   </label>
 
                   <label className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/30">
@@ -270,7 +273,7 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
                         setFormData({ ...formData, expires_at: '90d' })
                       }
                     />
-                    <span className="text-foreground">90 天后</span>
+                    <span className="text-foreground">{t('apiKey.create.expireIn90Days')}</span>
                   </label>
                 </div>
               </div>
@@ -278,14 +281,14 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
 
             <div className="flex justify-between mt-6">
               <button className="btn" onClick={handleBack}>
-                ← 上一步
+                {t('apiKey.create.prev')}
               </button>
               <button
                 className="btn btn-primary"
                 onClick={handleNext}
                 disabled={createApiKey.isPending}
               >
-                {createApiKey.isPending ? '创建中...' : '创建 API Key'}
+                {createApiKey.isPending ? t('apiKey.create.creating') : t('apiKey.create.createButton')}
               </button>
             </div>
           </div>
@@ -297,13 +300,13 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
             <div className="text-center mb-6">
               <div className="text-4xl mb-3">⚠️</div>
               <h2 className="text-xl font-bold text-foreground mb-2">
-                创建成功！请妥善保存此 Key
+                {t('apiKey.success.title')}
               </h2>
             </div>
 
             <div className="mb-6">
               <label className="block text-sm font-medium text-foreground mb-2">
-                您的 API Key:
+                {t('apiKey.success.yourKey')}
               </label>
               <div className="flex gap-2">
                 <input
@@ -314,23 +317,23 @@ export function CreateApiKeyModal({ onClose }: CreateApiKeyModalProps) {
                   onClick={(e) => e.currentTarget.select()}
                 />
                 <button className="btn" onClick={handleCopy}>
-                  {copied ? '✓ 已复制' : '📋 复制'}
+                  {copied ? t('apiKey.success.copied') : t('apiKey.success.copy')}
                 </button>
               </div>
             </div>
 
             <div className="p-4 bg-warning/10 border border-warning/30 rounded-lg mb-6">
-              <h4 className="font-medium text-warning mb-2">⚠️ 重要提示：</h4>
+              <h4 className="font-medium text-warning mb-2">{t('apiKey.success.warning')}</h4>
               <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
-                <li>此 Key 仅显示一次，关闭后无法再查看</li>
-                <li>请立即复制并保存到安全的地方</li>
-                <li>后续您只能看到前缀: {createdKey.key_prefix}...</li>
+                <li>{t('apiKey.success.warningList.showOnce')}</li>
+                <li>{t('apiKey.success.warningList.saveNow')}</li>
+                <li>{t('apiKey.success.warningList.prefixOnly', { prefix: createdKey.key_prefix })}</li>
               </ul>
             </div>
 
             <div className="flex justify-center">
               <button className="btn btn-primary" onClick={onClose}>
-                我已保存，关闭
+                {t('apiKey.success.close')}
               </button>
             </div>
           </div>

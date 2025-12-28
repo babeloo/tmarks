@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 interface PaginationFooterProps {
   hasMore: boolean
   isLoading: boolean
@@ -13,6 +15,9 @@ export function PaginationFooter({
   currentCount,
   totalLoaded,
 }: PaginationFooterProps) {
+  const { t } = useTranslation('common')
+  const { t: tb } = useTranslation('bookmarks')
+
   if (!hasMore && currentCount === 0) {
     return null
   }
@@ -22,9 +27,9 @@ export function PaginationFooter({
       {/* 统计信息 */}
       <div className="text-sm text-base-content/60 mb-4">
         {hasMore ? (
-          <>已加载 {totalLoaded} 个书签</>
+          <>{t('pagination.total', { count: totalLoaded })}</>
         ) : (
-          <>共 {totalLoaded} 个书签</>
+          <>{t('pagination.total', { count: totalLoaded })}</>
         )}
       </div>
 
@@ -38,10 +43,10 @@ export function PaginationFooter({
           {isLoading ? (
             <>
               <span className="loading loading-spinner loading-sm"></span>
-              加载中...
+              {t('status.loading')}
             </>
           ) : (
-            '加载更多'
+            t('button.loadMore')
           )}
         </button>
       )}
@@ -49,7 +54,7 @@ export function PaginationFooter({
       {/* 已加载全部 */}
       {!hasMore && totalLoaded > 0 && (
         <div className="text-sm text-base-content/40">
-          已加载全部书签
+          {tb('empty.title')}
         </div>
       )}
     </div>

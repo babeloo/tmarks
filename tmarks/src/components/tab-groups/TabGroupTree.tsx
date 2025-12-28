@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FolderPlus, Circle, Folder } from 'lucide-react'
 import { DndContext, DragOverlay } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -27,6 +28,8 @@ export function TabGroupTree({
   onMoveGroup,
   onRefresh,
 }: TabGroupTreeProps) {
+  const { t } = useTranslation('tabGroups')
+  
   // 状态管理
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(() => {
     const folderIds = tabGroups.filter(g => g.is_folder === 1).map(g => g.id)
@@ -96,13 +99,13 @@ export function TabGroupTree({
           {/* Header */}
           <div className="px-3 py-2 border-b border-border flex items-center justify-between flex-shrink-0">
             <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              标签页组
+              {t('title')}
             </div>
             {onCreateFolder && (
               <button
                 onClick={onCreateFolder}
                 className="w-6 h-6 flex items-center justify-center hover:bg-muted rounded transition-colors"
-                title="创建文件夹"
+                title={t('menu.createFolder')}
               >
                 <FolderPlus className="w-4 h-4 text-muted-foreground" />
               </button>
@@ -112,7 +115,7 @@ export function TabGroupTree({
           {/* List */}
           <SortableContext items={allIds} strategy={verticalListSortingStrategy}>
             <div className="flex-1 overflow-y-auto min-h-0">
-              {/* 全部 - 作为根节点 */}
+              {/* All - root node */}
               <div className="relative">
                 <div
                   onClick={() => onSelectGroup(null)}
@@ -124,19 +127,19 @@ export function TabGroupTree({
                     <Circle className={`w-2 h-2 ${selectedGroupId === null ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
                   </div>
                   <span className={`text-sm flex-1 ${selectedGroupId === null ? 'text-primary font-medium' : 'text-foreground'}`}>
-                    全部
+                    {t('filter.all', { ns: 'bookmarks' })}
                   </span>
                   <span className="text-xs text-muted-foreground">{totalCount}</span>
                 </div>
 
-                {/* 树形列表 */}
+                {/* Tree list */}
                 {treeData.length === 0 ? (
                   <div className="px-3 py-8 text-center">
-                    <p className="text-xs text-muted-foreground/50">暂无分组</p>
+                    <p className="text-xs text-muted-foreground/50">{t('empty.title')}</p>
                   </div>
                 ) : (
                   <div className="relative">
-                    {/* 从"全部"延伸下来的垂直线 */}
+                    {/* Vertical line from "All" */}
                     {treeData.length > 0 && (
                       <div
                         className="absolute pointer-events-none top-0 bottom-0"

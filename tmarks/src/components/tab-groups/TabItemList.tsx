@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { TabItem } from './TabItem'
 import type { TabGroupItem } from '@/lib/types'
 import {
@@ -44,10 +45,12 @@ export function TabItemList({
   setEditingTitle,
   extractDomain,
 }: TabItemListProps) {
+  const { t } = useTranslation('tabGroups')
+  
   if (!items || items.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground">
-        此标签页组没有标签页
+        {t('message.noTabsInGroup')}
       </div>
     )
   }

@@ -1,4 +1,5 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   BookOpen,
   User,
@@ -11,15 +12,14 @@ import { ColorThemeSelector } from '@/components/common/ColorThemeSelector'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 
 export function FullScreenAppShell() {
+  const { t } = useTranslation('common')
   const { theme, colorTheme } = useThemeStore()
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuthStore()
 
-  // 判断当前是否在标签页组页面
   const isOnTabGroupsPage = location.pathname.startsWith('/tab')
 
-  // 切换按钮点击处理
   const handleToggleView = () => {
     if (isOnTabGroupsPage) {
       navigate('/')
@@ -30,14 +30,12 @@ export function FullScreenAppShell() {
 
   return (
     <div className="min-h-screen" style={{backgroundColor: 'var(--background)'}} data-theme={theme} data-color-theme={colorTheme}>
-      {/* 玻璃磨砂导航栏 */}
       <header className="h-16 sm:h-20 sticky top-0 z-50 backdrop-filter backdrop-blur-xl bg-card/80 border-b border-border/50 shadow-float flex items-center">
         <div className="w-full mx-auto px-3 sm:px-6 flex items-center justify-between">
-          {/* Logo */}
           <button
             onClick={() => navigate('/')}
             className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity duration-200 focus:outline-none"
-            title="回到首页"
+            title={t('nav.home')}
           >
             <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-float">
               <BookOpen
@@ -50,18 +48,16 @@ export function FullScreenAppShell() {
                 TMarks
               </h1>
               <p className="text-xs font-medium hidden sm:block" style={{color: 'var(--muted-foreground)'}}>
-                {isOnTabGroupsPage ? '管理收纳的标签页组' : '智能书签管理'}
+                {isOnTabGroupsPage ? t('nav.manageTabGroups') : t('nav.smartBookmarkManagement')}
               </p>
             </div>
           </button>
 
-          {/* 右侧操作区 */}
           <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4">
-            {/* 书签/标签页组切换按钮 */}
             <button
               onClick={handleToggleView}
               className="hidden sm:flex btn btn-sm btn-ghost p-2"
-              title={isOnTabGroupsPage ? '切换到书签' : '切换到标签页组'}
+              title={isOnTabGroupsPage ? t('nav.switchToBookmarks') : t('nav.switchToTabGroups')}
             >
               {isOnTabGroupsPage ? (
                 <BookOpen className="w-4 h-4" />
@@ -73,12 +69,11 @@ export function FullScreenAppShell() {
             <ThemeToggle />
             <ColorThemeSelector />
 
-            {/* 用户按钮 - 直接跳转到设置 */}
             {user && (
               <button
                 onClick={() => navigate('/settings/general')}
                 className="btn btn-sm btn-ghost p-2"
-                title={`${user.username} - 点击进入设置`}
+                title={t('nav.userSettings', { username: user.username })}
               >
                 <User className="w-4 h-4" />
               </button>
@@ -87,12 +82,10 @@ export function FullScreenAppShell() {
         </div>
       </header>
 
-      {/* 主内容区 - 全屏无 padding */}
       <main className="w-full pb-16 sm:pb-0 flex flex-col min-h-0 flex-1">
         <Outlet />
       </main>
 
-      {/* 移动端底部导航 */}
       <MobileBottomNav />
     </div>
   )

@@ -40,12 +40,12 @@ export const PERMISSIONS = {
 export type Permission = typeof PERMISSIONS[keyof typeof PERMISSIONS]
 
 /**
- * 权限模板
+ * 权限模板 - 使用 i18n key
  */
 export const PERMISSION_TEMPLATES = {
   READ_ONLY: {
-    name: '只读',
-    description: '仅查看数据，不能修改',
+    nameKey: 'settings:permissions.templates.readOnly',
+    descriptionKey: 'settings:permissions.templates.readOnlyDesc',
     permissions: [
       PERMISSIONS.BOOKMARKS_READ,
       PERMISSIONS.TAGS_READ,
@@ -54,8 +54,8 @@ export const PERMISSION_TEMPLATES = {
   },
 
   BASIC: {
-    name: '基础使用',
-    description: '可以添加书签和标签，但不能删除',
+    nameKey: 'settings:permissions.templates.basic',
+    descriptionKey: 'settings:permissions.templates.basicDesc',
     permissions: [
       PERMISSIONS.BOOKMARKS_CREATE,
       PERMISSIONS.BOOKMARKS_READ,
@@ -67,8 +67,8 @@ export const PERMISSION_TEMPLATES = {
   },
 
   FULL: {
-    name: '完整权限',
-    description: '拥有所有操作权限',
+    nameKey: 'settings:permissions.templates.full',
+    descriptionKey: 'settings:permissions.templates.fullDesc',
     permissions: [
       PERMISSIONS.BOOKMARKS_ALL,
       PERMISSIONS.TAGS_ALL,
@@ -106,77 +106,116 @@ export function hasPermission(
 }
 
 /**
- * 获取权限的中文显示名称
- * @param permission 权限字符串
- * @returns 中文名称
+ * 权限到 i18n key 的映射
  */
-export function getPermissionLabel(permission: string): string {
-  const labels: Record<string, string> = {
-    'bookmarks.create': '创建书签',
-    'bookmarks.read': '读取书签',
-    'bookmarks.update': '更新书签',
-    'bookmarks.delete': '删除书签',
-    'bookmarks.*': '所有书签权限',
-    'tags.create': '创建标签',
-    'tags.read': '读取标签',
-    'tags.update': '更新标签',
-    'tags.delete': '删除标签',
-    'tags.assign': '分配标签',
-    'tags.*': '所有标签权限',
-    'tab_groups.create': '创建收纳',
-    'tab_groups.read': '读取收纳',
-    'tab_groups.update': '更新收纳',
-    'tab_groups.delete': '删除收纳',
-    'tab_groups.*': '所有收纳权限',
-    'ai.suggest': 'AI 智能建议',
-    'user.read': '读取用户信息',
-    'user.preferences.read': '读取用户偏好',
-  }
-
-  return labels[permission] || permission
+const PERMISSION_I18N_KEYS: Record<string, string> = {
+  'bookmarks.create': 'settings:permissions.bookmarksCreate',
+  'bookmarks.read': 'settings:permissions.bookmarksRead',
+  'bookmarks.update': 'settings:permissions.bookmarksUpdate',
+  'bookmarks.delete': 'settings:permissions.bookmarksDelete',
+  'bookmarks.*': 'settings:permissions.bookmarksAll',
+  'tags.create': 'settings:permissions.tagsCreate',
+  'tags.read': 'settings:permissions.tagsRead',
+  'tags.update': 'settings:permissions.tagsUpdate',
+  'tags.delete': 'settings:permissions.tagsDelete',
+  'tags.assign': 'settings:permissions.tagsAssign',
+  'tags.*': 'settings:permissions.tagsAll',
+  'tab_groups.create': 'settings:permissions.tabGroupsCreate',
+  'tab_groups.read': 'settings:permissions.tabGroupsRead',
+  'tab_groups.update': 'settings:permissions.tabGroupsUpdate',
+  'tab_groups.delete': 'settings:permissions.tabGroupsDelete',
+  'tab_groups.*': 'settings:permissions.tabGroupsAll',
+  'ai.suggest': 'settings:permissions.aiSuggest',
+  'user.read': 'settings:permissions.userRead',
+  'user.preferences.read': 'settings:permissions.userPreferencesRead',
 }
 
 /**
- * 获取权限的分组
+ * 获取权限的 i18n key
+ * @param permission 权限字符串
+ * @returns i18n key
  */
-export function getPermissionGroups(): Array<{
+export function getPermissionI18nKey(permission: string): string {
+  return PERMISSION_I18N_KEYS[permission] || permission
+}
+
+/**
+ * 获取权限的显示名称（需要传入翻译函数）
+ * @param permission 权限字符串
+ * @param t 翻译函数
+ * @returns 显示名称
+ */
+export function getPermissionLabel(permission: string, t?: (key: string) => string): string {
+  const key = PERMISSION_I18N_KEYS[permission]
+  if (t && key) {
+    return t(key)
+  }
+  // 后备：返回权限字符串本身
+  return permission
+}
+
+/**
+ * 权限分组的 i18n key
+ */
+const PERMISSION_GROUP_I18N_KEYS = {
+  bookmarks: 'settings:permissions.bookmarks',
+  tags: 'settings:permissions.tags',
+  tabGroups: 'settings:permissions.tabGroups',
+  other: 'settings:permissions.other',
+}
+
+/**
+ * 获取权限的分组（需要传入翻译函数）
+ */
+export function getPermissionGroups(t?: (key: string) => string): Array<{
   name: string
-  permissions: Array<{ value: string; label: string }>
+  nameKey: string
+  permissions: Array<{ value: string; label: string; labelKey: string }>
 }> {
+  const getName = (key: string) => t ? t(key) : key
+  const getLabel = (permission: string) => {
+    const labelKey = getPermissionI18nKey(permission)
+    return t ? t(labelKey) : permission
+  }
+
   return [
     {
-      name: '书签',
+      name: getName(PERMISSION_GROUP_I18N_KEYS.bookmarks),
+      nameKey: PERMISSION_GROUP_I18N_KEYS.bookmarks,
       permissions: [
-        { value: PERMISSIONS.BOOKMARKS_CREATE, label: getPermissionLabel(PERMISSIONS.BOOKMARKS_CREATE) },
-        { value: PERMISSIONS.BOOKMARKS_READ, label: getPermissionLabel(PERMISSIONS.BOOKMARKS_READ) },
-        { value: PERMISSIONS.BOOKMARKS_UPDATE, label: getPermissionLabel(PERMISSIONS.BOOKMARKS_UPDATE) },
-        { value: PERMISSIONS.BOOKMARKS_DELETE, label: getPermissionLabel(PERMISSIONS.BOOKMARKS_DELETE) },
+        { value: PERMISSIONS.BOOKMARKS_CREATE, label: getLabel(PERMISSIONS.BOOKMARKS_CREATE), labelKey: getPermissionI18nKey(PERMISSIONS.BOOKMARKS_CREATE) },
+        { value: PERMISSIONS.BOOKMARKS_READ, label: getLabel(PERMISSIONS.BOOKMARKS_READ), labelKey: getPermissionI18nKey(PERMISSIONS.BOOKMARKS_READ) },
+        { value: PERMISSIONS.BOOKMARKS_UPDATE, label: getLabel(PERMISSIONS.BOOKMARKS_UPDATE), labelKey: getPermissionI18nKey(PERMISSIONS.BOOKMARKS_UPDATE) },
+        { value: PERMISSIONS.BOOKMARKS_DELETE, label: getLabel(PERMISSIONS.BOOKMARKS_DELETE), labelKey: getPermissionI18nKey(PERMISSIONS.BOOKMARKS_DELETE) },
       ],
     },
     {
-      name: '标签',
+      name: getName(PERMISSION_GROUP_I18N_KEYS.tags),
+      nameKey: PERMISSION_GROUP_I18N_KEYS.tags,
       permissions: [
-        { value: PERMISSIONS.TAGS_CREATE, label: getPermissionLabel(PERMISSIONS.TAGS_CREATE) },
-        { value: PERMISSIONS.TAGS_READ, label: getPermissionLabel(PERMISSIONS.TAGS_READ) },
-        { value: PERMISSIONS.TAGS_UPDATE, label: getPermissionLabel(PERMISSIONS.TAGS_UPDATE) },
-        { value: PERMISSIONS.TAGS_DELETE, label: getPermissionLabel(PERMISSIONS.TAGS_DELETE) },
-        { value: PERMISSIONS.TAGS_ASSIGN, label: getPermissionLabel(PERMISSIONS.TAGS_ASSIGN) },
+        { value: PERMISSIONS.TAGS_CREATE, label: getLabel(PERMISSIONS.TAGS_CREATE), labelKey: getPermissionI18nKey(PERMISSIONS.TAGS_CREATE) },
+        { value: PERMISSIONS.TAGS_READ, label: getLabel(PERMISSIONS.TAGS_READ), labelKey: getPermissionI18nKey(PERMISSIONS.TAGS_READ) },
+        { value: PERMISSIONS.TAGS_UPDATE, label: getLabel(PERMISSIONS.TAGS_UPDATE), labelKey: getPermissionI18nKey(PERMISSIONS.TAGS_UPDATE) },
+        { value: PERMISSIONS.TAGS_DELETE, label: getLabel(PERMISSIONS.TAGS_DELETE), labelKey: getPermissionI18nKey(PERMISSIONS.TAGS_DELETE) },
+        { value: PERMISSIONS.TAGS_ASSIGN, label: getLabel(PERMISSIONS.TAGS_ASSIGN), labelKey: getPermissionI18nKey(PERMISSIONS.TAGS_ASSIGN) },
       ],
     },
     {
-      name: '收纳',
+      name: getName(PERMISSION_GROUP_I18N_KEYS.tabGroups),
+      nameKey: PERMISSION_GROUP_I18N_KEYS.tabGroups,
       permissions: [
-        { value: PERMISSIONS.TAB_GROUPS_CREATE, label: getPermissionLabel(PERMISSIONS.TAB_GROUPS_CREATE) },
-        { value: PERMISSIONS.TAB_GROUPS_READ, label: getPermissionLabel(PERMISSIONS.TAB_GROUPS_READ) },
-        { value: PERMISSIONS.TAB_GROUPS_UPDATE, label: getPermissionLabel(PERMISSIONS.TAB_GROUPS_UPDATE) },
-        { value: PERMISSIONS.TAB_GROUPS_DELETE, label: getPermissionLabel(PERMISSIONS.TAB_GROUPS_DELETE) },
+        { value: PERMISSIONS.TAB_GROUPS_CREATE, label: getLabel(PERMISSIONS.TAB_GROUPS_CREATE), labelKey: getPermissionI18nKey(PERMISSIONS.TAB_GROUPS_CREATE) },
+        { value: PERMISSIONS.TAB_GROUPS_READ, label: getLabel(PERMISSIONS.TAB_GROUPS_READ), labelKey: getPermissionI18nKey(PERMISSIONS.TAB_GROUPS_READ) },
+        { value: PERMISSIONS.TAB_GROUPS_UPDATE, label: getLabel(PERMISSIONS.TAB_GROUPS_UPDATE), labelKey: getPermissionI18nKey(PERMISSIONS.TAB_GROUPS_UPDATE) },
+        { value: PERMISSIONS.TAB_GROUPS_DELETE, label: getLabel(PERMISSIONS.TAB_GROUPS_DELETE), labelKey: getPermissionI18nKey(PERMISSIONS.TAB_GROUPS_DELETE) },
       ],
     },
     {
-      name: '其他',
+      name: getName(PERMISSION_GROUP_I18N_KEYS.other),
+      nameKey: PERMISSION_GROUP_I18N_KEYS.other,
       permissions: [
-        { value: PERMISSIONS.AI_SUGGEST, label: getPermissionLabel(PERMISSIONS.AI_SUGGEST) },
-        { value: PERMISSIONS.USER_READ, label: getPermissionLabel(PERMISSIONS.USER_READ) },
+        { value: PERMISSIONS.AI_SUGGEST, label: getLabel(PERMISSIONS.AI_SUGGEST), labelKey: getPermissionI18nKey(PERMISSIONS.AI_SUGGEST) },
+        { value: PERMISSIONS.USER_READ, label: getLabel(PERMISSIONS.USER_READ), labelKey: getPermissionI18nKey(PERMISSIONS.USER_READ) },
       ],
     },
   ]

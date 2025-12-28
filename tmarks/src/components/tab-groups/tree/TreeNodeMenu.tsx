@@ -12,101 +12,99 @@ import {
 import type { MenuItem } from '@/components/common/DropdownMenu'
 import type { TabGroup } from '@/lib/types'
 import type { TabGroupMenuActions } from '@/hooks/useTabGroupMenu'
+import type { TFunction } from 'i18next'
 
 interface TreeNodeMenuConfig {
   group: TabGroup
   isFolder: boolean
   isLocked: boolean
   menuActions: TabGroupMenuActions
+  t: TFunction<'tabGroups', undefined>
 }
 
 /**
- * 构建树节点的右键菜单项
+ * Build context menu items for tree node
  */
 export function buildTreeNodeMenu({
   group,
   isFolder,
   isLocked,
-  menuActions
+  menuActions,
+  t
 }: TreeNodeMenuConfig): MenuItem[] {
   return [
-    // 打开功能
     {
-      label: '在新窗口中打开',
+      label: t('menu.openInNewWindow'),
       icon: <ExternalLink className="w-4 h-4" />,
       onClick: () => menuActions.onOpenInNewWindow(group),
       disabled: isFolder
     },
     {
-      label: '在此窗口中打开',
+      label: t('menu.openInCurrentWindow'),
       icon: <ExternalLink className="w-4 h-4" />,
       onClick: () => menuActions.onOpenInCurrentWindow(group),
       disabled: isFolder
     },
-    // 编辑功能
     {
-      label: '重命名',
+      label: t('menu.rename'),
       icon: <Edit2 className="w-4 h-4" />,
       onClick: () => menuActions.onRename(group),
       disabled: isLocked,
       divider: true
     },
     {
-      label: '共享为网页',
+      label: t('menu.shareAsPage'),
       icon: <Share2 className="w-4 h-4" />,
       onClick: () => menuActions.onShare(group),
       disabled: isFolder
     },
     {
-      label: '复制到剪贴板',
+      label: t('menu.copyToClipboard'),
       icon: <Copy className="w-4 h-4" />,
       onClick: () => menuActions.onCopyToClipboard(group)
     },
-    // 创建功能
     {
-      label: '在上方创建文件夹',
+      label: t('menu.createFolderAbove'),
       icon: <FolderPlusIcon className="w-4 h-4" />,
       onClick: () => menuActions.onCreateFolderAbove(group),
       divider: true
     },
     {
-      label: '在内部创建文件夹',
+      label: t('menu.createFolderInside'),
       icon: <FolderPlusIcon className="w-4 h-4" />,
       onClick: () => menuActions.onCreateFolderInside(group),
       disabled: !isFolder
     },
     {
-      label: '在下方创建文件夹',
+      label: t('menu.createFolderBelow'),
       icon: <FolderPlusIcon className="w-4 h-4" />,
       onClick: () => menuActions.onCreateFolderBelow(group)
     },
-    // 管理功能
     {
-      label: '移除重复项',
+      label: t('menu.removeDuplicates'),
       icon: <Copy className="w-4 h-4" />,
       onClick: () => menuActions.onRemoveDuplicates(group),
       disabled: isFolder,
       divider: true
     },
     {
-      label: '移动',
+      label: t('menu.move'),
       icon: <Move className="w-4 h-4" />,
       onClick: () => menuActions.onMove(group),
       disabled: isLocked
     },
     {
-      label: '固定到顶部',
+      label: t('menu.pinToTop'),
       icon: <Pin className="w-4 h-4" />,
       onClick: () => menuActions.onPinToTop(group)
     },
     {
-      label: isLocked ? '解锁' : '锁定',
+      label: isLocked ? t('menu.unlock') : t('menu.lock'),
       icon: <Lock className="w-4 h-4" />,
       onClick: () => menuActions.onLock(group)
     },
-    // 删除功能
     {
-      label: '移至回收站',
+      label: t('menu.moveToTrash'),
       icon: <Trash2 className="w-4 h-4" />,
       onClick: () => menuActions.onMoveToTrash(group),
       disabled: isLocked,

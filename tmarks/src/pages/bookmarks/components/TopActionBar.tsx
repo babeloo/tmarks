@@ -18,23 +18,10 @@ import {
   Trash2
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import type { ViewMode, VisibilityFilter } from '../hooks/useBookmarksState'
 import type { SortOption } from '@/components/common/SortSelector'
 
-const VISIBILITY_LABELS: Record<VisibilityFilter, string> = {
-  all: '全部书签',
-  public: '仅公开',
-  private: '仅私密',
-}
-
-const SORT_LABELS: Record<SortOption, string> = {
-  created: '按创建时间',
-  updated: '按更新时间',
-  pinned: '置顶优先',
-  popular: '按热门程度',
-}
-
-// 视图模式图标组件
 function ViewModeIcon({ mode }: { mode: ViewMode }) {
   switch (mode) {
     case 'card':
@@ -50,7 +37,6 @@ function ViewModeIcon({ mode }: { mode: ViewMode }) {
   }
 }
 
-// 可见性筛选图标组件
 function VisibilityIcon({ filter }: { filter: VisibilityFilter }) {
   switch (filter) {
     case 'public':
@@ -64,7 +50,6 @@ function VisibilityIcon({ filter }: { filter: VisibilityFilter }) {
   }
 }
 
-// 排序图标组件
 function SortIcon({ sort }: { sort: SortOption }) {
   switch (sort) {
     case 'created':
@@ -115,41 +100,38 @@ export function TopActionBar({
   onOpenForm,
   setIsTagSidebarOpen,
 }: TopActionBarProps) {
-  const getViewModeLabel = (mode: ViewMode) => {
-    switch (mode) {
-      case 'list': return '列表视图'
-      case 'card': return '卡片视图'
-      case 'minimal': return '极简列表'
-      case 'title': return '标题瀑布'
-    }
-  }
+  const { t } = useTranslation('bookmarks')
+  
+  const getViewModeLabel = (mode: ViewMode) => t(`viewMode.${mode}`)
+  const getSortLabel = (sort: SortOption) => t(`sort.${sort}`)
+  const getVisibilityLabel = (filter: VisibilityFilter) => t(`filter.${filter}`)
 
   return (
     <div className="flex-shrink-0 px-3 sm:px-4 md:px-6 pt-3 sm:pt-4 md:pt-6 pb-3 sm:pb-4 w-full">
       <div className="p-4 sm:p-5 w-full">
-        {/* 移动端：两行布局 */}
+        {/* Mobile: two-row layout */}
         <div className="flex flex-col gap-3 w-full lg:hidden">
-          {/* 第一行：标签抽屉按钮 + 搜索框 */}
+          {/* Row 1: Tag drawer button + Search */}
           <div className="flex items-center gap-3 w-full">
-            {/* 标签抽屉按钮 - 仅移动端显示 */}
+            {/* Tag drawer button - mobile only */}
             <button
               onClick={() => setIsTagSidebarOpen(true)}
               className="group w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center transition-all duration-300 bg-card border border-border hover:border-primary/30 hover:bg-primary/5 active:scale-95 text-foreground shadow-sm hover:shadow-md flex-shrink-0"
-              title="打开标签"
-              aria-label="打开标签"
+              title={t('toolbar.openTags')}
+              aria-label={t('toolbar.openTags')}
             >
               <TagIcon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
             </button>
 
-            {/* 搜索框 */}
+            {/* Search box */}
             <div className="flex-1 min-w-0">
               <div className="relative w-full">
-                {/* 搜索模式切换按钮 */}
+                {/* Search mode toggle */}
                 <button
                   onClick={() => setSearchMode(searchMode === 'bookmark' ? 'tag' : 'bookmark')}
                   className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center transition-all hover:text-primary hover:scale-110"
-                  title={searchMode === 'bookmark' ? '切换到标签搜索' : '切换到书签搜索'}
-                  aria-label={searchMode === 'bookmark' ? '切换到标签搜索' : '切换到书签搜索'}
+                  title={searchMode === 'bookmark' ? t('toolbar.switchToTagSearch') : t('toolbar.switchToBookmarkSearch')}
+                  aria-label={searchMode === 'bookmark' ? t('toolbar.switchToTagSearch') : t('toolbar.switchToBookmarkSearch')}
                 >
                   {searchMode === 'bookmark' ? (
                     <BookmarkIcon className="w-5 h-5" />
@@ -158,14 +140,14 @@ export function TopActionBar({
                   )}
                 </button>
 
-                {/* 搜索图标 */}
+                {/* Search icon */}
                 <Search className="absolute left-10 sm:left-12 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground pointer-events-none" />
 
-                {/* 搜索输入框 */}
+                {/* Search input */}
                 <input
                   type="text"
                   className="input w-full !pl-16 sm:!pl-[4.5rem] h-11 sm:h-auto text-sm sm:text-base"
-                  placeholder={searchMode === 'bookmark' ? '搜索书签...' : '搜索标签...'}
+                  placeholder={searchMode === 'bookmark' ? t('search.placeholder') : t('search.tagPlaceholder')}
                   value={searchKeyword}
                   onChange={(e) => setSearchKeyword(e.target.value)}
                 />
@@ -173,20 +155,20 @@ export function TopActionBar({
             </div>
           </div>
 
-          {/* 第二行：5个操作按钮 - 移动端居中 */}
+          {/* Row 2: Action buttons - centered on mobile */}
           <div className="flex items-center gap-2 w-full justify-center">
-            {/* 排序按钮 */}
+            {/* Sort button */}
             <button
               onClick={onSortByChange}
               className="btn btn-sm btn-ghost p-2 flex-shrink-0"
-              title={`${SORT_LABELS[sortBy]} (点击切换)`}
-              aria-label={`${SORT_LABELS[sortBy]} (点击切换)`}
+              title={`${getSortLabel(sortBy)} ${t('sort.clickToSwitch')}`}
+              aria-label={`${getSortLabel(sortBy)} ${t('sort.clickToSwitch')}`}
               type="button"
             >
               <SortIcon sort={sortBy} />
             </button>
 
-            {/* 可见性筛选按钮 */}
+            {/* Visibility filter button */}
             <button
               onClick={() => {
                 const nextFilter = visibilityFilter === 'all' 
@@ -197,25 +179,25 @@ export function TopActionBar({
                 setVisibilityFilter(nextFilter)
               }}
               className="btn btn-sm btn-ghost p-2 flex-shrink-0"
-              title={`${VISIBILITY_LABELS[visibilityFilter]} (点击切换)`}
-              aria-label={`${VISIBILITY_LABELS[visibilityFilter]} (点击切换)`}
+              title={`${getVisibilityLabel(visibilityFilter)} ${t('filter.clickToSwitch')}`}
+              aria-label={`${getVisibilityLabel(visibilityFilter)} ${t('filter.clickToSwitch')}`}
               type="button"
             >
               <VisibilityIcon filter={visibilityFilter} />
             </button>
 
-            {/* 视图模式按钮 */}
+            {/* View mode button */}
             <button
               onClick={onViewModeChange}
               className="btn btn-sm btn-ghost p-2 flex-shrink-0"
-              title={`${getViewModeLabel(viewMode)} (点击切换)`}
-              aria-label={`${getViewModeLabel(viewMode)} (点击切换)`}
+              title={`${getViewModeLabel(viewMode)} ${t('viewMode.clickToSwitch')}`}
+              aria-label={`${getViewModeLabel(viewMode)} ${t('viewMode.clickToSwitch')}`}
               type="button"
             >
               <ViewModeIcon mode={viewMode} />
             </button>
 
-            {/* 批量操作按钮 */}
+            {/* Batch mode button */}
             <button
               onClick={() => {
                 setBatchMode(!batchMode)
@@ -228,29 +210,29 @@ export function TopActionBar({
                   ? 'btn-primary'
                   : 'btn-ghost'
               }`}
-              title={batchMode ? '退出批量操作' : '批量操作'}
-              aria-label={batchMode ? '退出批量操作' : '批量操作'}
+              title={batchMode ? t('toolbar.exitBatchMode') : t('toolbar.batchMode')}
+              aria-label={batchMode ? t('toolbar.exitBatchMode') : t('toolbar.batchMode')}
               type="button"
             >
               <CheckCircle className="w-4 h-4" />
             </button>
 
-            {/* 回收站按钮 */}
+            {/* Trash button */}
             <Link
               to="/bookmarks/trash"
               className="btn btn-sm btn-ghost p-2 flex-shrink-0"
-              title="回收站"
-              aria-label="回收站"
+              title={t('toolbar.trash')}
+              aria-label={t('toolbar.trash')}
             >
               <Trash2 className="w-4 h-4" />
             </Link>
 
-            {/* 新增书签按钮 */}
+            {/* Add bookmark button */}
             <button
               onClick={onOpenForm}
               className="btn btn-sm btn-primary p-2 flex-shrink-0"
-              title="新增书签"
-              aria-label="新增书签"
+              title={t('toolbar.addBookmark')}
+              aria-label={t('toolbar.addBookmark')}
               type="button"
             >
               <Plus className="w-4 h-4 transition-transform" strokeWidth={2.5} />
@@ -258,17 +240,17 @@ export function TopActionBar({
           </div>
         </div>
 
-        {/* PC端：单行布局 - 搜索框和5个图标在同一行 */}
+        {/* PC: single-row layout */}
         <div className="hidden lg:flex items-center gap-3 w-full">
-          {/* 搜索框 */}
+          {/* Search box */}
           <div className="flex-1 min-w-0">
             <div className="relative w-full">
-              {/* 搜索模式切换按钮 */}
+              {/* Search mode toggle */}
               <button
                 onClick={() => setSearchMode(searchMode === 'bookmark' ? 'tag' : 'bookmark')}
                 className="absolute left-4 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center transition-all hover:text-primary hover:scale-110"
-                title={searchMode === 'bookmark' ? '切换到标签搜索' : '切换到书签搜索'}
-                aria-label={searchMode === 'bookmark' ? '切换到标签搜索' : '切换到书签搜索'}
+                title={searchMode === 'bookmark' ? t('toolbar.switchToTagSearch') : t('toolbar.switchToBookmarkSearch')}
+                aria-label={searchMode === 'bookmark' ? t('toolbar.switchToTagSearch') : t('toolbar.switchToBookmarkSearch')}
               >
                 {searchMode === 'bookmark' ? (
                   <BookmarkIcon className="w-5 h-5" />
@@ -277,56 +259,56 @@ export function TopActionBar({
                 )}
               </button>
 
-              {/* 搜索图标 */}
+              {/* Search icon */}
               <Search className="absolute left-12 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
 
-              {/* 搜索输入框 */}
+              {/* Search input */}
               <input
                 type="text"
                 className="input w-full !pl-[4.5rem] text-base"
-                placeholder={searchMode === 'bookmark' ? '搜索书签...' : '搜索标签...'}
+                placeholder={searchMode === 'bookmark' ? t('search.placeholder') : t('search.tagPlaceholder')}
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
               />
             </div>
           </div>
 
-          {/* 5个操作按钮 */}
+          {/* Action buttons */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* 排序按钮 */}
+            {/* Sort button */}
             <button
               onClick={onSortByChange}
               className="btn btn-sm btn-ghost p-2 flex-shrink-0"
-              title={`${SORT_LABELS[sortBy]} (点击切换)`}
-              aria-label={`${SORT_LABELS[sortBy]} (点击切换)`}
+              title={`${getSortLabel(sortBy)} ${t('sort.clickToSwitch')}`}
+              aria-label={`${getSortLabel(sortBy)} ${t('sort.clickToSwitch')}`}
               type="button"
             >
               <SortIcon sort={sortBy} />
             </button>
 
-            {/* 可见性过滤按钮 */}
+            {/* Visibility filter button */}
             <button
               onClick={() => setVisibilityFilter(visibilityFilter === 'all' ? 'public' : visibilityFilter === 'public' ? 'private' : 'all')}
               className="btn btn-sm btn-ghost p-2 flex-shrink-0"
-              title={`${VISIBILITY_LABELS[visibilityFilter]} (点击切换)`}
-              aria-label={`${VISIBILITY_LABELS[visibilityFilter]} (点击切换)`}
+              title={`${getVisibilityLabel(visibilityFilter)} ${t('filter.clickToSwitch')}`}
+              aria-label={`${getVisibilityLabel(visibilityFilter)} ${t('filter.clickToSwitch')}`}
               type="button"
             >
               <VisibilityIcon filter={visibilityFilter} />
             </button>
 
-            {/* 视图模式按钮 */}
+            {/* View mode button */}
             <button
               onClick={onViewModeChange}
               className="btn btn-sm btn-ghost p-2 flex-shrink-0"
-              title={`${getViewModeLabel(viewMode)} (点击切换)`}
-              aria-label={`${getViewModeLabel(viewMode)} (点击切换)`}
+              title={`${getViewModeLabel(viewMode)} ${t('viewMode.clickToSwitch')}`}
+              aria-label={`${getViewModeLabel(viewMode)} ${t('viewMode.clickToSwitch')}`}
               type="button"
             >
               <ViewModeIcon mode={viewMode} />
             </button>
 
-            {/* 批量操作按钮 */}
+            {/* Batch mode button */}
             <button
               onClick={() => {
                 setBatchMode(!batchMode)
@@ -337,29 +319,29 @@ export function TopActionBar({
               className={`btn btn-sm p-2 flex-shrink-0 ${
                 batchMode ? 'btn-primary' : 'btn-ghost'
               }`}
-              title={batchMode ? '退出批量操作' : '批量操作'}
-              aria-label={batchMode ? '退出批量操作' : '批量操作'}
+              title={batchMode ? t('toolbar.exitBatchMode') : t('toolbar.batchMode')}
+              aria-label={batchMode ? t('toolbar.exitBatchMode') : t('toolbar.batchMode')}
               type="button"
             >
               <CheckSquare className="w-5 h-5" />
             </button>
 
-            {/* 回收站按钮 */}
+            {/* Trash button */}
             <Link
               to="/bookmarks/trash"
               className="btn btn-sm btn-ghost p-2 flex-shrink-0"
-              title="回收站"
-              aria-label="回收站"
+              title={t('toolbar.trash')}
+              aria-label={t('toolbar.trash')}
             >
               <Trash2 className="w-5 h-5" />
             </Link>
 
-            {/* 添加书签按钮 */}
+            {/* Add bookmark button */}
             <button
               onClick={onOpenForm}
               className="btn btn-sm btn-primary p-2 flex-shrink-0"
-              title="添加书签"
-              aria-label="添加书签"
+              title={t('toolbar.addBookmark')}
+              aria-label={t('toolbar.addBookmark')}
               type="button"
             >
               <Plus className="w-5 h-5" />

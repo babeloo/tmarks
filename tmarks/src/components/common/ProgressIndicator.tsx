@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { CheckCircle, Loader2, Clock, Zap } from 'lucide-react'
 
 interface ProgressInfo {
@@ -31,6 +32,7 @@ export function ProgressIndicator({
   showETA = true,
   className = ''
 }: ProgressIndicatorProps) {
+  const { t } = useTranslation('common')
   const [animatedPercentage, setAnimatedPercentage] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
 
@@ -139,18 +141,18 @@ export function ProgressIndicator({
               {showSpeed && progress.speed && (
                 <div className="flex items-center space-x-1">
                   <Zap className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                  <span className="whitespace-nowrap">{Math.round(progress.speed)} 项/秒</span>
+                  <span className="whitespace-nowrap">{t('progress.itemsPerSecond', { count: Math.round(progress.speed) })}</span>
                 </div>
               )}
               {showETA && progress.estimated_remaining && (
                 <div className="flex items-center space-x-1">
                   <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                  <span className="whitespace-nowrap">剩余 {formatTime(progress.estimated_remaining)}</span>
+                  <span className="whitespace-nowrap">{t('progress.remaining', { time: formatTime(progress.estimated_remaining, t) })}</span>
                 </div>
               )}
             </div>
             <div className="whitespace-nowrap">
-              已处理 {progress.current.toLocaleString()} 项
+              {t('progress.processed', { count: progress.current })}
             </div>
           </div>
         </div>
@@ -196,10 +198,10 @@ export function ProgressIndicator({
         <div className="flex items-center space-x-2 sm:space-x-3">
           <span className="whitespace-nowrap">{progress.current} / {progress.total}</span>
           {showSpeed && progress.speed && (
-            <span className="whitespace-nowrap">{Math.round(progress.speed)} 项/秒</span>
+            <span className="whitespace-nowrap">{t('progress.itemsPerSecond', { count: Math.round(progress.speed) })}</span>
           )}
           {showETA && progress.estimated_remaining && (
-            <span className="whitespace-nowrap">剩余 {formatTime(progress.estimated_remaining)}</span>
+            <span className="whitespace-nowrap">{t('progress.remaining', { time: formatTime(progress.estimated_remaining, t) })}</span>
           )}
         </div>
         {progress.message && (
@@ -357,16 +359,20 @@ export function CircularProgress({
 }
 
 // 工具函数：格式化时间
-function formatTime(seconds: number): string {
+function formatTime(seconds: number, t: (key: string, options?: Record<string, unknown>) => string): string {
   if (seconds < 60) {
-    return `${Math.round(seconds)}秒`
+    return t('time.seconds', { count: Math.round(seconds) })
   } else if (seconds < 3600) {
     const minutes = Math.floor(seconds / 60)
     const remainingSeconds = Math.round(seconds % 60)
-    return remainingSeconds > 0 ? `${minutes}分${remainingSeconds}秒` : `${minutes}分钟`
+    return remainingSeconds > 0 
+      ? t('time.minutesSeconds', { minutes, seconds: remainingSeconds })
+      : t('time.minutes', { count: minutes })
   } else {
     const hours = Math.floor(seconds / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
-    return minutes > 0 ? `${hours}小时${minutes}分钟` : `${hours}小时`
+    return minutes > 0 
+      ? t('time.hoursMinutes', { hours, minutes })
+      : t('time.hours', { count: hours })
   }
 }

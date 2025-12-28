@@ -13,23 +13,10 @@ import {
   Tag as TagIcon,
   Search
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { ViewMode, VisibilityFilter } from '../hooks/usePublicShareState'
 import type { SortOption } from '@/components/common/SortSelector'
 
-const VISIBILITY_LABELS: Record<VisibilityFilter, string> = {
-  all: '全部书签',
-  public: '仅公开',
-  private: '仅私密',
-}
-
-const SORT_LABELS: Record<SortOption, string> = {
-  created: '按创建时间',
-  updated: '按更新时间',
-  pinned: '置顶优先',
-  popular: '按热门程度',
-}
-
-// 视图模式图标组件
 function ViewModeIcon({ mode }: { mode: ViewMode }) {
   switch (mode) {
     case 'card':
@@ -45,7 +32,6 @@ function ViewModeIcon({ mode }: { mode: ViewMode }) {
   }
 }
 
-// 可见性筛选图标组件
 function VisibilityIcon({ filter }: { filter: VisibilityFilter }) {
   switch (filter) {
     case 'public':
@@ -59,7 +45,6 @@ function VisibilityIcon({ filter }: { filter: VisibilityFilter }) {
   }
 }
 
-// 排序图标组件
 function SortIcon({ sort }: { sort: SortOption }) {
   switch (sort) {
     case 'created':
@@ -105,6 +90,8 @@ export function ShareTopBar({
   setViewMode,
   setIsTagSidebarOpen,
 }: ShareTopBarProps) {
+  const { t } = useTranslation('share')
+  
   const handleSortChange = () => {
     const currentIndex = SORT_OPTIONS.indexOf(sortBy)
     const nextIndex = (currentIndex + 1) % SORT_OPTIONS.length
@@ -124,14 +111,9 @@ export function ShareTopBar({
     setVisibilityFilter(filters[nextIndex]!)
   }
 
-  const getViewModeLabel = (mode: ViewMode) => {
-    switch (mode) {
-      case 'list': return '列表视图'
-      case 'card': return '卡片视图'
-      case 'minimal': return '极简列表'
-      case 'title': return '标题瀑布'
-    }
-  }
+  const getViewModeLabel = (mode: ViewMode) => t(`view.${mode}`)
+  const getSortLabel = (sort: SortOption) => t(`sort.${sort}`)
+  const getVisibilityLabel = (filter: VisibilityFilter) => t(`filter.${filter}`)
 
   return (
     <div className="flex-shrink-0 px-3 sm:px-4 md:px-6 pt-3 sm:pt-4 md:pt-6 pb-3 sm:pb-4 w-full">
@@ -141,7 +123,7 @@ export function ShareTopBar({
             <button
               onClick={() => setIsTagSidebarOpen(true)}
               className="group lg:hidden w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center transition-all duration-300 bg-card border border-border hover:border-primary/30 hover:bg-primary/5 active:scale-95 text-foreground shadow-sm hover:shadow-md"
-              title="打开标签"
+              title={t('filter.openTags')}
             >
               <TagIcon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
             </button>
@@ -151,6 +133,7 @@ export function ShareTopBar({
                 <button
                   onClick={() => setSearchMode(searchMode === 'bookmark' ? 'tag' : 'bookmark')}
                   className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center transition-all hover:text-primary hover:scale-110"
+                  title={searchMode === 'bookmark' ? t('search.switchToTag') : t('search.switchToBookmark')}
                 >
                   {searchMode === 'bookmark' ? (
                     <BookmarkIcon className="w-5 h-5" />
@@ -164,7 +147,7 @@ export function ShareTopBar({
                 <input
                   type="text"
                   className="input w-full !pl-16 sm:!pl-[4.5rem] h-11 sm:h-auto text-sm sm:text-base"
-                  placeholder={searchMode === 'bookmark' ? '搜索书签...' : '搜索标签...'}
+                  placeholder={searchMode === 'bookmark' ? t('search.bookmarkPlaceholder') : t('search.tagPlaceholder')}
                   value={searchKeyword}
                   onChange={(e) => setSearchKeyword(e.target.value)}
                 />
@@ -176,7 +159,7 @@ export function ShareTopBar({
             <button
               onClick={handleSortChange}
               className="btn btn-sm btn-ghost p-2 flex-shrink-0 !border-0 !shadow-none"
-              title={`${SORT_LABELS[sortBy]} (点击切换)`}
+              title={getSortLabel(sortBy)}
             >
               <SortIcon sort={sortBy} />
             </button>
@@ -184,7 +167,7 @@ export function ShareTopBar({
             <button
               onClick={handleVisibilityChange}
               className="btn btn-sm btn-ghost p-2 flex-shrink-0 !border-0 !shadow-none"
-              title={`${VISIBILITY_LABELS[visibilityFilter]} (点击切换)`}
+              title={getVisibilityLabel(visibilityFilter)}
             >
               <VisibilityIcon filter={visibilityFilter} />
             </button>
@@ -192,7 +175,7 @@ export function ShareTopBar({
             <button
               onClick={handleViewModeChange}
               className="btn btn-sm btn-ghost p-2 flex-shrink-0 !border-0 !shadow-none"
-              title={`${getViewModeLabel(viewMode)} (点击切换)`}
+              title={getViewModeLabel(viewMode)}
             >
               <ViewModeIcon mode={viewMode} />
             </button>

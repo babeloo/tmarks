@@ -1,0 +1,62 @@
+{
+  "title": "Public Share",
+  "loading": "Loading public bookmarks...",
+  "error": "Share link is invalid or content has been removed.",
+  "defaultTitle": "{{username}}'s Bookmark Collection",
+  "guestTitle": "Guest's Bookmark Collection",
+  "settings": {
+    "title": "Public Share Settings",
+    "enableTitle": "Enable Public Share",
+    "enableDescription": "When enabled, your bookmarks can be viewed by anyone via a read-only page.",
+    "enableLabel": "Enable public share",
+    "slugLabel": "Share Link Suffix",
+    "slugPlaceholder": "e.g., my-bookmarks",
+    "slugHint": "Only letters, numbers and hyphens allowed. Leave empty to auto-generate.",
+    "regenerate": "Regenerate",
+    "pageTitleLabel": "Page Title",
+    "pageTitlePlaceholder": "Public page title for visitors",
+    "descriptionLabel": "Page Description",
+    "descriptionPlaceholder": "Optional description for visitors",
+    "linkLabel": "Share Link",
+    "linkPlaceholder": "Share link will appear after generation",
+    "copy": "Copy",
+    "copied": "Copied",
+    "reset": "Reset",
+    "save": "Save Settings",
+    "saving": "Saving..."
+  },
+  "stats": {
+    "total": "{{count}} bookmarks",
+    "filtered": "{{filtered}} / {{total}} bookmarks filtered"
+  },
+  "search": {
+    "bookmarkPlaceholder": "Search bookmarks...",
+    "tagPlaceholder": "Search tags...",
+    "switchToTag": "Switch to tag search",
+    "switchToBookmark": "Switch to bookmark search"
+  },
+  "filter": {
+    "all": "All Bookmarks",
+    "public": "Public Only",
+    "private": "Private Only",
+    "openTags": "Open Tags",
+    "tagFilter": "Tag Filter",
+    "closeTagDrawer": "Close tag drawer"
+  },
+  "sort": {
+    "created": "By Created Time",
+    "updated": "By Updated Time",
+    "pinned": "Pinned First",
+    "popular": "By Popularity"
+  },
+  "view": {
+    "list": "List View",
+    "card": "Card View",
+    "minimal": "Minimal List",
+    "title": "Title Waterfall"
+  },
+  "empty": {
+    "title": "No matching bookmarks found",
+    "hint": "Try adjusting filters or search keywords"
+  }
+}

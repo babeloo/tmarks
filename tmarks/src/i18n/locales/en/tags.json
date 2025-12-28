@@ -1,0 +1,64 @@
+{
+  "title": "Tags",
+  "filter": {
+    "title": "Tag Filter",
+    "close": "Close tag drawer"
+  },
+  "empty": {
+    "title": "No tags yet",
+    "description": "Click + to create your first tag",
+    "noMatch": "No matching tags found",
+    "readOnly": "Publisher has not shared any tags"
+  },
+  "sort": {
+    "byUsage": "Sort by bookmark count (click to switch to popularity)",
+    "byClicks": "Sort by popularity (click to switch to name)",
+    "byName": "Sort by name (click to switch to bookmark count)"
+  },
+  "layout": {
+    "grid": "Grid layout (click to switch to masonry)",
+    "masonry": "Masonry layout (click to switch to grid)"
+  },
+  "selection": {
+    "clear": "Clear selection",
+    "clearWithCount": "Clear selection ({{count}})"
+  },
+  "action": {
+    "manage": "Manage tags",
+    "create": "New tag",
+    "cancel": "Cancel",
+    "edit": "Edit tag",
+    "delete": "Delete tag",
+    "deleting": "Deleting...",
+    "save": "Save",
+    "saving": "Saving...",
+    "done": "Done"
+  },
+  "form": {
+    "placeholder": "Enter tag name...",
+    "namePlaceholder": "Enter tag name",
+    "nameLabel": "Tag name",
+    "editHint": "Adjust tag name, only affects this tag."
+  },
+  "manage": {
+    "title": "Tag Management",
+    "description": "Edit tag names or delete unwanted tags",
+    "noTags": "No tags yet",
+    "noTagsHint": "Click + button to create your first tag",
+    "bookmarkCount": "{{count}} bookmarks",
+    "noBookmarks": "No bookmarks"
+  },
+  "confirm": {
+    "deleteTitle": "Delete Tag",
+    "deleteMessage": "Are you sure you want to delete tag \"{{name}}\"? Associated bookmarks will not be deleted."
+  },
+  "message": {
+    "updateSuccess": "Tag updated successfully",
+    "updateFailed": "Update failed, please try again",
+    "deleteSuccess": "Tag deleted successfully",
+    "deleteFailed": "Delete failed, please try again"
+  },
+  "status": {
+    "loading": "Loading..."
+  }
+}

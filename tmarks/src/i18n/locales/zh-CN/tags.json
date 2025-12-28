@@ -1,0 +1,64 @@
+{
+  "title": "标签",
+  "filter": {
+    "title": "标签筛选",
+    "close": "关闭标签抽屉"
+  },
+  "empty": {
+    "title": "暂无标签",
+    "description": "点击 + 创建第一个标签",
+    "noMatch": "没有找到匹配的标签",
+    "readOnly": "发布者尚未公开任何标签"
+  },
+  "sort": {
+    "byUsage": "按书签数排序 (点击切换到按热度)",
+    "byClicks": "按热度排序 (点击切换到按名称)",
+    "byName": "按名称排序 (点击切换到按书签数)"
+  },
+  "layout": {
+    "grid": "网格布局 (点击切换到瀑布流)",
+    "masonry": "瀑布流布局 (点击切换到网格)"
+  },
+  "selection": {
+    "clear": "清空选中",
+    "clearWithCount": "清空选中 ({{count}})"
+  },
+  "action": {
+    "manage": "管理标签",
+    "create": "新建标签",
+    "cancel": "取消",
+    "edit": "编辑标签",
+    "delete": "删除标签",
+    "deleting": "删除中...",
+    "save": "保存",
+    "saving": "保存中...",
+    "done": "完成"
+  },
+  "form": {
+    "placeholder": "输入标签名称...",
+    "namePlaceholder": "输入标签名称",
+    "nameLabel": "标签名称",
+    "editHint": "调整标签名称，仅影响当前标签。"
+  },
+  "manage": {
+    "title": "标签管理",
+    "description": "编辑标签名称或删除不需要的标签",
+    "noTags": "暂无标签",
+    "noTagsHint": "点击 + 按钮创建第一个标签",
+    "bookmarkCount": "{{count}} 个关联书签",
+    "noBookmarks": "暂无关联书签"
+  },
+  "confirm": {
+    "deleteTitle": "删除标签",
+    "deleteMessage": "确定要删除标签\"{{name}}\"吗？关联的书签不会被删除。"
+  },
+  "message": {
+    "updateSuccess": "标签已成功更新",
+    "updateFailed": "更新失败，请重试",
+    "deleteSuccess": "标签已成功删除",
+    "deleteFailed": "删除失败，请重试"
+  },
+  "status": {
+    "loading": "加载中..."
+  }
+}

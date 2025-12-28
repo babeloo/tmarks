@@ -1,4 +1,5 @@
 import { Trash2, Pin, CheckSquare, Download, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '@/hooks/useMediaQuery'
 
 interface BatchActionBarProps {
@@ -22,6 +23,7 @@ export function BatchActionBar({
   onBatchExport,
   onCancel,
 }: BatchActionBarProps) {
+  const { t } = useTranslation('tabGroups')
   const isMobile = useIsMobile()
 
   return (
@@ -31,21 +33,21 @@ export function BatchActionBar({
       <div className={`flex items-center ${isMobile ? 'flex-col gap-2' : 'justify-between'}`}>
         <div className={`flex items-center ${isMobile ? 'w-full justify-between' : 'gap-4'}`}>
           <span className="text-sm font-medium text-foreground">
-            已选择 {selectedCount} 个
+            {t('batch.selected', { count: selectedCount })}
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={onSelectAll}
               className="text-sm text-primary hover:text-primary/80 transition-colors"
             >
-              全选
+              {t('batch.selectAll')}
             </button>
             <span className="text-border">|</span>
             <button
               onClick={onDeselectAll}
               className="text-sm text-primary hover:text-primary/80 transition-colors"
             >
-              取消
+              {t('batch.deselectAll')}
             </button>
           </div>
         </div>
@@ -58,7 +60,7 @@ export function BatchActionBar({
             disabled={selectedCount === 0}
           >
             <Pin className="w-4 h-4" />
-            {!isMobile && '固定'}
+            {!isMobile && t('batch.pin')}
           </button>
           <button
             onClick={onBatchTodo}
@@ -67,7 +69,7 @@ export function BatchActionBar({
             disabled={selectedCount === 0}
           >
             <CheckSquare className="w-4 h-4" />
-            {!isMobile && '待办'}
+            {!isMobile && t('batch.todo')}
           </button>
           <button
             onClick={onBatchExport}
@@ -76,7 +78,7 @@ export function BatchActionBar({
             disabled={selectedCount === 0}
           >
             <Download className="w-4 h-4" />
-            {!isMobile && '导出'}
+            {!isMobile && t('batch.export')}
           </button>
           <button
             onClick={onBatchDelete}
@@ -84,18 +86,17 @@ export function BatchActionBar({
             disabled={selectedCount === 0}
           >
             <Trash2 className="w-4 h-4" />
-            {!isMobile && '删除'}
+            {!isMobile && t('batch.delete')}
           </button>
           <button
             onClick={onCancel}
             className={`flex items-center gap-2 px-3 py-1.5 bg-muted text-foreground rounded hover:bg-muted/80 transition-colors text-sm ${isMobile ? 'flex-1' : ''}`}
           >
             <X className="w-4 h-4" />
-            {!isMobile && '取消'}
+            {!isMobile && t('batch.cancel')}
           </button>
         </div>
       </div>
     </div>
   )
 }
-

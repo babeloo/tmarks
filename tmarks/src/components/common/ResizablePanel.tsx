@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { GripVertical, RotateCcw } from 'lucide-react'
 
 interface ResizablePanelProps {
@@ -18,6 +19,7 @@ export function ResizablePanel({
   maxWidth,
   storageKey,
 }: ResizablePanelProps) {
+  const { t } = useTranslation('common')
   const [width, setWidth] = useState(() => {
     const saved = localStorage.getItem(storageKey)
     return saved ? parseInt(saved, 10) : defaultWidth
@@ -95,7 +97,7 @@ export function ResizablePanel({
       <button
         onClick={handleReset}
         className="absolute bottom-4 left-1/2 -translate-x-1/2 p-2 bg-card border border-border rounded shadow-sm hover:bg-muted hover:shadow-md transition-all opacity-0 hover:opacity-100 group-hover:opacity-100"
-        title="恢复默认宽度"
+        title={t('action.resetWidth')}
       >
         <RotateCcw className="w-4 h-4 text-muted-foreground" />
       </button>

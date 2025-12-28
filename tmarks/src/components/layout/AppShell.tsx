@@ -1,4 +1,5 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   BookOpen,
   User,
@@ -9,6 +10,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 
 export function AppShell() {
+  const { t } = useTranslation('common')
   const { theme, colorTheme } = useThemeStore()
   const navigate = useNavigate()
   const location = useLocation()
@@ -35,7 +37,7 @@ export function AppShell() {
           <button
             onClick={() => navigate('/')}
             className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity duration-200 focus:outline-none"
-            title="回到首页"
+            title={t('nav.home')}
           >
             <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-float">
               <BookOpen
@@ -48,7 +50,7 @@ export function AppShell() {
                 TMarks
               </h1>
               <p className="text-xs font-medium hidden sm:block" style={{color: 'var(--muted-foreground)'}}>
-                {isOnTabGroupsPage ? '管理收纳的标签页组' : '智能书签管理'}
+                {isOnTabGroupsPage ? t('nav.manageTabGroups') : t('nav.smartBookmarkManagement')}
               </p>
             </div>
           </button>
@@ -59,7 +61,7 @@ export function AppShell() {
             <button
               onClick={handleToggleView}
               className="hidden sm:flex items-center justify-center w-11 h-11 rounded-2xl transition-all duration-300 bg-card hover:bg-primary/5 active:scale-95 text-foreground shadow-sm hover:shadow-md"
-              title={isOnTabGroupsPage ? '切换到书签' : '切换到标签页组'}
+              title={isOnTabGroupsPage ? t('nav.switchToBookmarks') : t('nav.switchToTabGroups')}
             >
               {isOnTabGroupsPage ? (
                 <BookOpen className="w-5 h-5" />
@@ -72,7 +74,7 @@ export function AppShell() {
             <button
               onClick={() => useThemeStore.getState().toggleTheme()}
               className="flex items-center justify-center w-11 h-11 rounded-2xl transition-all duration-300 hover:bg-primary/10 text-foreground"
-              title={theme === 'light' ? '切换到暗色模式' : '切换到亮色模式'}
+              title={theme === 'light' ? t('nav.toggleDarkMode') : t('nav.toggleLightMode')}
             >
               {theme === 'light' ? (
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -89,7 +91,7 @@ export function AppShell() {
             <button
               onClick={() => useThemeStore.getState().setColorTheme(colorTheme === 'default' ? 'orange' : 'default')}
               className="flex items-center justify-center w-11 h-11 rounded-2xl transition-all duration-300 hover:bg-primary/10 text-foreground"
-              title={colorTheme === 'default' ? '切换到活力橙' : '切换到中性灰'}
+              title={colorTheme === 'default' ? t('nav.switchToOrange') : t('nav.switchToDefault')}
             >
               {colorTheme === 'default' ? (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -107,7 +109,7 @@ export function AppShell() {
               <button
                 onClick={() => navigate('/settings/general')}
                 className="flex items-center justify-center w-11 h-11 rounded-2xl transition-all duration-300 bg-card hover:bg-primary/5 active:scale-95 text-foreground shadow-sm hover:shadow-md"
-                title={`${user.username} - 点击进入设置`}
+                title={t('nav.userSettings', { username: user.username })}
               >
                 <User className="w-5 h-5" />
               </button>

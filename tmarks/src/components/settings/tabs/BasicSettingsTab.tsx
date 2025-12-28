@@ -1,262 +1,234 @@
+/**
+ * 基础设置标签页
+ * 包含账户信息、安全设置、语言设置
+ */
+
 import { useState } from 'react'
-import { User, Mail, Calendar, Shield, Lock, Eye, EyeOff, Info } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { User, Mail, Calendar, Shield, Lock, Eye, EyeOff, Globe } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useToastStore } from '@/stores/toastStore'
-import { InfoBox } from '../InfoBox'
 import { apiClient } from '@/lib/api-client'
+import { useLanguage } from '@/hooks/useLanguage'
+import { SettingsSection, SettingsItem, SettingsDivider } from '../SettingsSection'
 
 export function BasicSettingsTab() {
-    const { user } = useAuthStore()
-    const { addToast } = useToastStore()
-    
-    const [showPasswordForm, setShowPasswordForm] = useState(false)
-    const [currentPassword, setCurrentPassword] = useState('')
-    const [newPassword, setNewPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false)
-    const [showNewPassword, setShowNewPassword] = useState(false)
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-    const [isChangingPassword, setIsChangingPassword] = useState(false)
+  const { t, i18n } = useTranslation('settings')
+  const { user } = useAuthStore()
+  const { addToast } = useToastStore()
+  const { currentLanguage, changeLanguage, supportedLanguages } = useLanguage()
 
-    const handleChangePassword = async (e: React.FormEvent) => {
-        e.preventDefault()
-        
-        if (!currentPassword || !newPassword || !confirmPassword) {
-            addToast('error', '请填写所有字段')
-            return
-        }
+  const [showPasswordForm, setShowPasswordForm] = useState(false)
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
 
-        if (newPassword !== confirmPassword) {
-            addToast('error', '两次输入的新密码不一致')
-            return
-        }
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
 
-        if (newPassword.length < 6) {
-            addToast('error', '新密码至少需要 6 个字符')
-            return
-        }
-
-        setIsChangingPassword(true)
-        try {
-            await apiClient.post('/v1/change-password', {
-                current_password: currentPassword,
-                new_password: newPassword,
-            })
-            
-            addToast('success', '密码修改成功')
-            setShowPasswordForm(false)
-            setCurrentPassword('')
-            setNewPassword('')
-            setConfirmPassword('')
-        } catch (error) {
-            const message = error instanceof Error ? error.message : '密码修改失败'
-            addToast('error', message)
-        } finally {
-            setIsChangingPassword(false)
-        }
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      addToast('error', t('basic.password.fillAllFields'))
+      return
     }
 
-    const formatDate = (dateString?: string) => {
-        if (!dateString) return '未知'
-        try {
-            return new Date(dateString).toLocaleDateString('zh-CN', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            })
-        } catch {
-            return dateString
-        }
+    if (newPassword !== confirmPassword) {
+      addToast('error', t('basic.password.mismatch'))
+      return
     }
 
-    return (
-        <div className="space-y-6">
-            {/* 账户信息 */}
-            <div className="space-y-4">
-                <div>
-                    <h3 className="text-lg font-semibold text-foreground">账户信息</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        查看您的账户基本信息
-                    </p>
-                </div>
-                
-                <div className="space-y-3">
-                    {/* 用户名 */}
-                    <div className="flex items-center gap-3 p-4 rounded-lg bg-card border border-border">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                            <User className="w-5 h-5 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="text-xs text-muted-foreground">用户名</div>
-                            <div className="text-sm font-medium text-foreground truncate">{user?.username || '未设置'}</div>
-                        </div>
-                    </div>
+    if (newPassword.length < 6) {
+      addToast('error', t('basic.password.tooShort'))
+      return
+    }
 
-                    {/* 邮箱 */}
-                    {user?.email && (
-                        <div className="flex items-center gap-3 p-4 rounded-lg bg-card border border-border">
-                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                <Mail className="w-5 h-5 text-primary" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="text-xs text-muted-foreground">邮箱</div>
-                                <div className="text-sm font-medium text-foreground truncate">{user.email}</div>
-                            </div>
-                        </div>
-                    )}
+    setIsChangingPassword(true)
+    try {
+      await apiClient.post('/v1/change-password', {
+        current_password: currentPassword,
+        new_password: newPassword,
+      })
 
-                    {/* 注册时间 */}
-                    <div className="flex items-center gap-3 p-4 rounded-lg bg-card border border-border">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                            <Calendar className="w-5 h-5 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="text-xs text-muted-foreground">注册时间</div>
-                            <div className="text-sm font-medium text-foreground">{formatDate(user?.created_at)}</div>
-                        </div>
-                    </div>
+      addToast('success', t('basic.password.changeSuccess'))
+      setShowPasswordForm(false)
+      setCurrentPassword('')
+      setNewPassword('')
+      setConfirmPassword('')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t('basic.password.changeFailed')
+      addToast('error', message)
+    } finally {
+      setIsChangingPassword(false)
+    }
+  }
 
-                    {/* 账户角色 */}
-                    <div className="flex items-center gap-3 p-4 rounded-lg bg-card border border-border">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                            <Shield className="w-5 h-5 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="text-xs text-muted-foreground">账户角色</div>
-                            <div className="text-sm font-medium text-foreground">
-                                {user?.role === 'admin' ? '管理员' : '普通用户'}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return t('basic.unknown')
+    try {
+      return new Date(dateString).toLocaleDateString(i18n.language === 'zh-CN' ? 'zh-CN' : 'en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    } catch {
+      return dateString
+    }
+  }
 
-            <div className="border-t border-border"></div>
-
-            {/* 修改密码 */}
-            <div className="space-y-4">
-                <div>
-                    <h3 className="text-lg font-semibold text-foreground">安全设置</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        修改您的登录密码
-                    </p>
-                </div>
-
-                {!showPasswordForm ? (
-                    <button
-                        onClick={() => setShowPasswordForm(true)}
-                        className="btn btn-primary flex items-center gap-2"
-                    >
-                        <Lock className="w-4 h-4" />
-                        修改密码
-                    </button>
-                ) : (
-                    <form onSubmit={handleChangePassword} className="space-y-4 p-4 rounded-lg bg-card border border-border">
-                        {/* 当前密码 */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-foreground">当前密码</label>
-                            <div className="relative">
-                                <input
-                                    type={showCurrentPassword ? 'text' : 'password'}
-                                    value={currentPassword}
-                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                    className="input w-full pr-10"
-                                    placeholder="请输入当前密码"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                                >
-                                    {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* 新密码 */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-foreground">新密码</label>
-                            <div className="relative">
-                                <input
-                                    type={showNewPassword ? 'text' : 'password'}
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    className="input w-full pr-10"
-                                    placeholder="请输入新密码（至少 6 个字符）"
-                                    required
-                                    minLength={6}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowNewPassword(!showNewPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                                >
-                                    {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* 确认新密码 */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-foreground">确认新密码</label>
-                            <div className="relative">
-                                <input
-                                    type={showConfirmPassword ? 'text' : 'password'}
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="input w-full pr-10"
-                                    placeholder="请再次输入新密码"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                                >
-                                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* 按钮组 */}
-                        <div className="flex gap-2 pt-2">
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setShowPasswordForm(false)
-                                    setCurrentPassword('')
-                                    setNewPassword('')
-                                    setConfirmPassword('')
-                                }}
-                                className="btn btn-ghost flex-1"
-                                disabled={isChangingPassword}
-                            >
-                                取消
-                            </button>
-                            <button
-                                type="submit"
-                                className="btn btn-primary flex-1"
-                                disabled={isChangingPassword}
-                            >
-                                {isChangingPassword ? '修改中...' : '确认修改'}
-                            </button>
-                        </div>
-                    </form>
-                )}
-            </div>
-
-            <div className="border-t border-border"></div>
-
-            {/* 提示信息 */}
-            <InfoBox icon={Info} title="账户安全提示" variant="info">
-                <ul className="space-y-1 text-sm">
-                    <li>• 请定期修改密码以保护账户安全</li>
-                    <li>• 密码至少需要 6 个字符</li>
-                    <li>• 建议使用字母、数字和符号的组合</li>
-                    <li>• 不要与他人分享您的密码</li>
-                </ul>
-            </InfoBox>
+  return (
+    <div className="space-y-6">
+      {/* 账户信息 */}
+      <SettingsSection icon={User} title={t('basic.accountInfo.title')} description={t('basic.accountInfo.description')}>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <SettingsItem icon={User} title={t('basic.username')} description={user?.username || t('basic.notSet')} />
+          {user?.email && <SettingsItem icon={Mail} title={t('basic.email')} description={user.email} />}
+          <SettingsItem icon={Calendar} title={t('basic.registeredAt')} description={formatDate(user?.created_at)} />
+          <SettingsItem
+            icon={Shield}
+            title={t('basic.role')}
+            description={user?.role === 'admin' ? t('basic.roleAdmin') : t('basic.roleUser')}
+          />
         </div>
-    )
+      </SettingsSection>
+
+      <SettingsDivider />
+
+      {/* 安全设置 */}
+      <SettingsSection icon={Lock} title={t('basic.security.title')} description={t('basic.security.description')}>
+        {!showPasswordForm ? (
+          <div className="p-4 rounded-lg bg-card border border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-medium">{t('basic.password.change')}</div>
+                <div className="text-xs text-muted-foreground">{t('basic.security.description')}</div>
+              </div>
+              <button onClick={() => setShowPasswordForm(true)} className="btn btn-primary btn-sm flex items-center gap-2">
+                <Lock className="w-4 h-4" />
+                {t('basic.password.change')}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleChangePassword} className="space-y-4 p-4 rounded-lg bg-card border border-border">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <PasswordInput
+                label={t('basic.password.current')}
+                placeholder={t('basic.password.currentPlaceholder')}
+                value={currentPassword}
+                onChange={setCurrentPassword}
+                show={showCurrentPassword}
+                onToggleShow={() => setShowCurrentPassword(!showCurrentPassword)}
+              />
+              <PasswordInput
+                label={t('basic.password.new')}
+                placeholder={t('basic.password.newPlaceholder')}
+                value={newPassword}
+                onChange={setNewPassword}
+                show={showNewPassword}
+                onToggleShow={() => setShowNewPassword(!showNewPassword)}
+                minLength={6}
+              />
+            </div>
+            <PasswordInput
+              label={t('basic.password.confirm')}
+              placeholder={t('basic.password.confirmPlaceholder')}
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              show={showConfirmPassword}
+              onToggleShow={() => setShowConfirmPassword(!showConfirmPassword)}
+            />
+            <div className="flex gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowPasswordForm(false)
+                  setCurrentPassword('')
+                  setNewPassword('')
+                  setConfirmPassword('')
+                }}
+                className="btn btn-ghost flex-1"
+                disabled={isChangingPassword}
+              >
+                {t('basic.password.cancel')}
+              </button>
+              <button type="submit" className="btn btn-primary flex-1" disabled={isChangingPassword}>
+                {isChangingPassword ? t('basic.password.changing') : t('basic.password.submit')}
+              </button>
+            </div>
+          </form>
+        )}
+      </SettingsSection>
+
+      <SettingsDivider />
+
+      {/* 语言设置 */}
+      <SettingsSection icon={Globe} title={t('language.title')} description={t('language.description')}>
+        <div className="p-4 rounded-lg bg-card border border-border">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm font-medium">{t('language.label')}</div>
+              <div className="text-xs text-muted-foreground">{t('language.hint')}</div>
+            </div>
+            <select
+              value={currentLanguage}
+              onChange={(e) => changeLanguage(e.target.value as typeof currentLanguage)}
+              className="input w-40"
+            >
+              {supportedLanguages.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.nativeName}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </SettingsSection>
+    </div>
+  )
+}
+
+// 密码输入组件
+function PasswordInput({
+  label,
+  placeholder,
+  value,
+  onChange,
+  show,
+  onToggleShow,
+  minLength,
+}: {
+  label: string
+  placeholder: string
+  value: string
+  onChange: (value: string) => void
+  show: boolean
+  onToggleShow: () => void
+  minLength?: number
+}) {
+  return (
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-foreground">{label}</label>
+      <div className="relative">
+        <input
+          type={show ? 'text' : 'password'}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="input w-full pr-10"
+          placeholder={placeholder}
+          required
+          minLength={minLength}
+        />
+        <button
+          type="button"
+          onClick={onToggleShow}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+        >
+          {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+        </button>
+      </div>
+    </div>
+  )
 }

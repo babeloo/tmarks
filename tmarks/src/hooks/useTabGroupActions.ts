@@ -1,9 +1,10 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { tabGroupsService } from '@/services/tab-groups'
 import type { TabGroup, TabGroupItem } from '@/lib/types'
 import { useToastStore } from '@/stores/toastStore'
 import { formatDistanceToNow } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
+import { zhCN, enUS } from 'date-fns/locale'
 import { logger } from '@/lib/logger'
 
 interface UseTabGroupActionsProps {
@@ -29,17 +30,20 @@ export function useTabGroupActions({
   setConfirmDialog,
   confirmDialog,
 }: UseTabGroupActionsProps) {
+  const { t, i18n } = useTranslation('tabGroups')
   const { success, error: showError } = useToastStore()
   const [editingItemId, setEditingItemId] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState('')
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null)
   const [editingGroupTitle, setEditingGroupTitle] = useState('')
 
+  const dateLocale = i18n.language === 'zh-CN' ? zhCN : enUS
+
   const formatDate = (dateStr: string) => {
     try {
       return formatDistanceToNow(new Date(dateStr), {
         addSuffix: true,
-        locale: zhCN,
+        locale: dateLocale,
       })
     } catch {
       return dateStr
@@ -49,18 +53,18 @@ export function useTabGroupActions({
   const handleDelete = (id: string, title: string) => {
     setConfirmDialog({
       isOpen: true,
-      title: '删除标签页组',
-      message: `确定要删除标签页组"${title}"吗？此操作将移至回收站。`,
+      title: t('confirm.deleteGroup'),
+      message: t('confirm.deleteGroupMessage', { title }),
       onConfirm: async () => {
         setConfirmDialog({ ...confirmDialog, isOpen: false })
         setDeletingId(id)
         try {
           await tabGroupsService.deleteTabGroup(id)
           setTabGroups((prev) => prev.filter((g) => g.id !== id))
-          success('已移至回收站')
+          success(t('message.movedToTrash'))
         } catch (err) {
           logger.error('Failed to delete tab group:', err)
-          showError('删除失败，请重试')
+          showError(t('message.deleteFailed'))
         } finally {
           setDeletingId(null)
         }
@@ -70,7 +74,7 @@ export function useTabGroupActions({
 
   const handleOpenAll = (items: TabGroupItem[]) => {
     if (!items || items.length === 0) {
-      showError('没有可打开的标签页')
+      showError(t('message.noTabsToOpen'))
       return
     }
 
@@ -79,12 +83,12 @@ export function useTabGroupActions({
     // 提示用户
     const message =
       itemCount > 10
-        ? `即将打开 ${itemCount} 个标签页。\n\n⚠️ 如果浏览器拦截弹窗，请在地址栏点击"允许弹窗"。\n\n是否继续？`
-        : `确定要打开 ${itemCount} 个标签页吗？`
+        ? t('confirm.openTabsWarning', { count: itemCount })
+        : t('confirm.openTabsMessage', { mode: t('openMode.newWindow'), count: itemCount })
 
     setConfirmDialog({
       isOpen: true,
-      title: '打开多个标签页',
+      title: t('confirm.openMultipleTabs'),
       message,
       onConfirm: () => {
         setConfirmDialog({ ...confirmDialog, isOpen: false })
@@ -97,7 +101,7 @@ export function useTabGroupActions({
         })
 
         // 显示成功消息
-        success(`正在打开 ${itemCount} 个标签页...`)
+        success(t('message.openingTabs', { count: itemCount }))
       },
     })
   }
@@ -105,19 +109,19 @@ export function useTabGroupActions({
   const handleExportMarkdown = (group: TabGroup) => {
     const items = group.items || []
     let markdown = `# ${group.title}\n\n`
-    markdown += `创建时间: ${formatDate(group.created_at)}\n`
-    markdown += `标签页数量: ${items.length}\n\n`
+    markdown += `${t('export.createdTime')}: ${formatDate(group.created_at)}\n`
+    markdown += `${t('export.tabCount')}: ${items.length}\n\n`
 
     if (group.tags && group.tags.length > 0) {
-      markdown += `标签: ${group.tags.join(', ')}\n\n`
+      markdown += `${t('export.tags')}: ${group.tags.join(', ')}\n\n`
     }
 
     markdown += `---\n\n`
 
     items.forEach((item, index) => {
       markdown += `${index + 1}. [${item.title}](${item.url})\n`
-      if (item.is_pinned === 1) markdown += '   - 📌 已固定\n'
-      if (item.is_todo === 1) markdown += '   - ✅ 待办\n'
+      if (item.is_pinned === 1) markdown += `   - 📌 ${t('item.pinned')}\n`
+      if (item.is_todo === 1) markdown += `   - ✅ ${t('item.todo')}\n`
       markdown += '\n'
     })
 
@@ -131,7 +135,7 @@ export function useTabGroupActions({
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
 
-    success('导出成功')
+    success(t('message.exportSuccess'))
   }
 
   const handleEditGroup = (group: TabGroup) => {
@@ -141,7 +145,7 @@ export function useTabGroupActions({
 
   const handleSaveGroupEdit = async (groupId: string) => {
     if (!editingGroupTitle.trim()) {
-      showError('标题不能为空')
+      showError(t('message.titleRequired'))
       return
     }
 
@@ -152,10 +156,10 @@ export function useTabGroupActions({
       )
       setEditingGroupId(null)
       setEditingGroupTitle('')
-      success('重命名成功')
+      success(t('message.renameSuccess'))
     } catch (err) {
       logger.error('Failed to update group title:', err)
-      showError('重命名失败，请重试')
+      showError(t('message.renameFailed'))
     }
   }
 
@@ -166,7 +170,7 @@ export function useTabGroupActions({
 
   const handleSaveEdit = async (groupId: string, itemId: string) => {
     if (!editingTitle.trim()) {
-      showError('标题不能为空')
+      showError(t('message.titleRequired'))
       return
     }
 
@@ -186,10 +190,10 @@ export function useTabGroupActions({
       )
       setEditingItemId(null)
       setEditingTitle('')
-      success('编辑成功')
+      success(t('message.editSuccess'))
     } catch (err) {
       logger.error('Failed to update item:', err)
-      showError('编辑失败，请重试')
+      showError(t('message.editFailed'))
     }
   }
 
@@ -209,10 +213,10 @@ export function useTabGroupActions({
             : group
         )
       )
-      success(newPinned === 1 ? '已固定' : '已取消固定')
+      success(newPinned === 1 ? t('message.pinSuccess') : t('message.unpinSuccess'))
     } catch (err) {
       logger.error('Failed to toggle pin:', err)
-      showError('操作失败，请重试')
+      showError(t('message.operationFailed'))
     }
   }
 
@@ -232,18 +236,18 @@ export function useTabGroupActions({
             : group
         )
       )
-      success(newTodo === 1 ? '已标记待办' : '已取消待办')
+      success(newTodo === 1 ? t('message.todoSuccess') : t('message.untodoSuccess'))
     } catch (err) {
       logger.error('Failed to toggle todo:', err)
-      showError('操作失败，请重试')
+      showError(t('message.operationFailed'))
     }
   }
 
   const handleDeleteItem = (groupId: string, itemId: string, title: string) => {
     setConfirmDialog({
       isOpen: true,
-      title: '删除标签页',
-      message: `确定要删除"${title}"吗？此操作不可撤销。`,
+      title: t('confirm.deleteItem'),
+      message: t('confirm.deleteItemMessage', { title }),
       onConfirm: async () => {
         setConfirmDialog({ ...confirmDialog, isOpen: false })
         try {
@@ -259,10 +263,10 @@ export function useTabGroupActions({
                 : group
             )
           )
-          success('删除成功')
+          success(t('message.deleteSuccess'))
         } catch (err) {
           logger.error('Failed to delete item:', err)
-          showError('删除失败，请重试')
+          showError(t('message.deleteFailed'))
         }
       },
     })

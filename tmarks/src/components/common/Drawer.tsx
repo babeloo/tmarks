@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { Z_INDEX } from '@/lib/constants/z-index'
@@ -16,6 +17,7 @@ interface DrawerProps {
  * 从左侧或右侧滑出的面板
  */
 export function Drawer({ isOpen, onClose, children, title, side = 'left' }: DrawerProps) {
+  const { t } = useTranslation('common')
   const [shouldRender, setShouldRender] = useState(false)
 
   // 延迟卸载以显示关闭动画
@@ -89,7 +91,7 @@ export function Drawer({ isOpen, onClose, children, title, side = 'left' }: Draw
             <button
               onClick={onClose}
               className="p-2 hover:bg-muted rounded-lg transition-colors"
-              aria-label="关闭"
+              aria-label={t('action.close')}
             >
               <X className="w-5 h-5" />
             </button>

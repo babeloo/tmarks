@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { Z_INDEX } from '@/lib/constants/z-index'
 
 interface ConfirmDialogProps {
@@ -15,14 +16,21 @@ interface ConfirmDialogProps {
 
 export function ConfirmDialog({
   isOpen,
-  title = '确认',
+  title,
   message,
-  confirmText = '确定',
-  cancelText = '取消',
+  confirmText,
+  cancelText,
   type = 'warning',
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
+  const { t } = useTranslation('common')
+
+  // 使用翻译的默认值
+  const displayTitle = title ?? t('dialog.confirmTitle')
+  const displayConfirmText = confirmText ?? t('button.confirm')
+  const displayCancelText = cancelText ?? t('button.cancel')
+
   // 阻止背景滚动
   useEffect(() => {
     if (isOpen) {
@@ -45,14 +53,6 @@ export function ConfirmDialog({
     window.addEventListener('keydown', handleEsc)
     return () => window.removeEventListener('keydown', handleEsc)
   }, [isOpen, onCancel])
-
-  const handleConfirm = () => {
-    onConfirm()
-  }
-
-  const handleCancel = () => {
-    onCancel()
-  }
 
   const getTypeStyles = () => {
     switch (type) {
@@ -89,15 +89,12 @@ export function ConfirmDialog({
 
   const dialogContent = (
     <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6 animate-fade-in" style={{ zIndex: Z_INDEX.CONFIRM_DIALOG }}>
-      {/* 背景遮罩 - 用于点击关闭 */}
       <div
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
-        onClick={handleCancel}
+        onClick={onCancel}
       />
 
-      {/* 弹窗内容 */}
       <div className="relative card rounded-2xl sm:rounded-3xl shadow-2xl border max-w-md w-full animate-scale-in p-6 sm:p-8" style={{backgroundColor: 'var(--card)', borderColor: 'var(--border)'}}>
-        {/* 图标区域 */}
         <div className="flex justify-center mb-4 sm:mb-6">
           <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl ${styles.icon} ${styles.iconRing} ring-4 sm:ring-8 flex items-center justify-center shadow-lg`}>
             {type === 'error' && (
@@ -123,19 +120,17 @@ export function ConfirmDialog({
           </div>
         </div>
 
-        {/* 内容区域 */}
         <div className="text-center mb-6 sm:mb-8">
-          <h3 className="font-bold text-xl sm:text-2xl mb-2 sm:mb-3 text-foreground">{title}</h3>
+          <h3 className="font-bold text-xl sm:text-2xl mb-2 sm:mb-3 text-foreground">{displayTitle}</h3>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{message}</p>
         </div>
 
-        {/* 按钮组 */}
         <div className="flex gap-2 sm:gap-3">
-          <button onClick={handleCancel} className="btn btn-outline flex-1 min-h-[44px]">
-            {cancelText}
+          <button onClick={onCancel} className="btn btn-outline flex-1 min-h-[44px]">
+            {displayCancelText}
           </button>
-          <button onClick={handleConfirm} className="btn flex-1 min-h-[44px]">
-            {confirmText}
+          <button onClick={onConfirm} className="btn flex-1 min-h-[44px]">
+            {displayConfirmText}
           </button>
         </div>
       </div>

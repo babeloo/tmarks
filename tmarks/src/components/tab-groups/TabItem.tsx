@@ -1,4 +1,5 @@
 import { ExternalLink, Trash2, Edit2, Pin, CheckSquare, Check, X, GripVertical, FolderInput, MoreVertical } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { TabGroupItem } from '@/lib/types'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -44,6 +45,7 @@ export function TabItem({
   setEditingTitle,
   extractDomain,
 }: TabItemProps) {
+  const { t } = useTranslation('tabGroups')
   const isMobile = useIsMobile()
 
   const {
@@ -170,20 +172,20 @@ export function TabItem({
               <button
                 onClick={() => onSaveEdit(groupId, item.id)}
                 className="p-1.5 text-success hover:bg-success/10 rounded transition-colors"
-                title="保存"
+                title={t('item.save')}
               >
                 <Check className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setEditingItemId(null)}
                 className="p-1.5 text-muted-foreground hover:bg-muted rounded transition-colors"
-                title="取消"
+                title={t('item.cancel')}
               >
                 <X className="w-4 h-4" />
               </button>
             </>
           ) : isMobile ? (
-            /* 移动端：使用下拉菜单 */
+            /* Mobile: use dropdown menu */
             <DropdownMenu
               trigger={
                 <button className="p-2 text-muted-foreground hover:bg-muted rounded transition-colors">
@@ -192,32 +194,32 @@ export function TabItem({
               }
               items={[
                 {
-                  label: '打开链接',
+                  label: t('menu.openLink'),
                   icon: <ExternalLink className="w-4 h-4" />,
                   onClick: () => window.open(item.url, '_blank'),
                 },
                 {
-                  label: '编辑',
+                  label: t('item.edit'),
                   icon: <Edit2 className="w-4 h-4" />,
                   onClick: () => onEditItem(item),
                 },
                 {
-                  label: item.is_pinned === 1 ? '取消固定' : '固定',
+                  label: item.is_pinned === 1 ? t('menu.unpin') : t('menu.pin'),
                   icon: <Pin className="w-4 h-4" />,
                   onClick: () => onTogglePin(groupId, item.id, item.is_pinned || 0),
                 },
                 {
-                  label: item.is_todo === 1 ? '取消待办' : '标记待办',
+                  label: item.is_todo === 1 ? t('menu.unmarkTodo') : t('menu.markTodo'),
                   icon: <CheckSquare className="w-4 h-4" />,
                   onClick: () => onToggleTodo(groupId, item.id, item.is_todo || 0),
                 },
                 ...(onMoveItem ? [{
-                  label: '移动到其他组',
+                  label: t('menu.moveToOtherGroup'),
                   icon: <FolderInput className="w-4 h-4" />,
                   onClick: () => onMoveItem(item),
                 }] : []),
                 {
-                  label: '删除',
+                  label: t('item.delete'),
                   icon: <Trash2 className="w-4 h-4" />,
                   onClick: () => onDeleteItem(groupId, item.id, item.title),
                   danger: true,
@@ -225,21 +227,21 @@ export function TabItem({
               ]}
             />
           ) : (
-            /* 桌面端：显示所有按钮 */
+            /* Desktop: show all buttons */
             <>
               <a
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1.5 text-muted-foreground hover:bg-muted rounded transition-colors"
-                title="打开链接"
+                title={t('menu.openLink')}
               >
                 <ExternalLink className="w-4 h-4" />
               </a>
               <button
                 onClick={() => onEditItem(item)}
                 className="p-1.5 text-muted-foreground hover:bg-muted rounded transition-colors"
-                title="编辑"
+                title={t('item.edit')}
               >
                 <Edit2 className="w-4 h-4" />
               </button>
@@ -250,7 +252,7 @@ export function TabItem({
                     ? 'text-warning bg-warning/10 hover:bg-warning/20'
                     : 'text-muted-foreground hover:bg-muted'
                 }`}
-                title={item.is_pinned === 1 ? '取消固定' : '固定'}
+                title={item.is_pinned === 1 ? t('menu.unpin') : t('menu.pin')}
               >
                 <Pin className="w-4 h-4" />
               </button>
@@ -261,7 +263,7 @@ export function TabItem({
                     ? 'text-accent bg-accent/10 hover:bg-accent/20'
                     : 'text-muted-foreground hover:bg-muted'
                 }`}
-                title={item.is_todo === 1 ? '取消待办' : '标记待办'}
+                title={item.is_todo === 1 ? t('menu.unmarkTodo') : t('menu.markTodo')}
               >
                 <CheckSquare className="w-4 h-4" />
               </button>
@@ -269,7 +271,7 @@ export function TabItem({
                 <button
                   onClick={() => onMoveItem(item)}
                   className="p-1.5 text-muted-foreground hover:bg-muted rounded transition-colors"
-                  title="移动到其他组"
+                  title={t('menu.moveToOtherGroup')}
                 >
                   <FolderInput className="w-4 h-4" />
                 </button>
@@ -277,7 +279,7 @@ export function TabItem({
               <button
                 onClick={() => onDeleteItem(groupId, item.id, item.title)}
                 className="p-1.5 text-destructive hover:bg-destructive/10 rounded transition-colors"
-                title="删除"
+                title={t('item.delete')}
               >
                 <Trash2 className="w-4 h-4" />
               </button>

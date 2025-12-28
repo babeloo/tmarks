@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
 import { ChevronDown, Clock, RefreshCw, Pin, TrendingUp, Calendar } from 'lucide-react'
+import { Z_INDEX } from '@/lib/constants/z-index'
 
 export type SortOption = 'created' | 'updated' | 'pinned' | 'popular'
 
@@ -12,9 +14,9 @@ interface SortSelectorProps {
 
 interface SortOptionConfig {
   value: SortOption
-  label: string
+  labelKey: string
   icon: React.ComponentType<{ className?: string }>
-  description: string
+  descriptionKey: string
   group: 'time' | 'priority' | 'engagement'
 }
 
@@ -27,30 +29,30 @@ interface MenuPosition {
 const SORT_OPTIONS: SortOptionConfig[] = [
   {
     value: 'created',
-    label: '按创建时间',
+    labelKey: 'sort.byCreated',
     icon: Calendar,
-    description: '最新创建的在前',
+    descriptionKey: 'sort.byCreatedDesc',
     group: 'time'
   },
   {
     value: 'updated',
-    label: '按更新时间',
+    labelKey: 'sort.byUpdated',
     icon: RefreshCw,
-    description: '最近更新的在前',
+    descriptionKey: 'sort.byUpdatedDesc',
     group: 'time'
   },
   {
     value: 'pinned',
-    label: '置顶优先',
+    labelKey: 'sort.pinnedFirst',
     icon: Pin,
-    description: '置顶书签优先显示',
+    descriptionKey: 'sort.pinnedFirstDesc',
     group: 'priority'
   },
   {
     value: 'popular',
-    label: '按热门程度',
+    labelKey: 'sort.byPopular',
     icon: TrendingUp,
-    description: '点击次数多的在前',
+    descriptionKey: 'sort.byPopularDesc',
     group: 'engagement'
   }
 ]
@@ -58,6 +60,7 @@ const SORT_OPTIONS: SortOptionConfig[] = [
 
 
 export function SortSelector({ value, onChange, className = '' }: SortSelectorProps) {
+  const { t } = useTranslation('common')
   const [isOpen, setIsOpen] = useState(false)
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const [menuPosition, setMenuPosition] = useState<MenuPosition | null>(null)
@@ -173,10 +176,10 @@ export function SortSelector({ value, onChange, className = '' }: SortSelectorPr
               left: menuPosition.left,
               width: menuPosition.width ?? 200,
               backgroundColor: 'var(--card)',
-              zIndex: 1000,
+              zIndex: Z_INDEX.DROPDOWN,
             }}
             role="listbox"
-            aria-label="排序选项"
+            aria-label={t('sort.options')}
           >
             {SORT_OPTIONS.map((option) => (
               <button
@@ -190,7 +193,7 @@ export function SortSelector({ value, onChange, className = '' }: SortSelectorPr
                 }`}
               >
                 <option.icon className="w-4 h-4" />
-                <span>{option.label}</span>
+                <span>{t(option.labelKey)}</span>
               </button>
             ))}
           </div>,
@@ -224,11 +227,11 @@ export function SortSelector({ value, onChange, className = '' }: SortSelectorPr
           }}
           aria-expanded={isOpen}
           aria-haspopup="listbox"
-          aria-label="选择排序方式"
+          aria-label={t('sort.selectSort')}
         >
           <div className="flex items-center gap-1 sm:gap-2">
             <CurrentIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
-            <span className="truncate text-[11px] sm:text-sm">{currentOption?.label}</span>
+            <span className="truncate text-[11px] sm:text-sm">{currentOption ? t(currentOption.labelKey) : ''}</span>
           </div>
           <ChevronDown
             className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground transition-transform duration-200 flex-shrink-0 ${

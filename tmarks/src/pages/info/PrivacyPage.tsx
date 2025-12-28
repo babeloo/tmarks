@@ -1,13 +1,16 @@
+import { useTranslation } from 'react-i18next'
 import { Shield, Lock, Eye, Database, UserCheck } from 'lucide-react'
 
 export function PrivacyPage() {
+  const { t } = useTranslation('info')
+
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 space-y-6 sm:space-y-8">
       {/* 标题 */}
       <div className="space-y-3">
-        <h1 className="text-3xl sm:text-4xl font-bold text-foreground">隐私政策</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-foreground">{t('privacy.title')}</h1>
         <p className="text-sm text-muted-foreground">
-          最后更新：2024年11月19日
+          {t('privacy.lastUpdated', { date: '2024-11-19' })}
         </p>
       </div>
 
@@ -15,10 +18,10 @@ export function PrivacyPage() {
       <div className="card p-6 space-y-3">
         <div className="flex items-center gap-3">
           <Shield className="w-6 h-6 text-primary" />
-          <h2 className="text-xl font-bold text-foreground">我们的承诺</h2>
+          <h2 className="text-xl font-bold text-foreground">{t('privacy.commitment.title')}</h2>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          TMarks 致力于保护用户的隐私和数据安全。本隐私政策说明了我们如何收集、使用、存储和保护您的个人信息。
+          {t('privacy.commitment.description')}
         </p>
       </div>
 
@@ -26,25 +29,25 @@ export function PrivacyPage() {
       <div className="space-y-4">
         <div className="flex items-center gap-3">
           <Database className="w-5 h-5 text-primary" />
-          <h2 className="text-xl font-bold text-foreground">我们收集的信息</h2>
+          <h2 className="text-xl font-bold text-foreground">{t('privacy.collection.title')}</h2>
         </div>
         <div className="card p-6 space-y-4">
           <div>
-            <h3 className="text-sm font-semibold text-foreground mb-2">账户信息</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-2">{t('privacy.collection.account.title')}</h3>
             <p className="text-sm text-muted-foreground">
-              当您注册 TMarks 账户时，我们会收集您的用户名、电子邮件地址和加密后的密码。
+              {t('privacy.collection.account.description')}
             </p>
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-foreground mb-2">书签数据</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-2">{t('privacy.collection.bookmarks.title')}</h3>
             <p className="text-sm text-muted-foreground">
-              您创建的书签、标签、标签页组等内容数据，这些数据仅用于提供服务功能。
+              {t('privacy.collection.bookmarks.description')}
             </p>
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-foreground mb-2">使用数据</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-2">{t('privacy.collection.usage.title')}</h3>
             <p className="text-sm text-muted-foreground">
-              我们可能收集您使用服务的相关信息，如访问时间、IP 地址、浏览器类型等，用于改进服务质量。
+              {t('privacy.collection.usage.description')}
             </p>
           </div>
         </div>
@@ -54,29 +57,29 @@ export function PrivacyPage() {
       <div className="space-y-4">
         <div className="flex items-center gap-3">
           <Eye className="w-5 h-5 text-primary" />
-          <h2 className="text-xl font-bold text-foreground">信息使用方式</h2>
+          <h2 className="text-xl font-bold text-foreground">{t('privacy.usage.title')}</h2>
         </div>
         <div className="card p-6">
           <ul className="space-y-3 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span>提供、维护和改进 TMarks 服务</span>
+              <span>{t('privacy.usage.item1')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span>处理您的请求和交易</span>
+              <span>{t('privacy.usage.item2')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span>发送服务相关的通知和更新</span>
+              <span>{t('privacy.usage.item3')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span>检测、预防和解决技术问题</span>
+              <span>{t('privacy.usage.item4')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span>遵守法律义务</span>
+              <span>{t('privacy.usage.item5')}</span>
             </li>
           </ul>
         </div>
@@ -86,32 +89,32 @@ export function PrivacyPage() {
       <div className="space-y-4">
         <div className="flex items-center gap-3">
           <Lock className="w-5 h-5 text-primary" />
-          <h2 className="text-xl font-bold text-foreground">数据安全</h2>
+          <h2 className="text-xl font-bold text-foreground">{t('privacy.security.title')}</h2>
         </div>
         <div className="card p-6 space-y-4">
           <p className="text-sm text-muted-foreground">
-            我们采取多种安全措施来保护您的个人信息：
+            {t('privacy.security.description')}
           </p>
           <ul className="space-y-3 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="text-success mt-0.5">✓</span>
-              <span>所有数据传输使用 HTTPS 加密</span>
+              <span>{t('privacy.security.item1')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-success mt-0.5">✓</span>
-              <span>密码使用行业标准的哈希算法加密存储</span>
+              <span>{t('privacy.security.item2')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-success mt-0.5">✓</span>
-              <span>使用 JWT 令牌进行身份认证</span>
+              <span>{t('privacy.security.item3')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-success mt-0.5">✓</span>
-              <span>数据存储在 Cloudflare 的安全基础设施上</span>
+              <span>{t('privacy.security.item4')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-success mt-0.5">✓</span>
-              <span>定期进行安全审计和更新</span>
+              <span>{t('privacy.security.item5')}</span>
             </li>
           </ul>
         </div>
@@ -121,25 +124,25 @@ export function PrivacyPage() {
       <div className="space-y-4">
         <div className="flex items-center gap-3">
           <UserCheck className="w-5 h-5 text-primary" />
-          <h2 className="text-xl font-bold text-foreground">您的权利</h2>
+          <h2 className="text-xl font-bold text-foreground">{t('privacy.rights.title')}</h2>
         </div>
         <div className="card p-6">
           <ul className="space-y-3 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span><strong>访问权</strong>：您可以随时访问和查看您的个人信息</span>
+              <span>{t('privacy.rights.access')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span><strong>修改权</strong>：您可以更新或修改您的个人信息</span>
+              <span>{t('privacy.rights.modify')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span><strong>删除权</strong>：您可以请求删除您的账户和所有相关数据</span>
+              <span>{t('privacy.rights.delete')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span><strong>导出权</strong>：您可以导出您的书签数据</span>
+              <span>{t('privacy.rights.export')}</span>
             </li>
           </ul>
         </div>
@@ -147,23 +150,23 @@ export function PrivacyPage() {
 
       {/* Cookie 使用 */}
       <div className="space-y-4">
-        <h2 className="text-xl font-bold text-foreground">Cookie 和类似技术</h2>
+        <h2 className="text-xl font-bold text-foreground">{t('privacy.cookies.title')}</h2>
         <div className="card p-6 space-y-3">
           <p className="text-sm text-muted-foreground">
-            我们使用 Cookie 和类似技术来：
+            {t('privacy.cookies.description')}
           </p>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span>保持您的登录状态</span>
+              <span>{t('privacy.cookies.item1')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span>记住您的偏好设置</span>
+              <span>{t('privacy.cookies.item2')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span>分析服务使用情况</span>
+              <span>{t('privacy.cookies.item3')}</span>
             </li>
           </ul>
         </div>
@@ -171,42 +174,41 @@ export function PrivacyPage() {
 
       {/* 第三方服务 */}
       <div className="space-y-4">
-        <h2 className="text-xl font-bold text-foreground">第三方服务</h2>
+        <h2 className="text-xl font-bold text-foreground">{t('privacy.thirdParty.title')}</h2>
         <div className="card p-6 space-y-3">
           <p className="text-sm text-muted-foreground">
-            TMarks 使用以下第三方服务：
+            {t('privacy.thirdParty.description')}
           </p>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              <span><strong>Cloudflare</strong>：提供托管、数据库和 CDN 服务</span>
+              <span>{t('privacy.thirdParty.cloudflare')}</span>
             </li>
           </ul>
           <p className="text-sm text-muted-foreground">
-            这些服务提供商有自己的隐私政策，我们建议您查阅它们的政策。
+            {t('privacy.thirdParty.note')}
           </p>
         </div>
       </div>
 
       {/* 政策更新 */}
       <div className="space-y-4">
-        <h2 className="text-xl font-bold text-foreground">政策更新</h2>
+        <h2 className="text-xl font-bold text-foreground">{t('privacy.updates.title')}</h2>
         <div className="card p-6">
           <p className="text-sm text-muted-foreground">
-            我们可能会不时更新本隐私政策。重大变更时，我们会通过电子邮件或服务内通知告知您。
-            继续使用服务即表示您接受更新后的政策。
+            {t('privacy.updates.description')}
           </p>
         </div>
       </div>
 
       {/* 联系我们 */}
       <div className="card p-6 space-y-3">
-        <h2 className="text-xl font-bold text-foreground">联系我们</h2>
+        <h2 className="text-xl font-bold text-foreground">{t('privacy.contact.title')}</h2>
         <p className="text-sm text-muted-foreground">
-          如果您对本隐私政策有任何疑问或建议，请通过以下方式联系我们：
+          {t('privacy.contact.description')}
         </p>
         <div className="text-sm text-muted-foreground">
-          <p>电子邮件：<a href="mailto:privacy@tmarks.com" className="text-primary hover:underline">privacy@tmarks.com</a></p>
+          <p>{t('privacy.contact.email')}<a href="mailto:privacy@tmarks.com" className="text-primary hover:underline">privacy@tmarks.com</a></p>
         </div>
       </div>
     </div>

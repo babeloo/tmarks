@@ -3,6 +3,7 @@
  * 显示所有分组中被固定的标签页
  */
 
+import { useTranslation } from 'react-i18next'
 import { Pin, ExternalLink, Folder } from 'lucide-react'
 import type { TabGroup, TabGroupItem } from '@/lib/types'
 
@@ -17,6 +18,8 @@ interface PinnedItemsSectionProps {
 }
 
 export function PinnedItemsSection({ tabGroups, onUnpin }: PinnedItemsSectionProps) {
+  const { t } = useTranslation('tabGroups')
+  
   // 收集所有固定的标签页
   const pinnedItems: PinnedItem[] = []
   
@@ -45,7 +48,7 @@ export function PinnedItemsSection({ tabGroups, onUnpin }: PinnedItemsSectionPro
       <div className="flex items-center gap-2 mb-4">
         <Pin className="w-5 h-5 text-warning" />
         <h2 className="text-lg font-semibold text-foreground">
-          固定标签页
+          {t('item.pinned')}
         </h2>
         <span className="text-sm text-muted-foreground">
           ({pinnedItems.length})
@@ -68,7 +71,7 @@ export function PinnedItemsSection({ tabGroups, onUnpin }: PinnedItemsSectionPro
                   onUnpin(item.groupId, item.id)
                 }}
                 className="flex-shrink-0 mt-0.5 p-1 text-warning hover:bg-warning/10 rounded transition-colors"
-                title="取消固定"
+                title={t('menu.unpin')}
               >
                 <Pin className="w-4 h-4" />
               </button>

@@ -1,9 +1,9 @@
 /**
  * 导出功能组件
- * 提供书签数据导出功能的用户界面
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Download, FileText, Code, Loader2 } from 'lucide-react'
 import { ProgressIndicator } from '../common/ProgressIndicator'
 import { ErrorDisplay } from '../common/ErrorDisplay'
@@ -22,6 +22,7 @@ interface ExportStats {
 }
 
 export function ExportSection({ onExport }: ExportSectionProps) {
+  const { t } = useTranslation('import')
   const [selectedFormat, setSelectedFormat] = useState<ExportFormat>('json')
   const [isExporting, setIsExporting] = useState(false)
   const [exportStats, setExportStats] = useState<ExportStats | null>(null)
@@ -41,7 +42,6 @@ export function ExportSection({ onExport }: ExportSectionProps) {
     }
   })
 
-  // 获取导出预览信息
   const fetchExportPreview = async () => {
     try {
       const token = useAuthStore.getState().accessToken
@@ -63,14 +63,12 @@ export function ExportSection({ onExport }: ExportSectionProps) {
     }
   }
 
-  // 执行导出
   const handleExport = async () => {
     setIsExporting(true)
     setExportError(null)
-    setExportProgress({ current: 0, total: 100, status: '准备导出...' })
+    setExportProgress({ current: 0, total: 100, status: t('export.preparing') })
 
     try {
-      // 构建查询参数
       const params = new URLSearchParams({
         format: selectedFormat,
         include_metadata: options.include_metadata.toString(),
@@ -80,7 +78,7 @@ export function ExportSection({ onExport }: ExportSectionProps) {
         include_user: options.format_options?.include_user_info?.toString() || 'false'
       })
 
-      setExportProgress({ current: 25, total: 100, status: '正在生成导出数据...' })
+      setExportProgress({ current: 25, total: 100, status: t('export.generating') })
 
       const token = useAuthStore.getState().accessToken
       const response = await fetch(`/api/v1/export?${params}`, {
@@ -92,14 +90,12 @@ export function ExportSection({ onExport }: ExportSectionProps) {
         throw new Error(error.message || 'Export failed')
       }
 
-      setExportProgress({ current: 75, total: 100, status: '正在下载文件...' })
+      setExportProgress({ current: 75, total: 100, status: t('export.downloading') })
 
-      // 获取文件名
       const contentDisposition = response.headers.get('Content-Disposition')
       const filename = contentDisposition?.match(/filename="([^"]+)"/)?.[1] ||
                      `tmarks-export-${Date.now()}.${selectedFormat}`
 
-      // 下载文件
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -110,13 +106,11 @@ export function ExportSection({ onExport }: ExportSectionProps) {
       document.body.removeChild(a)
       window.URL.revokeObjectURL(url)
 
-      setExportProgress({ current: 100, total: 100, status: '导出完成' })
-
-      // 调用回调
+      setExportProgress({ current: 100, total: 100, status: t('export.complete') })
       onExport?.(selectedFormat, options)
 
     } catch (error) {
-      const message = error instanceof Error ? error.message : '导出失败，请重试'
+      const message = error instanceof Error ? error.message : t('export.failedRetry')
       setExportError(message)
       console.error('Export failed:', error)
     } finally {
@@ -125,19 +119,18 @@ export function ExportSection({ onExport }: ExportSectionProps) {
     }
   }
 
-  // 格式选项
   const formatOptions = [
     {
       value: 'json' as ExportFormat,
-      label: 'JSON',
-      description: 'TMarks 标准格式，包含完整数据',
+      label: t('format.json'),
+      description: t('format.jsonDesc'),
       icon: Code,
       recommended: true
     },
     {
       value: 'html' as ExportFormat,
-      label: 'HTML',
-      description: '浏览器书签格式，兼容性好',
+      label: t('format.html'),
+      description: t('format.htmlDesc'),
       icon: FileText,
       recommended: false
     }
@@ -145,20 +138,18 @@ export function ExportSection({ onExport }: ExportSectionProps) {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* 标题 */}
       <div>
         <h3 className="text-base sm:text-lg font-semibold text-foreground">
-          导出书签
+          {t('export.title')}
         </h3>
         <p className="text-sm text-muted-foreground mt-1">
-          将您的书签数据导出为文件，支持多种格式
+          {t('export.description')}
         </p>
       </div>
 
-      {/* 格式选择 */}
       <div className="space-y-3">
         <label className="block text-sm font-medium text-foreground">
-          导出格式
+          {t('export.selectFormat')}
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {formatOptions.map((format) => {
@@ -182,7 +173,7 @@ export function ExportSection({ onExport }: ExportSectionProps) {
                       </span>
                       {format.recommended && (
                         <span className="px-2 py-0.5 text-xs bg-success/10 text-success rounded flex-shrink-0">
-                          推荐
+                          {t('format.recommended')}
                         </span>
                       )}
                     </div>
@@ -205,10 +196,9 @@ export function ExportSection({ onExport }: ExportSectionProps) {
         </div>
       </div>
 
-      {/* 导出选项 */}
       <div className="space-y-4">
         <label className="block text-sm font-medium text-foreground">
-          导出选项
+          {t('export.options')}
         </label>
 
         <div className="space-y-3">
@@ -216,30 +206,20 @@ export function ExportSection({ onExport }: ExportSectionProps) {
             <input
               type="checkbox"
               checked={options.include_tags}
-              onChange={(e) => setOptions(prev => ({
-                ...prev,
-                include_tags: e.target.checked
-              }))}
+              onChange={(e) => setOptions(prev => ({ ...prev, include_tags: e.target.checked }))}
               className="h-4 w-4 text-primary border-border rounded focus:ring-primary"
             />
-            <span className="text-sm text-foreground">
-              包含标签信息
-            </span>
+            <span className="text-sm text-foreground">{t('export.includeTags')}</span>
           </label>
 
           <label className="flex items-center space-x-3">
             <input
               type="checkbox"
               checked={options.include_metadata}
-              onChange={(e) => setOptions(prev => ({
-                ...prev,
-                include_metadata: e.target.checked
-              }))}
+              onChange={(e) => setOptions(prev => ({ ...prev, include_metadata: e.target.checked }))}
               className="h-4 w-4 text-primary border-border rounded focus:ring-primary"
             />
-            <span className="text-sm text-foreground">
-              包含元数据
-            </span>
+            <span className="text-sm text-foreground">{t('export.includeMetadata')}</span>
           </label>
 
           {selectedFormat === 'json' && (
@@ -250,16 +230,11 @@ export function ExportSection({ onExport }: ExportSectionProps) {
                   checked={options.format_options?.pretty_print}
                   onChange={(e) => setOptions(prev => ({
                     ...prev,
-                    format_options: {
-                      ...prev.format_options,
-                      pretty_print: e.target.checked
-                    }
+                    format_options: { ...prev.format_options, pretty_print: e.target.checked }
                   }))}
                   className="h-4 w-4 text-primary border-border rounded focus:ring-primary"
                 />
-                <span className="text-sm text-foreground">
-                  格式化 JSON（便于阅读）
-                </span>
+                <span className="text-sm text-foreground">{t('export.prettyPrint')}</span>
               </label>
 
               <label className="flex items-center space-x-3">
@@ -268,66 +243,41 @@ export function ExportSection({ onExport }: ExportSectionProps) {
                   checked={options.format_options?.include_click_stats}
                   onChange={(e) => setOptions(prev => ({
                     ...prev,
-                    format_options: {
-                      ...prev.format_options,
-                      include_click_stats: e.target.checked
-                    }
+                    format_options: { ...prev.format_options, include_click_stats: e.target.checked }
                   }))}
                   className="h-4 w-4 text-primary border-border rounded focus:ring-primary"
                 />
-                <span className="text-sm text-foreground">
-                  包含点击统计
-                </span>
+                <span className="text-sm text-foreground">{t('export.includeStats')}</span>
               </label>
             </>
           )}
         </div>
       </div>
 
-      {/* 预览信息 */}
       {exportStats && (
         <div className="bg-muted rounded-lg p-3 sm:p-4">
-          <h4 className="text-sm font-semibold text-foreground mb-3">
-            导出预览
-          </h4>
+          <h4 className="text-sm font-semibold text-foreground mb-3">{t('export.previewTitle')}</h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             <div className="text-center sm:text-left">
-              <div className="text-lg sm:text-xl font-bold text-primary">
-                {exportStats.total_bookmarks}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">
-                书签数量
-              </div>
+              <div className="text-lg sm:text-xl font-bold text-primary">{exportStats.total_bookmarks}</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">{t('export.bookmarkCount')}</div>
             </div>
             <div className="text-center sm:text-left">
-              <div className="text-lg sm:text-xl font-bold text-success">
-                {exportStats.total_tags}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">
-                标签数量
-              </div>
+              <div className="text-lg sm:text-xl font-bold text-success">{exportStats.total_tags}</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">{t('export.tagCount')}</div>
             </div>
             <div className="text-center sm:text-left">
-              <div className="text-lg sm:text-xl font-bold text-warning">
-                {exportStats.pinned_bookmarks}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">
-                置顶书签
-              </div>
+              <div className="text-lg sm:text-xl font-bold text-warning">{exportStats.pinned_bookmarks}</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">{t('export.pinnedCount')}</div>
             </div>
             <div className="text-center sm:text-left">
-              <div className="text-lg sm:text-xl font-bold text-foreground">
-                {formatFileSize(exportStats.estimated_size)}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">
-                预计大小
-              </div>
+              <div className="text-lg sm:text-xl font-bold text-foreground">{formatFileSize(exportStats.estimated_size)}</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">{t('export.estimatedSize')}</div>
             </div>
           </div>
         </div>
       )}
 
-      {/* 导出进度 */}
       {exportProgress && (
         <ProgressIndicator
           progress={{
@@ -342,26 +292,24 @@ export function ExportSection({ onExport }: ExportSectionProps) {
         />
       )}
 
-      {/* 错误显示 */}
       {exportError && (
         <ErrorDisplay
           errors={[{ message: exportError }]}
           variant="error"
-          title="导出失败"
+          title={t('export.failed')}
           dismissible={true}
           onDismiss={() => setExportError(null)}
           onRetry={handleExport}
         />
       )}
 
-      {/* 操作按钮 */}
       <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
         <button
           onClick={fetchExportPreview}
           disabled={isExporting}
           className="w-full sm:w-auto px-4 py-3 sm:py-2 text-sm font-medium text-foreground bg-card border border-border rounded-md hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
         >
-          预览信息
+          {t('export.preview')}
         </button>
 
         <button
@@ -374,20 +322,17 @@ export function ExportSection({ onExport }: ExportSectionProps) {
           ) : (
             <Download className="h-4 w-4" />
           )}
-          <span>{isExporting ? '导出中...' : '开始导出'}</span>
+          <span>{isExporting ? t('export.exporting') : t('export.startExport')}</span>
         </button>
       </div>
     </div>
   )
 }
 
-// 工具函数：格式化文件大小
 function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B'
-  
   const k = 1024
   const sizes = ['B', 'KB', 'MB', 'GB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
 }

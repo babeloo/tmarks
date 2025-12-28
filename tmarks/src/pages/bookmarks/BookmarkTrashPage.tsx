@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Archive, RotateCcw, Trash2, Calendar, Link2, ArrowLeft, AlertTriangle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { bookmarksService } from '@/services/bookmarks'
 import type { Bookmark } from '@/lib/types'
 import { formatDistanceToNow } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
+import { zhCN, enUS } from 'date-fns/locale'
 import { useToastStore } from '@/stores/toastStore'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { logger } from '@/lib/logger'
@@ -12,6 +13,8 @@ import { useIsMobile } from '@/hooks/useMediaQuery'
 import { MobileHeader } from '@/components/common/MobileHeader'
 
 export function BookmarkTrashPage() {
+  const { t, i18n } = useTranslation('bookmarks')
+  const dateLocale = i18n.language === 'zh-CN' ? zhCN : enUS
   const isMobile = useIsMobile()
   const { success, error: showError } = useToastStore()
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([])
@@ -41,7 +44,7 @@ export function BookmarkTrashPage() {
       setBookmarks(response.bookmarks)
     } catch (err) {
       logger.error('Failed to load bookmark trash:', err)
-      setError('加载回收站失败')
+      setError(t('trash.loadFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -54,18 +57,18 @@ export function BookmarkTrashPage() {
   const handleRestore = (id: string, title: string) => {
     setConfirmDialog({
       isOpen: true,
-      title: '恢复书签',
-      message: `确定要恢复"${title}"吗？`,
+      title: t('trash.restoreTitle'),
+      message: t('trash.restoreMessage', { title }),
       isDanger: false,
       onConfirm: async () => {
         setConfirmDialog(prev => ({ ...prev, isOpen: false }))
         try {
           await bookmarksService.restoreFromTrash(id)
           setBookmarks(prev => prev.filter(b => b.id !== id))
-          success('书签已恢复')
+          success(t('trash.restoreSuccess'))
         } catch (err) {
           logger.error('Failed to restore bookmark:', err)
-          showError('恢复失败，请重试')
+          showError(t('trash.restoreFailed'))
         }
       },
     })
@@ -74,18 +77,18 @@ export function BookmarkTrashPage() {
   const handlePermanentDelete = (id: string, title: string) => {
     setConfirmDialog({
       isOpen: true,
-      title: '永久删除',
-      message: `确定要永久删除"${title}"吗？此操作不可撤销！`,
+      title: t('trash.permanentDeleteTitle'),
+      message: t('trash.permanentDeleteMessage', { title }),
       isDanger: true,
       onConfirm: async () => {
         setConfirmDialog(prev => ({ ...prev, isOpen: false }))
         try {
           await bookmarksService.permanentDelete(id)
           setBookmarks(prev => prev.filter(b => b.id !== id))
-          success('书签已永久删除')
+          success(t('trash.permanentDeleteSuccess'))
         } catch (err) {
           logger.error('Failed to permanently delete bookmark:', err)
-          showError('删除失败，请重试')
+          showError(t('trash.permanentDeleteFailed'))
         }
       },
     })
@@ -96,18 +99,18 @@ export function BookmarkTrashPage() {
 
     setConfirmDialog({
       isOpen: true,
-      title: '清空回收站',
-      message: `确定要永久删除回收站中的 ${bookmarks.length} 个书签吗？此操作不可撤销！`,
+      title: t('trash.emptyTrashTitle'),
+      message: t('trash.emptyTrashMessage', { count: bookmarks.length }),
       isDanger: true,
       onConfirm: async () => {
         setConfirmDialog(prev => ({ ...prev, isOpen: false }))
         try {
           const result = await bookmarksService.emptyTrash()
           setBookmarks([])
-          success(`已清空回收站，删除了 ${result.count} 个书签`)
+          success(t('trash.emptyTrashSuccess', { count: result.count }))
         } catch (err) {
           logger.error('Failed to empty trash:', err)
-          showError('清空回收站失败，请重试')
+          showError(t('trash.emptyTrashFailed'))
         }
       },
     })
@@ -118,7 +121,7 @@ export function BookmarkTrashPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">加载中...</p>
+          <p className="text-muted-foreground">{t('trash.loading')}</p>
         </div>
       </div>
     )
@@ -133,7 +136,7 @@ export function BookmarkTrashPage() {
             onClick={loadTrash}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
           >
-            重试
+            {t('trash.retry')}
           </button>
         </div>
       </div>
@@ -145,7 +148,7 @@ export function BookmarkTrashPage() {
       {/* 移动端顶部工具栏 */}
       {isMobile && (
         <MobileHeader
-          title="书签回收站"
+          title={t('trash.title')}
           showMenu={false}
           showSearch={false}
           showMore={false}
@@ -162,15 +165,15 @@ export function BookmarkTrashPage() {
                 className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
-                <span>返回书签</span>
+                <span>{t('trash.backToBookmarks')}</span>
               </Link>
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <Archive className="w-8 h-8 text-muted-foreground" />
-                    <h1 className="text-3xl font-bold text-foreground">书签回收站</h1>
+                    <h1 className="text-3xl font-bold text-foreground">{t('trash.title')}</h1>
                   </div>
-                  <p className="text-muted-foreground">已删除的书签将保留在这里，可以恢复或永久删除</p>
+                  <p className="text-muted-foreground">{t('trash.warning')}</p>
                 </div>
                 {bookmarks.length > 0 && (
                   <button
@@ -178,7 +181,7 @@ export function BookmarkTrashPage() {
                     className="flex items-center gap-2 px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
-                    清空回收站
+                    {t('trash.emptyTrash')}
                   </button>
                 )}
               </div>
@@ -193,7 +196,7 @@ export function BookmarkTrashPage() {
                 className="flex items-center gap-2 px-3 py-1.5 text-sm bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
-                清空
+                {t('trash.empty')}
               </button>
             </div>
           )}
@@ -202,8 +205,8 @@ export function BookmarkTrashPage() {
           {bookmarks.length === 0 ? (
             <div className="text-center py-16">
               <Archive className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-foreground mb-2">回收站是空的</h3>
-              <p className="text-muted-foreground">没有已删除的书签</p>
+              <h3 className="text-lg font-medium text-foreground mb-2">{t('trash.emptyState.title')}</h3>
+              <p className="text-muted-foreground">{t('trash.emptyState.description')}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -211,7 +214,7 @@ export function BookmarkTrashPage() {
               <div className="flex items-start gap-3 p-4 bg-warning/10 border border-warning/20 rounded-lg">
                 <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
                 <div className="text-sm text-muted-foreground">
-                  <p>回收站中的书签将在 30 天后自动永久删除。</p>
+                  <p>{t('trash.warning')}</p>
                 </div>
               </div>
 
@@ -247,13 +250,14 @@ export function BookmarkTrashPage() {
                             <div className="flex items-center gap-1">
                               <Calendar className="w-4 h-4" />
                               <span>
-                                删除于{' '}
-                                {bookmark.deleted_at
-                                  ? formatDistanceToNow(new Date(bookmark.deleted_at), {
-                                      addSuffix: true,
-                                      locale: zhCN,
-                                    })
-                                  : '未知'}
+                                {t('trash.deletedAt', {
+                                  time: bookmark.deleted_at
+                                    ? formatDistanceToNow(new Date(bookmark.deleted_at), {
+                                        addSuffix: true,
+                                        locale: dateLocale,
+                                      })
+                                    : ''
+                                })}
                               </span>
                             </div>
                           </div>
@@ -267,14 +271,14 @@ export function BookmarkTrashPage() {
                         className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-success text-success-foreground rounded-lg hover:bg-success/90 transition-colors text-sm"
                       >
                         <RotateCcw className="w-4 h-4" />
-                        恢复
+                        {t('trash.restore')}
                       </button>
                       <button
                         onClick={() => handlePermanentDelete(bookmark.id, bookmark.title)}
                         className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors text-sm"
                       >
                         <Trash2 className="w-4 h-4" />
-                        删除
+                        {t('trash.delete')}
                       </button>
                     </div>
                   </div>
@@ -290,8 +294,8 @@ export function BookmarkTrashPage() {
             message={confirmDialog.message}
             onConfirm={confirmDialog.onConfirm}
             onCancel={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
-            confirmText={confirmDialog.isDanger ? '确认删除' : '确认'}
-            cancelText="取消"
+            confirmText={confirmDialog.isDanger ? t('trash.confirmDelete') : t('trash.confirm')}
+            cancelText={t('batch.cancel')}
           />
         </div>
       </div>

@@ -232,7 +232,25 @@ select.input option {
   color: var(--card-foreground);
 }
 
+/* 弹窗/模态框中的卡片 - 不使用 backdrop-filter 以避免透明问题 */
+.card-solid {
+  background-color: var(--card);
+  border-radius: calc(var(--radius) * 1.5);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 10px 30px -5px oklch(0 0 0 / 0.1),
+    0 5px 15px -3px oklch(0 0 0 / 0.05);
+  padding: 1.5rem;
+  color: var(--card-foreground);
+}
+
 [data-theme='dark'] .card {
+  box-shadow:
+    0 10px 30px -5px oklch(0 0 0 / 0.3),
+    0 5px 15px -3px oklch(0 0 0 / 0.2);
+}
+
+[data-theme='dark'] .card-solid {
   box-shadow:
     0 10px 30px -5px oklch(0 0 0 / 0.3),
     0 5px 15px -3px oklch(0 0 0 / 0.2);

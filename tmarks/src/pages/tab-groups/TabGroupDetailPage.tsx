@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { logger } from '@/lib/logger'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
@@ -20,6 +21,8 @@ import { useToastStore } from '@/stores/toastStore'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 
 export function TabGroupDetailPage() {
+  const { t, i18n: _i18n } = useTranslation('tabGroups')
+  const { t: tc } = useTranslation('common')
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { success, error: showError } = useToastStore()
@@ -62,7 +65,7 @@ export function TabGroupDetailPage() {
       setEditedTitle(group.title)
     } catch (err) {
       logger.error('Failed to load tab group:', err)
-      setError('加载标签页组失败')
+      setError(t('page.loadFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -78,10 +81,10 @@ export function TabGroupDetailPage() {
       })
       setTabGroup(updated)
       setIsEditingTitle(false)
-      success('标题更新成功')
+      success(t('detail.titleUpdateSuccess'))
     } catch (err) {
       logger.error('Failed to update title:', err)
-      showError('更新标题失败，请重试')
+      showError(t('detail.titleUpdateFailed'))
     } finally {
       setIsSavingTitle(false)
     }
@@ -99,7 +102,7 @@ export function TabGroupDetailPage() {
 
   const handleSaveItemEdit = async (itemId: string) => {
     if (!editingItemTitle.trim()) {
-      showError('标题不能为空')
+      showError(t('message.titleRequired'))
       return
     }
 
@@ -116,10 +119,10 @@ export function TabGroupDetailPage() {
       
       setEditingItemId(null)
       setEditingItemTitle('')
-      success('更新成功')
+      success(t('detail.updateSuccess'))
     } catch (err) {
       logger.error('Failed to update item:', err)
-      showError('更新失败，请重试')
+      showError(t('detail.updateFailed'))
     }
   }
 
@@ -133,17 +136,17 @@ export function TabGroupDetailPage() {
 
     setConfirmDialog({
       isOpen: true,
-      title: '删除标签页组',
-      message: `确定要删除标签页组"${tabGroup.title}"吗？此操作不可撤销。`,
+      title: t('confirm.deleteGroup'),
+      message: t('confirm.deleteGroupMessage', { title: tabGroup.title }),
       onConfirm: async () => {
         setConfirmDialog({ ...confirmDialog, isOpen: false })
         try {
           await tabGroupsService.deleteTabGroup(tabGroup.id)
-          success('删除成功')
+          success(t('message.deleteSuccess'))
           navigate('/tab')
         } catch (err) {
           logger.error('Failed to delete tab group:', err)
-          showError('删除失败，请重试')
+          showError(t('message.deleteFailed'))
         }
       },
     })
@@ -157,12 +160,12 @@ export function TabGroupDetailPage() {
 
     // 超过 10 个标签时提供更详细的提示
     const message = itemCount > 10
-      ? `即将打开 ${itemCount} 个标签页，将分批打开以避免浏览器拦截。\n\n每批 10 个，间隔 1 秒。\n\n是否继续？`
-      : `确定要在新标签页中打开 ${itemCount} 个链接吗？`
+      ? t('detail.openAllWarning', { count: itemCount })
+      : t('detail.openAllMessage', { count: itemCount })
 
     setConfirmDialog({
       isOpen: true,
-      title: '打开所有标签页',
+      title: t('detail.openAllTabs'),
       message,
       onConfirm: async () => {
         setConfirmDialog({ ...confirmDialog, isOpen: false })
@@ -180,7 +183,7 @@ export function TabGroupDetailPage() {
           
           // 显示进度提示（仅当有多批时）
           if (totalBatches > 1) {
-            success(`正在打开第 ${currentBatch}/${totalBatches} 批...`)
+            success(t('detail.openingBatch', { current: currentBatch, total: totalBatches }))
           }
           
           // 打开当前批次的标签页
@@ -196,7 +199,7 @@ export function TabGroupDetailPage() {
           }
         }
         
-        success(`已成功打开 ${itemCount} 个标签页！`)
+        success(t('detail.allOpened', { count: itemCount }))
       },
     })
   }
@@ -222,7 +225,7 @@ export function TabGroupDetailPage() {
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
           <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
-            加载中...
+            {t('page.loading')}
           </p>
         </div>
       </div>
@@ -233,13 +236,13 @@ export function TabGroupDetailPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <p className="text-destructive mb-4">{error || '标签页组不存在'}</p>
+          <p className="text-destructive mb-4">{error || t('detail.groupNotFound')}</p>
           <button
             onClick={() => navigate('/tab')}
             className="px-4 py-2 rounded-lg border border-border hover:bg-muted/50 transition-colors"
             style={{ color: 'var(--foreground)' }}
           >
-            返回列表
+            {t('detail.backToList')}
           </button>
         </div>
       </div>
@@ -256,7 +259,7 @@ export function TabGroupDetailPage() {
           style={{ color: 'var(--muted-foreground)' }}
         >
           <ArrowLeft className="w-4 h-4" />
-          返回列表
+          {t('detail.backToList')}
         </button>
 
         <div className="flex items-start justify-between gap-4">
@@ -298,7 +301,7 @@ export function TabGroupDetailPage() {
                 <button
                   onClick={() => setIsEditingTitle(true)}
                   className="p-1.5 rounded-lg hover:bg-muted/50 transition-colors"
-                  title="编辑标题"
+                  title={t('detail.editTitle')}
                 >
                   <Edit2 className="w-4 h-4" style={{ color: 'var(--muted-foreground)' }} />
                 </button>
@@ -312,7 +315,7 @@ export function TabGroupDetailPage() {
               </div>
               <div className="flex items-center gap-1.5">
                 <ExternalLink className="w-4 h-4" />
-                <span>{tabGroup.items?.length || 0} 个标签页</span>
+                <span>{t('header.tabCount', { count: tabGroup.items?.length || 0 })}</span>
               </div>
             </div>
           </div>
@@ -321,10 +324,10 @@ export function TabGroupDetailPage() {
             <button
               onClick={handleDelete}
               className="px-4 py-2 rounded-lg border border-border hover:bg-destructive/10 hover:border-destructive/50 transition-colors flex items-center gap-2"
-              title="删除标签页组"
+              title={t('confirm.deleteGroup')}
             >
               <Trash2 className="w-4 h-4 text-destructive" />
-              <span className="text-sm font-medium text-destructive">删除</span>
+              <span className="text-sm font-medium text-destructive">{t('action.delete')}</span>
             </button>
           </div>
         </div>
@@ -340,7 +343,7 @@ export function TabGroupDetailPage() {
                 <div className="flex items-center gap-2">
                   <Layers className="w-5 h-5" style={{ color: 'var(--foreground)' }} />
                   <span className="font-medium" style={{ color: 'var(--foreground)' }}>
-                    共 {tabGroup.items.length} 个标签页
+                    {t('detail.totalTabs', { count: tabGroup.items.length })}
                   </span>
                 </div>
                 <button
@@ -348,7 +351,7 @@ export function TabGroupDetailPage() {
                   className="px-3 py-1.5 rounded-lg bg-success text-success-foreground text-sm font-medium hover:shadow-lg hover:bg-success/90 transition-all duration-200 flex items-center gap-1.5"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  全部恢复
+                  {t('detail.restoreAll')}
                 </button>
               </div>
             </div>
@@ -414,14 +417,14 @@ export function TabGroupDetailPage() {
                         <button
                           onClick={() => handleSaveItemEdit(item.id)}
                           className="p-1.5 rounded-lg bg-success text-success-foreground hover:bg-success/90 transition-colors"
-                          title="保存"
+                          title={tc('button.save')}
                         >
                           <Check className="w-4 h-4" />
                         </button>
                         <button
                           onClick={handleCancelItemEdit}
                           className="p-1.5 rounded-lg border border-border hover:bg-muted/50 transition-colors"
-                          title="取消"
+                          title={tc('button.cancel')}
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -434,7 +437,7 @@ export function TabGroupDetailPage() {
                             handleEditItem(item)
                           }}
                           className="p-1.5 rounded-lg hover:bg-muted/50 transition-colors"
-                          title="编辑"
+                          title={tc('button.edit')}
                         >
                           <Edit2 className="w-4 h-4" style={{ color: 'var(--muted-foreground)' }} />
                         </button>
@@ -444,7 +447,7 @@ export function TabGroupDetailPage() {
                             handleOpenTab(item.url)
                           }}
                           className="p-1.5 rounded-lg hover:bg-muted/50 transition-colors"
-                          title="打开"
+                          title={t('action.open')}
                         >
                           <ExternalLink className="w-4 h-4" style={{ color: 'var(--muted-foreground)' }} />
                         </button>
@@ -461,10 +464,10 @@ export function TabGroupDetailPage() {
               <ExternalLink className="w-8 h-8" style={{ color: 'var(--muted-foreground)' }} />
             </div>
             <p className="text-lg font-medium mb-1" style={{ color: 'var(--foreground)' }}>
-              此标签页组没有标签页
+              {t('detail.noTabs')}
             </p>
             <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
-              标签页组已被清空
+              {t('detail.tabsCleared')}
             </p>
           </div>
         )}

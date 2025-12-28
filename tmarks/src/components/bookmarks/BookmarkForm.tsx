@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { logger } from '@/lib/logger'
 import { useCreateBookmark, useUpdateBookmark, useDeleteBookmark } from '@/hooks/useBookmarks'
 import { useCreateTag, useTags } from '@/hooks/useTags'
 import { bookmarksService } from '@/services/bookmarks'
 import type { Bookmark, CreateBookmarkRequest, UpdateBookmarkRequest } from '@/lib/types'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import { Z_INDEX } from '@/lib/constants/z-index'
 
 interface BookmarkFormProps {
   bookmark?: Bookmark | null
@@ -13,6 +15,7 @@ interface BookmarkFormProps {
 }
 
 export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps) {
+  const { t } = useTranslation('bookmarks')
   const isEditing = !!bookmark
 
   const availableTagsScrollRef = useRef<HTMLDivElement | null>(null)
@@ -34,14 +37,14 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
   const [urlWarning, setUrlWarning] = useState<{ exists: true; bookmark: Bookmark } | null>(null)
   const [checkingUrl, setCheckingUrl] = useState(false)
 
-    const createBookmark = useCreateBookmark()
+  const createBookmark = useCreateBookmark()
   const updateBookmark = useUpdateBookmark()
   const deleteBookmark = useDeleteBookmark()
   const createTag = useCreateTag()
   const { data: tagsData } = useTags()
   const tags = tagsData?.tags || []
 
-  // URL 变化时检查是否已存在（优化版：增加预检查和延长防抖时间）
+  // URL 变化时检查是否已存在
   useEffect(() => {
     const checkUrl = async () => {
       if (!url.trim() || isEditing) {
@@ -50,7 +53,6 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
         return
       }
 
-      // 跳过太短的 URL（减少不必要的检查）
       if (url.trim().length < 10) {
         setUrlWarning(null)
         setCheckingUrl(false)
@@ -80,7 +82,6 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
       }
     }
 
-    // 增加防抖时间到 800ms，减少 API 调用
     const timeoutId = setTimeout(checkUrl, 800)
     return () => clearTimeout(timeoutId)
   }, [url, isEditing])
@@ -89,34 +90,30 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
     e.preventDefault()
     setError('')
 
-    // 验证
     if (!title.trim()) {
-      setError('请输入书签标题')
+      setError(t('form.validation.titleRequired'))
       return
     }
 
     if (!url.trim()) {
-      setError('请输入书签URL')
+      setError(t('form.validation.urlRequired'))
       return
     }
 
-    // 验证 URL 格式
     try {
       new URL(url)
     } catch {
-      setError('URL 格式不正确')
+      setError(t('form.validation.urlInvalid'))
       return
     }
 
-    // 检查 URL 是否已存在（仅在新增时）
     if (!isEditing && urlWarning?.exists) {
-      setError('该 URL 已存在于书签中')
+      setError(t('form.validation.urlExists'))
       return
     }
 
     try {
       if (isEditing && bookmark) {
-        // 构建更新数据，只包含发生变化的字段
         const updateData: UpdateBookmarkRequest = {
           tag_ids: selectedTagIds,
           is_pinned: isPinned,
@@ -160,7 +157,7 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
       onSuccess?.()
       onClose()
     } catch (error) {
-      setError(error instanceof Error ? error.message : '操作失败，请重试')
+      setError(error instanceof Error ? error.message : t('form.operationFailed'))
     }
   }
 
@@ -176,7 +173,6 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
     const scrollEl = availableTagsScrollRef.current
     if (!scrollEl) return
 
-    // 让滚轮只影响当前标签列表，不去滚动外层弹窗
     e.preventDefault()
     e.stopPropagation()
 
@@ -208,9 +204,8 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
     const input = tagInput.trim()
     if (!input) return
 
-    // 支持逗号分隔的批量添加
     const tagNames = input
-      .split(/[,，]/) // 支持中英文逗号
+      .split(/[,，]/)
       .map(name => name.trim())
       .filter(name => name.length > 0)
 
@@ -219,21 +214,18 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
     const newSelectedIds = [...selectedTagIds]
 
     for (const tagName of tagNames) {
-      // 检查标签是否已存在
       const existingTag = tags.find((t) => t.name.toLowerCase() === tagName.toLowerCase())
       if (existingTag) {
-        // 标签已存在，直接选中
         if (!newSelectedIds.includes(existingTag.id)) {
           newSelectedIds.push(existingTag.id)
         }
       } else {
-        // 创建新标签
         try {
           const newTag = await createTag.mutateAsync({ name: tagName })
           newSelectedIds.push(newTag.id)
         } catch (error) {
           console.error('Failed to create tag:', error)
-          setError(`创建标签"${tagName}"失败，请重试`)
+          setError(t('form.createTagFailed', { name: tagName }))
           return
         }
       }
@@ -256,18 +248,18 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
       onSuccess?.()
       onClose()
     } catch (error) {
-      setError(error instanceof Error ? error.message : '删除失败，请重试')
+      setError(error instanceof Error ? error.message : t('form.deleteFailed'))
     }
   }
 
   const isPending = createBookmark.isPending || updateBookmark.isPending || deleteBookmark.isPending || createTag.isPending
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: 200 }}>
-      <div className="card w-full max-w-4xl max-h-[92vh] flex flex-col min-h-0">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: Z_INDEX.BOOKMARK_FORM }}>
+      <div className="card w-full max-w-4xl max-h-[92vh] flex flex-col min-h-0" style={{ backgroundColor: 'var(--card)' }}>
         <div className="flex items-center justify-between mb-4 flex-shrink-0">
           <h2 className="text-xl font-bold text-foreground">
-            {isEditing ? '编辑书签' : '新增书签'}
+            {isEditing ? t('form.editTitle') : t('form.addTitle')}
           </h2>
           <button
             onClick={onClose}
@@ -295,13 +287,13 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label htmlFor="title" className="block text-xs font-medium mb-1.5 text-foreground">
-                标题 <span className="text-error">*</span>
+                {t('form.titleRequired')} <span className="text-error">*</span>
               </label>
               <input
                 id="title"
                 type="text"
                 className="input"
-                placeholder="书签标题"
+                placeholder={t('form.titlePlaceholder')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 disabled={isPending}
@@ -311,14 +303,14 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
 
             <div>
               <label htmlFor="url" className="block text-xs font-medium mb-1.5 text-foreground">
-                URL <span className="text-error">*</span>
+                {t('form.urlRequired')} <span className="text-error">*</span>
               </label>
               <div className="relative">
                 <input
                   id="url"
                   type="url"
                   className={`input ${urlWarning ? 'border-warning' : ''}`}
-                  placeholder="https://example.com"
+                  placeholder={t('form.urlPlaceholder')}
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   disabled={isPending}
@@ -338,9 +330,9 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
                     <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
                   <div className="flex-1">
-                    <p className="font-medium">该 URL 已存在</p>
+                    <p className="font-medium">{t('form.urlWarning.title')}</p>
                     <p className="mt-0.5 text-muted-foreground">
-                      书签：{urlWarning.bookmark.title}
+                      {t('form.urlWarning.bookmark', { title: urlWarning.bookmark.title })}
                     </p>
                   </div>
                 </div>
@@ -352,12 +344,12 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label htmlFor="description" className="block text-xs font-medium mb-1.5 text-foreground">
-                描述
+                {t('form.description')}
               </label>
               <textarea
                 id="description"
                 className="input min-h-[60px] resize-none text-sm"
-                placeholder="书签描述（可选）"
+                placeholder={t('form.descriptionPlaceholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 disabled={isPending}
@@ -366,14 +358,14 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
 
             <div>
               <label htmlFor="coverImage" className="block text-xs font-medium mb-1.5 text-foreground">
-                封面图 URL
+                {t('form.coverImage')}
               </label>
               <div className="flex gap-2">
                 <input
                   id="coverImage"
                   type="url"
                   className="input flex-1"
-                  placeholder="https://example.com/image.jpg"
+                  placeholder={t('form.coverImagePlaceholder')}
                   value={coverImage}
                   onChange={(e) => setCoverImage(e.target.value)}
                   disabled={isPending}
@@ -381,7 +373,7 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
                 {coverImage && (
                   <img
                     src={coverImage}
-                    alt="预览"
+                    alt="Preview"
                     className="w-[60px] h-[60px] object-cover rounded-lg flex-shrink-0"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none'
@@ -396,14 +388,14 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label className="block text-xs font-medium text-foreground">
-                标签
+                {t('form.tags')}
                 <span className="text-xs text-muted-foreground ml-1.5">
-                  （支持逗号批量添加）
+                  {t('form.tagsBatchHint')}
                 </span>
               </label>
               {selectedTagIds.length > 0 && (
                 <span className="text-xs text-muted-foreground">
-                  已选 {selectedTagIds.length} 个
+                  {t('form.tagsSelected', { count: selectedTagIds.length })}
                 </span>
               )}
             </div>
@@ -412,7 +404,7 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
             <input
               type="text"
               className="input mb-2"
-              placeholder="输入标签名称（多个用逗号分隔），按 Enter 添加..."
+              placeholder={t('form.tagsInputPlaceholder')}
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
               onKeyDown={handleTagInputKeyDown}
@@ -452,7 +444,7 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
               <div ref={availableTagsInnerRef} className="flex flex-wrap gap-1.5">
                 {tags.length === 0 ? (
                   <p className="text-xs text-muted-foreground py-1">
-                    暂无标签，在上方输入框输入后按 Enter 创建
+                    {t('form.noTags')}
                   </p>
                 ) : (
                   tags
@@ -483,7 +475,7 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
                   onChange={(e) => setIsPinned(e.target.checked)}
                   disabled={isPending}
                 />
-                <span className="text-xs text-foreground">置顶</span>
+                <span className="text-xs text-foreground">{t('form.pinned')}</span>
               </label>
 
               <label className="flex items-center gap-1.5 cursor-pointer">
@@ -493,7 +485,7 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
                   onChange={(e) => setIsArchived(e.target.checked)}
                   disabled={isPending}
                 />
-                <span className="text-xs text-foreground">归档</span>
+                <span className="text-xs text-foreground">{t('form.archived')}</span>
               </label>
 
             <label className="flex items-center gap-1.5 cursor-pointer">
@@ -503,7 +495,7 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
                 onChange={(e) => setIsPublic(e.target.checked)}
                 disabled={isPending}
               />
-              <span className="text-xs text-foreground">公开分享</span>
+              <span className="text-xs text-foreground">{t('form.public')}</span>
             </label>
             </div>
 
@@ -515,17 +507,17 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
                   onClick={handleDeleteClick}
                   className="btn btn-sm btn-outline border-2 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground px-4"
                   disabled={isPending}
-                  title="删除书签"
+                  title={t('form.delete')}
                 >
-                  {deleteBookmark.isPending ? '删除中...' : '删除'}
+                  {deleteBookmark.isPending ? t('form.deleting') : t('form.delete')}
                 </button>
               )}
               <button type="submit" className="btn btn-sm px-6" disabled={isPending}>
                 {createBookmark.isPending || updateBookmark.isPending
-                  ? '保存中...'
+                  ? t('form.saving')
                   : isEditing
-                    ? '保存'
-                    : '创建'}
+                    ? t('form.save')
+                    : t('form.create')}
               </button>
               <button
                 type="button"
@@ -533,7 +525,7 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
                 className="btn btn-sm btn-outline px-4"
                 disabled={isPending}
               >
-                取消
+                {t('form.cancel')}
               </button>
             </div>
           </div>
@@ -544,11 +536,11 @@ export function BookmarkForm({ bookmark, onClose, onSuccess }: BookmarkFormProps
       {/* 删除确认对话框 */}
       <ConfirmDialog
         isOpen={showDeleteConfirm}
-        title="删除书签"
-        message="确定要删除这个书签吗？此操作无法撤销。"
+        title={t('form.deleteTitle')}
+        message={t('form.deleteMessage')}
         type="error"
-        confirmText="删除"
-        cancelText="取消"
+        confirmText={t('form.delete')}
+        cancelText={t('form.cancel')}
         onConfirm={handleConfirmDelete}
         onCancel={() => setShowDeleteConfirm(false)}
       />

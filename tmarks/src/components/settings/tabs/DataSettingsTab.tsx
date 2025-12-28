@@ -1,5 +1,11 @@
+/**
+ * 数据设置标签页
+ * 简化版本：导入导出、存储管理、AI设置
+ */
+
 import { useState } from 'react'
-import { Database, Download, Upload, FileJson, FileCode, Camera, Trash2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { Database, Download, Upload, Camera, Trash2, Bot, ChevronDown, ChevronUp } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { ExportSection } from '@/components/import-export/ExportSection'
 import { ImportSection } from '@/components/import-export/ImportSection'
@@ -9,45 +15,32 @@ import { TAGS_QUERY_KEY } from '@/hooks/useTags'
 import { useToastStore } from '@/stores/toastStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useR2StorageQuota } from '@/hooks/useStorage'
+import { AiSettingsTab } from './AiSettingsTab'
+import { SettingsSection, SettingsDivider } from '../SettingsSection'
 import type { ExportFormat, ExportOptions, ImportResult } from '@shared/import-export-types'
 
 export function DataSettingsTab() {
+  const { t } = useTranslation('settings')
   const queryClient = useQueryClient()
   const { addToast } = useToastStore()
   const { accessToken } = useAuthStore()
   const { data: r2Quota, isLoading: isLoadingR2Quota } = useR2StorageQuota()
   const [activeTab, setActiveTab] = useState<'export' | 'import'>('export')
-  const [lastOperation, setLastOperation] = useState<{
-    type: 'export' | 'import' | 'cleanup'
-    timestamp: string
-    details: string
-  } | null>(null)
   const [isCleaningSnapshots, setIsCleaningSnapshots] = useState(false)
   const [showCleanupConfirm, setShowCleanupConfirm] = useState(false)
+  const [showAiSettings, setShowAiSettings] = useState(false)
 
-  // 处理导出完成
   const handleExportComplete = (format: ExportFormat, options: ExportOptions) => {
-    setLastOperation({
-      type: 'export',
-      timestamp: new Date().toLocaleString(),
-      details: `导出为 ${format.toUpperCase()} 格式${options.include_tags ? '，包含标签' : ''}${options.include_metadata ? '，包含元数据' : ''}`
-    })
+    const details = `${format.toUpperCase()}${options.include_tags ? ' + tags' : ''}${options.include_metadata ? ' + metadata' : ''}`
+    addToast('success', t('data.exportSuccess', { details }))
   }
 
-  // 处理导入完成
   const handleImportComplete = (result: ImportResult) => {
-    setLastOperation({
-      type: 'import',
-      timestamp: new Date().toLocaleString(),
-      details: `成功导入 ${result.success} 个书签，创建 ${result.created_tags.length} 个标签${result.failed > 0 ? `，${result.failed} 个失败` : ''}`
-    })
-
-    // 刷新书签和标签缓存
+    addToast('success', t('data.importSuccess', { success: result.success, tags: result.created_tags.length }))
     queryClient.invalidateQueries({ queryKey: [BOOKMARKS_QUERY_KEY] })
     queryClient.invalidateQueries({ queryKey: [TAGS_QUERY_KEY] })
   }
 
-  // 清理所有书签的孤立快照记录
   const handleCleanupAllSnapshots = async () => {
     setShowCleanupConfirm(true)
   }
@@ -56,24 +49,16 @@ export function DataSettingsTab() {
     setShowCleanupConfirm(false)
     setIsCleaningSnapshots(true)
     try {
-      // 获取所有书签
       const response = await fetch('/api/v1/bookmarks?page=1&page_size=1000', {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
+        headers: { 'Authorization': `Bearer ${accessToken}` },
       })
 
-      if (!response.ok) {
-        throw new Error('获取书签列表失败')
-      }
+      if (!response.ok) throw new Error(t('data.fetchBookmarksFailed'))
 
       const data = await response.json()
       const bookmarks = data.data?.bookmarks || []
-      
       let totalCleaned = 0
-      let processedCount = 0
 
-      // 逐个清理每个书签的快照
       for (const bookmark of bookmarks) {
         if (bookmark.snapshot_count > 0) {
           try {
@@ -85,34 +70,25 @@ export function DataSettingsTab() {
               },
               body: JSON.stringify({ verify_and_fix: true }),
             })
-
             if (cleanupResponse.ok) {
               const result = await cleanupResponse.json()
               totalCleaned += result.data?.deleted_count || 0
             }
           } catch (error) {
-            console.error(`清理书签 ${bookmark.id} 的快照失败:`, error)
+            console.error(`Clean snapshot failed for bookmark ${bookmark.id}:`, error)
           }
         }
-        processedCount++
       }
-
-      setLastOperation({
-        type: 'cleanup',
-        timestamp: new Date().toLocaleString(),
-        details: `检查了 ${processedCount} 个书签，清理了 ${totalCleaned} 条孤立快照记录`
-      })
 
       if (totalCleaned > 0) {
-        addToast('success', `成功清理 ${totalCleaned} 条孤立快照记录`)
-        // 刷新书签缓存
+        addToast('success', t('data.cleanSnapshotsSuccess', { count: totalCleaned }))
         queryClient.invalidateQueries({ queryKey: [BOOKMARKS_QUERY_KEY] })
       } else {
-        addToast('info', '没有发现孤立的快照记录')
+        addToast('info', t('data.cleanSnapshotsNone'))
       }
     } catch (error) {
-      console.error('清理快照失败:', error)
-      addToast('error', '清理快照失败')
+      console.error('Clean snapshots failed:', error)
+      addToast('error', t('data.cleanSnapshotsFailed'))
     } finally {
       setIsCleaningSnapshots(false)
     }
@@ -122,243 +98,137 @@ export function DataSettingsTab() {
     <div className="space-y-6">
       <ConfirmDialog
         isOpen={showCleanupConfirm}
-        title="清理快照记录"
-        message={'确定要清理所有书签的孤立快照记录吗？\n\n这将检查所有快照记录，删除 R2 文件不存在的记录。'}
+        title={t('data.cleanSnapshotsConfirmTitle')}
+        message={t('data.cleanSnapshotsConfirmMessage')}
         type="warning"
         onConfirm={confirmCleanupAllSnapshots}
         onCancel={() => setShowCleanupConfirm(false)}
       />
 
-      {/* R2 存储使用情况 */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <Database className="w-4 h-4 text-primary" />
-          <div>
-            <h3 className="text-sm font-semibold text-foreground">R2 存储使用情况（全局）</h3>
-            <p className="text-xs text-muted-foreground">
-              包含所有快照和封面图在 R2 中的总占用
-            </p>
-          </div>
-        </div>
-        <p className="text-xs text-muted-foreground">
-          {isLoadingR2Quota || !r2Quota ? (
-            '加载中...'
-          ) : (
-            <>
-              当前使用{' '}
-              <strong>
-                {(r2Quota.used_bytes / (1024 * 1024 * 1024)).toFixed(2)} GB
-              </strong>
-              {' / '}
-              {r2Quota.unlimited || r2Quota.limit_bytes === null ? (
-                '无限制'
+      {/* 存储用量 */}
+      <SettingsSection icon={Database} title={t('data.r2Storage.title')} description={t('data.r2Storage.description')}>
+        <div className="p-4 rounded-lg bg-card border border-border">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">{t('data.r2Storage.currentUsage')}</span>
+            <span className="text-sm font-medium">
+              {isLoadingR2Quota || !r2Quota ? (
+                t('data.loading')
               ) : (
                 <>
-                  {(r2Quota.limit_bytes / (1024 * 1024 * 1024)).toFixed(2)} GB
+                  {(r2Quota.used_bytes / (1024 * 1024 * 1024)).toFixed(2)} GB
+                  {' / '}
+                  {r2Quota.unlimited || r2Quota.limit_bytes === null
+                    ? t('data.r2Storage.unlimited')
+                    : `${(r2Quota.limit_bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`}
                 </>
               )}
-            </>
-          )}
-        </p>
-      </div>
-
-      {/* 数据管理 */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-semibold text-foreground">数据导入导出</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            导入、导出和备份你的书签数据
-          </p>
-        </div>
-
-        {/* 标签页切换 */}
-        <div className="flex gap-2 border-b border-border">
-          <button
-            onClick={() => setActiveTab('export')}
-            className={`flex items-center gap-2 px-4 py-2 border-b-2 transition-colors ${
-              activeTab === 'export'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Download className="w-4 h-4" />
-            导出数据
-          </button>
-          <button
-            onClick={() => setActiveTab('import')}
-            className={`flex items-center gap-2 px-4 py-2 border-b-2 transition-colors ${
-              activeTab === 'import'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Upload className="w-4 h-4" />
-            导入数据
-          </button>
-        </div>
-
-        {/* 内容区域 */}
-        <div className="p-4 rounded-lg border border-border bg-card">
-          {activeTab === 'export' && (
-            <ExportSection onExport={handleExportComplete} />
-          )}
-
-          {activeTab === 'import' && (
-            <ImportSection onImport={handleImportComplete} />
+            </span>
+          </div>
+          {r2Quota && !r2Quota.unlimited && r2Quota.limit_bytes && (
+            <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
+              <div
+                className="h-full bg-primary transition-all"
+                style={{ width: `${Math.min((r2Quota.used_bytes / r2Quota.limit_bytes) * 100, 100)}%` }}
+              />
+            </div>
           )}
         </div>
+      </SettingsSection>
 
-        {/* 最近操作 */}
-        {lastOperation && (
+      <SettingsDivider />
+
+      {/* 导入导出 */}
+      <SettingsSection icon={Download} title={t('data.importExport.title')} description={t('data.importExport.description')}>
+        <div className="space-y-4">
+          <div className="flex gap-2 border-b border-border">
+            <button
+              onClick={() => setActiveTab('export')}
+              className={`flex items-center gap-2 px-4 py-2 border-b-2 transition-colors ${
+                activeTab === 'export'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Download className="w-4 h-4" />
+              {t('data.importExport.export')}
+            </button>
+            <button
+              onClick={() => setActiveTab('import')}
+              className={`flex items-center gap-2 px-4 py-2 border-b-2 transition-colors ${
+                activeTab === 'import'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Upload className="w-4 h-4" />
+              {t('data.importExport.import')}
+            </button>
+          </div>
+
           <div className="p-4 rounded-lg border border-border bg-card">
-            <div className="flex items-start gap-3">
-              <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                lastOperation.type === 'export'
-                  ? 'bg-primary/10 text-primary'
-                  : lastOperation.type === 'import'
-                  ? 'bg-success/10 text-success'
-                  : 'bg-warning/10 text-warning'
-              }`}>
-                {lastOperation.type === 'export' ? (
-                  <Download className="w-4 h-4" />
-                ) : lastOperation.type === 'import' ? (
-                  <Upload className="w-4 h-4" />
-                ) : (
-                  <Trash2 className="w-4 h-4" />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-foreground text-sm">
-                    {lastOperation.type === 'export' ? '数据导出' : lastOperation.type === 'import' ? '数据导入' : '快照清理'}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {lastOperation.timestamp}
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {lastOperation.details}
-                </p>
+            {activeTab === 'export' ? (
+              <ExportSection onExport={handleExportComplete} />
+            ) : (
+              <ImportSection onImport={handleImportComplete} />
+            )}
+          </div>
+        </div>
+      </SettingsSection>
+
+      <SettingsDivider />
+
+      {/* 快照清理 */}
+      <SettingsSection icon={Camera} title={t('data.snapshotManagement.title')} description={t('data.snapshotManagement.description')}>
+        <div className="p-4 rounded-lg border border-border bg-card">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Trash2 className="w-5 h-5 text-warning" />
+              <div>
+                <div className="text-sm font-medium">{t('data.snapshotManagement.cleanOrphan')}</div>
+                <div className="text-xs text-muted-foreground">{t('data.cleanSnapshots.tip1')}</div>
               </div>
             </div>
+            <button
+              onClick={handleCleanupAllSnapshots}
+              disabled={isCleaningSnapshots}
+              className="btn btn-warning btn-sm"
+            >
+              {isCleaningSnapshots ? t('data.snapshotManagement.cleaning') : t('data.snapshotManagement.cleanButton')}
+            </button>
+          </div>
+        </div>
+      </SettingsSection>
+
+      <SettingsDivider />
+
+      {/* AI 设置 - 可折叠 */}
+      <div className="space-y-4">
+        <button
+          onClick={() => setShowAiSettings(!showAiSettings)}
+          className="w-full flex items-center justify-between p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Bot className="w-5 h-5 text-primary" />
+            </div>
+            <div className="text-left">
+              <h3 className="text-sm font-semibold text-foreground">{t('data.aiSettings.title')}</h3>
+              <p className="text-xs text-muted-foreground">{t('data.aiSettings.description')}</p>
+            </div>
+          </div>
+          {showAiSettings ? (
+            <ChevronUp className="w-5 h-5 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="w-5 h-5 text-muted-foreground" />
+          )}
+        </button>
+
+        {showAiSettings && (
+          <div className="p-4 rounded-lg border border-border bg-card">
+            <AiSettingsTab />
           </div>
         )}
       </div>
-
-      <div className="border-t border-border"></div>
-
-      {/* 快照管理 */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-semibold text-foreground">快照管理</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            清理和维护书签快照数据
-          </p>
-        </div>
-
-        <div className="p-4 rounded-lg border border-border bg-card">
-          <div className="flex items-start gap-3">
-            <Camera className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <div className="text-sm font-medium mb-1">清理孤立快照记录</div>
-              <div className="text-xs text-muted-foreground space-y-1 mb-3">
-                <div>• 检查所有快照记录，验证 R2 文件是否存在</div>
-                <div>• 删除 R2 文件不存在的数据库记录</div>
-                <div>• 自动更新书签的快照计数</div>
-                <div>• 适用于手动删除 R2 文件后的数据修复</div>
-              </div>
-              <button
-                onClick={handleCleanupAllSnapshots}
-                disabled={isCleaningSnapshots}
-                className="btn btn-warning btn-sm flex items-center gap-2"
-              >
-                <Trash2 className="w-4 h-4" />
-                {isCleaningSnapshots ? '清理中...' : '清理孤立记录'}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="border-t border-border"></div>
-
-      {/* 导出功能说明 */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-semibold text-foreground">导出功能</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            支持多种格式，满足不同需求
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/30">
-            <FileJson className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <div className="text-sm font-medium mb-1">JSON 格式</div>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <div>• 包含完整数据，适合备份和迁移</div>
-                <div>• 可选择包含标签、元数据等信息</div>
-                <div>• 支持重新导入到本系统</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/30">
-            <FileCode className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <div className="text-sm font-medium mb-1">HTML 格式</div>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <div>• 兼容浏览器标准格式</div>
-                <div>• 可直接导入 Chrome、Firefox、Edge 等浏览器</div>
-                <div>• 保留文件夹结构和书签层级</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="border-t border-border"></div>
-
-      {/* 导入功能说明 */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-semibold text-foreground">导入功能</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            从多种来源导入书签数据
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/30">
-            <Upload className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <div className="text-sm font-medium mb-1">支持的格式</div>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <div>• 浏览器导出的 HTML 书签文件</div>
-                <div>• JSON 格式的书签数据</div>
-                <div>• 自动检测和跳过重复书签</div>
-                <div>• 可将文件夹结构转换为标签</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/30">
-            <Database className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <div className="text-sm font-medium mb-1">智能处理</div>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <div>• 支持批量处理大文件</div>
-                <div>• 自动提取书签元数据</div>
-                <div>• 保留创建时间和描述信息</div>
-                <div>• 显示详细的导入结果报告</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
 import { TabGroupHeader } from '@/components/tab-groups/TabGroupHeader'
 import { TabItemList } from '@/components/tab-groups/TabItemList'
@@ -66,6 +67,7 @@ export function TabGroupsList({
   onDragEnd,
   extractDomain,
 }: TabGroupsListProps) {
+  const { t } = useTranslation('tabGroups')
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -157,7 +159,7 @@ export function TabGroupsList({
                   <span>📁</span>
                   <span>{group.title}</span>
                   <span className="text-sm text-muted-foreground">
-                    ({children.reduce((sum, g) => sum + (g.item_count || 0), 0)} 个标签页)
+                    ({t('folder.tabsInFolder', { count: children.reduce((sum, g) => sum + (g.item_count || 0), 0) })})
                   </span>
                 </h2>
                 <div className="space-y-6">

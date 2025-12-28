@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Menu, Search, MoreVertical } from 'lucide-react'
 
 interface MobileHeaderProps {
@@ -22,6 +23,8 @@ export function MobileHeader({
   showSearch = true,
   showMore = true,
 }: MobileHeaderProps) {
+  const { t } = useTranslation('common')
+  
   return (
     <header
       className="sticky top-0 left-0 right-0 border-b border-border z-30 md:hidden"
@@ -34,7 +37,7 @@ export function MobileHeader({
             <button
               onClick={onMenuClick}
               className="p-2 hover:bg-muted rounded-lg transition-colors"
-              aria-label="打开菜单"
+              aria-label={t('action.openMenu')}
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -52,7 +55,7 @@ export function MobileHeader({
             <button
               onClick={onSearchClick}
               className="p-2 hover:bg-muted rounded-lg transition-colors"
-              aria-label="搜索"
+              aria-label={t('action.search')}
             >
               <Search className="w-5 h-5" />
             </button>
@@ -61,7 +64,7 @@ export function MobileHeader({
             <button
               onClick={onMoreClick}
               className="p-2 hover:bg-muted rounded-lg transition-colors"
-              aria-label="更多"
+              aria-label={t('action.more')}
             >
               <MoreVertical className="w-5 h-5" />
             </button>

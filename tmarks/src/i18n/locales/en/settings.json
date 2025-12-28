@@ -1,0 +1,585 @@
+{
+  "title": "General Settings",
+  "description": "Configure app behavior and user experience",
+  "tabs": {
+    "basic": "Basic",
+    "automation": "Automation",
+    "appearance": "Appearance",
+    "snapshot": "Snapshot",
+    "ai": "AI",
+    "browser": "Browser",
+    "api": "API",
+    "share": "Share",
+    "data": "Data",
+    "statistics": "Statistics",
+    "language": "Language"
+  },
+  "action": {
+    "save": "Save Settings",
+    "saving": "Saving...",
+    "reset": "Reset",
+    "logout": "Logout"
+  },
+  "message": {
+    "saveSuccess": "Settings saved",
+    "saveFailed": "Failed to save",
+    "saveFailedWithError": "Failed to save: {{error}}",
+    "resetSuccess": "Reset to last saved settings",
+    "logoutFailed": "Failed to logout"
+  },
+  "language": {
+    "title": "Language Settings",
+    "description": "Select interface language",
+    "label": "Interface Language",
+    "hint": "Interface will switch immediately after changing language"
+  },
+  "permissions": {
+    "bookmarks": "Bookmarks",
+    "tags": "Tags",
+    "tabGroups": "Tab Groups",
+    "other": "Other",
+    "bookmarksCreate": "Create bookmarks",
+    "bookmarksRead": "Read bookmarks",
+    "bookmarksUpdate": "Update bookmarks",
+    "bookmarksDelete": "Delete bookmarks",
+    "bookmarksAll": "All bookmark permissions",
+    "tagsCreate": "Create tags",
+    "tagsRead": "Read tags",
+    "tagsUpdate": "Update tags",
+    "tagsDelete": "Delete tags",
+    "tagsAssign": "Assign tags",
+    "tagsAll": "All tag permissions",
+    "tabGroupsCreate": "Create tab groups",
+    "tabGroupsRead": "Read tab groups",
+    "tabGroupsUpdate": "Update tab groups",
+    "tabGroupsDelete": "Delete tab groups",
+    "tabGroupsAll": "All tab group permissions",
+    "aiSuggest": "AI suggestions",
+    "userRead": "Read user info",
+    "userPreferencesRead": "Read user preferences",
+    "templates": {
+      "readOnly": "Read Only",
+      "readOnlyDesc": "View data only, cannot modify",
+      "basic": "Basic",
+      "basicDesc": "Can add bookmarks and tags, but cannot delete",
+      "full": "Full Access",
+      "fullDesc": "Has all operation permissions"
+    }
+  },
+  "browserPermissions": {
+    "title": "Browser Permissions",
+    "description": "Configure browser permissions required by TMarks for the best experience",
+    "popup": {
+      "title": "Popup Permission",
+      "description": "Allow TMarks to open popups to use the \"Open All Tabs\" feature."
+    },
+    "howTo": {
+      "title": "How to allow popups?",
+      "step1": "On the tab group detail page, click the \"Restore All\" button",
+      "step2": "A popup blocked icon will appear in the browser address bar (usually on the right)",
+      "step3": "Click the icon and select \"Always allow popups from [site]\"",
+      "step4": "Refresh the page and click \"Restore All\" again to use normally"
+    },
+    "browsers": {
+      "title": "Browser-specific instructions",
+      "chrome": {
+        "title": "Chrome / Edge",
+        "description": "A 🚫 icon will appear on the right side of the address bar. Click it and select \"Always allow pop-ups and redirects\""
+      },
+      "firefox": {
+        "title": "Firefox",
+        "description": "A popup blocked notification will appear on the left side of the address bar. Click \"Options\" → \"Allow pop-ups for [site]\""
+      },
+      "safari": {
+        "title": "Safari",
+        "description": "Menu bar: Safari → Settings → Websites → Pop-up Windows → Find current site → Select \"Allow\""
+      }
+    },
+    "why": {
+      "title": "💡 Why is popup permission needed?",
+      "description": "The \"Open All Tabs\" feature needs to open multiple web pages simultaneously. Browsers block batch popups by default for security. After allowing TMarks popup permission, you can open all pages in a tab group at once, greatly improving efficiency."
+    }
+  },
+  "ai": {
+    "custom": "Custom"
+  },
+  "apiKey": {
+    "page": {
+      "title": "API Keys Management",
+      "description": "Manage your API keys for third-party app access",
+      "createNew": "Create New API Key",
+      "info": "API Keys are used by third-party apps (like browser extensions) to securely access your TMarks data. You can revoke unused keys anytime.",
+      "currentUsage": "Current usage",
+      "unlimited": "Unlimited",
+      "empty": "No API Keys created yet",
+      "createFirst": "Create your first API Key",
+      "tipsTitle": "💡 Tips:",
+      "tip1": "Each account can create up to {{limit}} API Keys",
+      "tip2": "API Key is only shown once after creation, please save it securely",
+      "tip3": "If a Key is compromised, revoke it immediately",
+      "revokeTitle": "Revoke API Key",
+      "revokeMessage": "Are you sure you want to revoke this API Key? This action cannot be undone.",
+      "revokeSuccess": "API Key revoked",
+      "revokeFailed": "Failed to revoke, please try again",
+      "deleteTitle": "Delete API Key",
+      "deleteMessage": "Are you sure you want to permanently delete this API Key? This action cannot be undone and will clear all usage records.",
+      "deleteSuccess": "API Key permanently deleted",
+      "deleteFailed": "Failed to delete, please try again"
+    },
+    "status": {
+      "label": "Status",
+      "active": "Active",
+      "revoked": "Revoked",
+      "expired": "Expired"
+    },
+    "permissions": "Permissions",
+    "permissionsCount": "{{count}} items",
+    "lastUsed": "Last used",
+    "neverUsed": "Never used",
+    "createdAt": "Created at",
+    "expiresAt": "Expires at",
+    "viewDetails": "View Details",
+    "revoke": "Revoke",
+    "delete": "Delete",
+    "create": {
+      "title": "Create API Key",
+      "step": "Step {{current}}/{{total}}",
+      "name": "Name",
+      "nameRequired": "Name *",
+      "namePlaceholder": "e.g., Chrome Extension - Work PC",
+      "nameHint": "Used to identify the purpose of this Key",
+      "description": "Description (optional)",
+      "descriptionPlaceholder": "e.g., For browser extension access",
+      "quickSelect": "Quick Select:",
+      "recommended": "Recommended",
+      "includedPermissions": "Included Permissions:",
+      "expiration": "Expiration:",
+      "neverExpire": "Never expire",
+      "expireIn30Days": "30 days",
+      "expireIn90Days": "90 days",
+      "cancel": "Cancel",
+      "prev": "← Previous",
+      "next": "Next →",
+      "creating": "Creating...",
+      "createButton": "Create API Key",
+      "failed": "Creation Failed",
+      "failedMessage": "Failed to create, please try again"
+    },
+    "success": {
+      "title": "Created! Please save this Key securely",
+      "yourKey": "Your API Key:",
+      "copy": "📋 Copy",
+      "copied": "✓ Copied",
+      "warning": "⚠️ Important:",
+      "warningList": {
+        "showOnce": "This Key is only shown once and cannot be viewed after closing",
+        "saveNow": "Please copy and save it to a secure location immediately",
+        "prefixOnly": "You will only see the prefix later: {{prefix}}..."
+      },
+      "close": "I've saved it, close"
+    },
+    "detail": {
+      "close": "Close",
+      "basicInfo": "Basic Information:",
+      "keyPrefix": "Key Prefix:",
+      "createdAt": "Created at:",
+      "expiresAt": "Expires at:",
+      "neverExpire": "Never expires",
+      "description": "Description:",
+      "permissions": "Permissions:",
+      "usage": "Usage:",
+      "lastUsed": "Last used:",
+      "neverUsed": "Never used",
+      "totalRequests": "Total requests:",
+      "requestCount": "{{count}} times",
+      "lastIp": "Last IP:",
+      "recentActivity": "Recent Activity:",
+      "recentActivityLimit": "(showing up to {{count}} entries)",
+      "tableTime": "Time",
+      "tableMethod": "Method",
+      "tableEndpoint": "Endpoint",
+      "tableStatus": "Status",
+      "noLogs": "No usage records"
+    },
+    "copyPrefix": "Copy key prefix",
+    "infoBox": {
+      "usageTitle": "Usage Guide",
+      "usageTip1": "API Keys are used by third-party apps (like browser extensions) to securely access your data",
+      "usageTip2": "Each Key can have different permission scopes",
+      "usageTip3": "Recommended to create different Keys for different purposes",
+      "securityTitle": "Security Tips",
+      "securityTip1": "Do not share your API Key publicly",
+      "securityTip2": "Revoke immediately if a Key is compromised",
+      "securityTip3": "Regularly check Key usage records"
+    }
+  },
+  "snapshot": {
+    "title": "Snapshot Settings",
+    "retention": {
+      "title": "Snapshot Retention Policy",
+      "description": "Control the number of snapshots retained per bookmark",
+      "count": "Retention Count",
+      "countHint": "Maximum snapshot versions per bookmark (-1 for unlimited)",
+      "unit": "",
+      "tip": "💡 When snapshot count exceeds the limit, oldest snapshots will be automatically deleted. Set to -1 for unlimited."
+    },
+    "maxCount": {
+      "title": "Maximum Snapshots",
+      "description": "Maximum number of snapshots per bookmark",
+      "hint": "When snapshot count exceeds the limit, oldest snapshots will be automatically deleted. Set to -1 for unlimited."
+    },
+    "autoCreate": {
+      "title": "Auto-create Snapshots",
+      "description": "Automatically create webpage snapshot when adding bookmark",
+      "enable": "Enable Auto-create",
+      "enableHint": "Automatically save webpage snapshot when adding new bookmark (requires browser extension)"
+    },
+    "dedup": {
+      "title": "Smart Deduplication",
+      "description": "Avoid saving duplicate snapshot content",
+      "enable": "Enable Smart Deduplication",
+      "tip1": "Detect duplicate snapshots via content hash",
+      "tip2": "Won't create new snapshot if content is identical",
+      "tip3": "Save storage space and improve efficiency"
+    },
+    "autoClean": {
+      "title": "Auto Cleanup",
+      "description": "Periodically clean up expired snapshots",
+      "days": "Auto-cleanup Days",
+      "daysHint": "Automatically delete snapshots older than specified days (0 to disable)",
+      "unit": "days",
+      "warning": "⚠️ Auto-cleanup will permanently delete snapshots, please set carefully. Set to 0 to disable."
+    },
+    "automation": {
+      "title": "Automation Options",
+      "description": "Configure auto-create and deduplication for snapshots"
+    },
+    "infoBox": {
+      "title": "Snapshot Feature Guide",
+      "tip1": "Snapshot feature saves complete webpage content, viewable even if original page is deleted",
+      "tip2": "Enable smart deduplication to avoid duplicate content and save storage space"
+    }
+  },
+  "share": {
+    "title": "Share Settings",
+    "publicShare": {
+      "title": "Public Share",
+      "description": "Create a public link for others to view your bookmarks",
+      "enable": "Enable Public Share",
+      "enableHint": "When enabled, others can access your public bookmarks via link"
+    },
+    "slug": {
+      "label": "Share Link Suffix",
+      "placeholder": "e.g., my-bookmarks",
+      "hint": "Only letters, numbers, and hyphens allowed. Leave empty to auto-generate",
+      "regenerate": "Regenerate"
+    },
+    "pageTitle": {
+      "label": "Page Title",
+      "placeholder": "Public page title to introduce to visitors"
+    },
+    "pageDescription": {
+      "label": "Page Description",
+      "placeholder": "Optional description to explain the bookmark collection"
+    },
+    "shareLink": {
+      "label": "Share Link",
+      "placeholder": "Link will appear after generation",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "reset": "Reset",
+    "saveSuccess": "Share settings saved",
+    "saveFailed": "Failed to save",
+    "regenerateSuccess": "Link regenerated",
+    "regenerateFailed": "Failed to generate",
+    "copySuccess": "Link copied",
+    "copyFailed": "Failed to copy",
+    "resetSuccess": "Reset to last saved settings",
+    "infoBox": {
+      "title": "Share Feature Guide",
+      "tip1": "Only bookmarks marked as \"public\" will be shown on the share page",
+      "tip2": "You can modify the share link or disable sharing anytime",
+      "tip3": "Share page can be accessed without login"
+    }
+  },
+  "data": {
+    "title": "Data Management",
+    "r2Storage": {
+      "title": "R2 Storage Usage (Global)",
+      "description": "Total R2 storage used by all snapshots and cover images",
+      "currentUsage": "Current usage",
+      "unlimited": "Unlimited"
+    },
+    "importExport": {
+      "title": "Data Import/Export",
+      "description": "Import, export, and backup your bookmark data",
+      "export": "Export Data",
+      "import": "Import Data"
+    },
+    "lastOperation": {
+      "export": "Data Export",
+      "import": "Data Import",
+      "cleanup": "Snapshot Cleanup"
+    },
+    "snapshotManagement": {
+      "title": "Snapshot Management",
+      "description": "Clean up and maintain bookmark snapshot data",
+      "cleanOrphan": "Clean Orphan Snapshot Records",
+      "cleaning": "Cleaning...",
+      "cleanButton": "Clean Orphan Records"
+    },
+    "exportFeature": {
+      "title": "Export Features",
+      "description": "Multiple formats to meet different needs",
+      "jsonTitle": "JSON Format",
+      "htmlTitle": "HTML Format"
+    },
+    "importFeature": {
+      "title": "Import Features",
+      "description": "Import bookmark data from various sources",
+      "supportedFormats": "Supported Formats",
+      "smartProcessing": "Smart Processing",
+      "formatTip1": "HTML bookmark files exported from browsers",
+      "formatTip2": "JSON format bookmark data",
+      "formatTip3": "Auto-detect and skip duplicate bookmarks",
+      "formatTip4": "Convert folder structure to tags",
+      "processTip1": "Support batch processing of large files",
+      "processTip2": "Auto-extract bookmark metadata",
+      "processTip3": "Preserve creation time and description",
+      "processTip4": "Show detailed import result report"
+    },
+    "importSuccess": "Successfully imported {{success}} bookmarks, created {{tags}} tags{{failed}}",
+    "importFailed": ", {{count}} failed",
+    "fetchBookmarksFailed": "Failed to fetch bookmark list",
+    "cleanSnapshotsFailed": "Failed to clean snapshots",
+    "cleanSnapshotsSuccess": "Successfully cleaned {{count}} orphan snapshot records",
+    "cleanSnapshotsNone": "No orphan snapshot records found",
+    "cleanSnapshotsConfirmTitle": "Clean Snapshot Records",
+    "cleanSnapshotsConfirmMessage": "Are you sure you want to clean all orphan snapshot records?\n\nThis will check all snapshot records and delete those whose R2 files no longer exist.",
+    "loading": "Loading...",
+    "cleanSnapshots": {
+      "title": "Clean Orphan Snapshots",
+      "tip1": "Check all snapshot records and verify R2 file existence",
+      "tip2": "Delete database records for non-existent R2 files",
+      "tip3": "Automatically update bookmark snapshot counts",
+      "tip4": "Useful for data repair after manually deleting R2 files"
+    },
+    "export": {
+      "tip1": "Contains complete data, suitable for backup and migration",
+      "tip2": "Can choose to include tags, metadata, etc.",
+      "tip3": "Supports re-import to this system",
+      "htmlTip1": "Compatible with browser standard format",
+      "htmlTip2": "Can be directly imported to Chrome, Firefox, Edge, etc.",
+      "htmlTip3": "Preserve folder structure and bookmark hierarchy"
+    },
+    "aiSettings": {
+      "title": "AI Smart Organize",
+      "description": "Configure AI service for smart tag generation and categorization when importing bookmarks"
+    }
+  },
+  "browser": {
+    "title": "Browser Settings",
+    "download": {
+      "title": "Browser Extension Download",
+      "description": "Select your browser to download the corresponding extension",
+      "clickToDownload": "Click to download",
+      "tip": "💡 8 browser-specific versions available. You can also use the Chrome universal version (supports all Chrome-based browsers)"
+    },
+    "permissions": {
+      "title": "Browser Permissions",
+      "description": "Configure browser permissions required by TMarks for the best experience",
+      "bookmarks": {
+        "title": "Bookmark Access Permission",
+        "description": "Allow extension to read and save browser bookmarks"
+      },
+      "tabs": {
+        "title": "Tab Access Permission",
+        "description": "Allow extension to access current open tab information"
+      },
+      "storage": {
+        "title": "Storage Permission",
+        "description": "Allow extension to store data locally"
+      }
+    },
+    "popup": {
+      "title": "Popup Permission",
+      "description": "Allow TMarks to open popups to use the \"Open All Tabs\" feature.",
+      "howTo": "How to allow popups?",
+      "step1": "On the tab group detail page, click the \"Restore All\" button",
+      "step2": "A popup blocked icon will appear in the browser address bar (usually on the right)",
+      "step3": "Click the icon and select \"Always allow popups\"",
+      "step4": "Refresh the page and click \"Restore All\" again to use normally",
+      "chromeTitle": "Chrome / Edge",
+      "chromeDesc": "A 🚫 icon will appear on the right side of the address bar. Click it and select \"Always allow pop-ups and redirects\"",
+      "firefoxTitle": "Firefox",
+      "firefoxDesc": "A popup blocked notification will appear on the left side of the address bar. Click \"Options\" → \"Allow pop-ups\"",
+      "safariTitle": "Safari",
+      "safariDesc": "Menu bar: Safari → Settings → Websites → Pop-up Windows → Find current site → Select \"Allow\"",
+      "whyTitle": "💡 Why is popup permission needed?",
+      "whyDesc": "The \"Open All Tabs\" feature needs to open multiple web pages simultaneously. Browsers block batch popups by default for security. After allowing TMarks popup permission, you can open all pages in a tab group at once, greatly improving efficiency."
+    },
+    "install": {
+      "title": "Installation Steps",
+      "description": "Follow these steps to install the browser extension",
+      "step1Title": "Download extension package",
+      "step1Desc": "Click the download button above to get the extension file for your browser",
+      "step2Title": "Extract files",
+      "step2Desc": "Extract the downloaded zip file to any folder (preferably a permanent location)",
+      "step3Title": "Open extension management page",
+      "step3Desc": "Chrome: chrome://extensions/ | Edge: edge://extensions/ | Firefox: about:debugging",
+      "step4Title": "Enable developer mode",
+      "step4Desc": "In the extension management page, turn on \"Developer mode\" switch in the top right",
+      "step5Title": "Load extension",
+      "step5Desc": "Click \"Load unpacked\" and select the extracted folder",
+      "step6Title": "Installation complete",
+      "step6Desc": "Extension icon will appear in browser toolbar, click to use"
+    },
+    "faq": {
+      "title": "FAQ",
+      "iconNotFound": "Q: Can't find the extension icon after installation?",
+      "iconNotFoundAnswer": "A: Click the puzzle icon on the right side of browser toolbar, find TMarks extension and click the pin button to show it in toolbar.",
+      "howToGetApiKey": "Q: How to get API Key?",
+      "howToGetApiKeyAnswer": "A: Create a new API Key in the \"API\" tab of General Settings and copy it to the extension configuration.",
+      "supportedBrowsers": "Q: Which browsers are supported?",
+      "supportedBrowsersAnswer": "A: Supports Chrome, Edge, Firefox, Brave, Opera, 360, QQ, Sogou and other mainstream browsers.",
+      "whereToView": "Where to view saved tab groups?",
+      "whereToViewAnswer": "View and manage all saved tab groups on the \"Tab Groups\" page of TMarks website."
+    },
+    "infoBox": {
+      "title": "Usage Tips",
+      "tip1": "First-time use requires configuring TMarks website URL and API Key in the extension",
+      "tip2": "Recommended to pin the extension icon to toolbar for quick access",
+      "tip3": "Extension automatically saves tab titles, URLs, and favicons",
+      "tip4": "All data automatically syncs to cloud for seamless multi-device access"
+    }
+  },
+  "basic": {
+    "accountInfo": {
+      "title": "Account Information",
+      "description": "View your account details"
+    },
+    "username": "Username",
+    "email": "Email",
+    "registeredAt": "Registered at",
+    "role": "Account Role",
+    "roleAdmin": "Administrator",
+    "roleUser": "Regular User",
+    "notSet": "Not set",
+    "unknown": "Unknown",
+    "security": {
+      "title": "Security Settings",
+      "description": "Change your login password"
+    },
+    "password": {
+      "change": "Change Password",
+      "current": "Current Password",
+      "currentPlaceholder": "Enter current password",
+      "new": "New Password",
+      "newPlaceholder": "Enter new password (at least 6 characters)",
+      "confirm": "Confirm New Password",
+      "confirmPlaceholder": "Enter new password again",
+      "cancel": "Cancel",
+      "submit": "Confirm Change",
+      "changing": "Changing...",
+      "changeSuccess": "Password changed successfully",
+      "changeFailed": "Failed to change password",
+      "fillAllFields": "Please fill in all fields",
+      "mismatch": "New passwords do not match",
+      "tooShort": "New password must be at least 6 characters",
+      "infoBoxTitle": "Account Security Tips",
+      "tip1": "Please change your password regularly to protect account security",
+      "tip2": "Password must be at least 6 characters",
+      "tip3": "Recommended to use a combination of letters, numbers, and symbols",
+      "tip4": "Do not share your password with others"
+    }
+  },
+  "automation": {
+    "search": {
+      "title": "Search Auto-clear",
+      "description": "Set the time for search box to auto-clear after inactivity",
+      "enable": "Enable search auto-clear",
+      "enableHint": "Search box will auto-clear after specified time of inactivity",
+      "delay": "Delay time",
+      "unit": "sec"
+    },
+    "tag": {
+      "title": "Tag Selection Auto-clear",
+      "description": "Set the time for tag selection to auto-clear after inactivity",
+      "enable": "Enable tag selection auto-clear",
+      "enableHint": "Tag selection will auto-clear after specified time of inactivity",
+      "delay": "Delay time",
+      "unit": "sec"
+    },
+    "infoBox": {
+      "title": "Automation Feature Guide",
+      "tip1": "Auto-clear feature helps you quickly return to initial state, improving efficiency"
+    }
+  },
+  "appearance": {
+    "icon": {
+      "title": "Default Bookmark Icon",
+      "description": "Choose the default icon when bookmark has no cover image or favicon",
+      "favicon": "Favicon",
+      "letter": "Letter",
+      "hash": "Hash Icon",
+      "none": "No Icon"
+    },
+    "view": {
+      "title": "Default View",
+      "description": "Choose the default display mode for bookmark list",
+      "list": "List",
+      "grid": "Grid",
+      "card": "Card"
+    },
+    "density": {
+      "title": "List Density",
+      "description": "Adjust the display density of bookmark list",
+      "compact": "Compact",
+      "normal": "Normal",
+      "comfortable": "Comfortable"
+    },
+    "infoBox": {
+      "title": "Appearance Customization Guide",
+      "tip1": "These settings affect how the bookmark list is displayed, adjust according to your preference"
+    }
+  },
+  "tips": {
+    "title": "💡 Tips"
+  },
+  "ai": {
+    "custom": "Custom",
+    "title": "AI Service Configuration",
+    "description": "Configure AI service for smart import, tag suggestions, etc.",
+    "enable": "Enable AI Features",
+    "enabled": "Enabled",
+    "enableHint": "Enable to use AI smart organization features",
+    "provider": "Provider",
+    "apiKey": "API Key",
+    "getApiKey": "Get API Key",
+    "apiKeyPlaceholder": "Enter {{provider}} API Key",
+    "model": "Model",
+    "selectModel": "Select",
+    "refreshModels": "Refresh Models",
+    "refreshingModels": "Fetching...",
+    "modelsFetched": "Fetched {{count}} models, select or enter manually",
+    "modelsFetchError": "Failed to load models: {{error}}",
+    "modelsHint": "Enter API Key to auto-fetch available models, recommended: {{model}}",
+    "modelsRecommend": "Recommended: {{model}}, good value",
+    "apiUrl": "API URL",
+    "apiUrlOptional": "API URL (optional)",
+    "apiUrlHint": "Leave empty for default URL, or enter custom API endpoint",
+    "testConnection": "Test Connection",
+    "testSuccess": "Connected ({{latency}}ms)",
+    "testFailed": "Connection failed",
+    "enterApiKeyFirst": "Please enter a complete API Key first",
+    "saveSuccess": "AI settings saved",
+    "infoBox": {
+      "title": "Usage Guide",
+      "tip1": "API Key is encrypted and stored on server, will not be leaked",
+      "tip2": "AI calls are made directly from browser, data doesn't pass through TMarks server",
+      "tip3": "Recommended: DeepSeek or gpt-4o-mini for best value",
+      "tip4": "Importing 100 bookmarks costs about $0.01-0.05"
+    }
+  }
+}

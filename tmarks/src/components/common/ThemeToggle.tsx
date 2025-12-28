@@ -1,14 +1,16 @@
+import { useTranslation } from 'react-i18next'
 import { useThemeStore } from '@/stores/themeStore'
 
 export function ThemeToggle() {
+  const { t } = useTranslation('common')
   const { theme, toggleTheme } = useThemeStore()
 
   return (
     <button
       onClick={toggleTheme}
       className="btn btn-sm btn-ghost p-2"
-      aria-label="切换主题"
-      title={theme === 'light' ? '切换到暗色模式' : '切换到亮色模式'}
+      aria-label={theme === 'light' ? t('nav.toggleDarkMode') : t('nav.toggleLightMode')}
+      title={theme === 'light' ? t('nav.toggleDarkMode') : t('nav.toggleLightMode')}
     >
       {theme === 'light' ? (
         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

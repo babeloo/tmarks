@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { TabGroup } from '@/lib/types'
 import { ChevronRight, ChevronDown, Circle } from 'lucide-react'
 import { useState } from 'react'
@@ -13,6 +14,7 @@ export function TabGroupSidebar({
   selectedGroupId,
   onSelectGroup,
 }: TabGroupSidebarProps) {
+  const { t } = useTranslation('tabGroups')
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
   const totalCount = tabGroups.reduce((sum, group) => sum + (group.item_count || 0), 0)
 
@@ -34,7 +36,7 @@ export function TabGroupSidebar({
       {/* Header */}
       <div className="px-3 py-2 border-b border-border">
         <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-          标签页组
+          {t('sidebar.title')}
         </div>
       </div>
 
@@ -51,7 +53,7 @@ export function TabGroupSidebar({
             <Circle className={`w-2 h-2 ${selectedGroupId === null ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
           </div>
           <span className={`text-sm flex-1 ${selectedGroupId === null ? 'text-primary font-medium' : 'text-foreground'}`}>
-            全部
+            {t('sidebar.all')}
           </span>
           <span className="text-xs text-muted-foreground">{totalCount}</span>
         </div>
@@ -59,7 +61,7 @@ export function TabGroupSidebar({
         {/* 标签页组列表 */}
         {tabGroups.length === 0 ? (
           <div className="px-3 py-8 text-center">
-            <p className="text-xs text-muted-foreground/50">暂无分组</p>
+            <p className="text-xs text-muted-foreground/50">{t('sidebar.noGroups')}</p>
           </div>
         ) : (
           tabGroups.map((group) => {
@@ -125,7 +127,7 @@ export function TabGroupSidebar({
                     ))}
                     {(group.items?.length || 0) > 10 && (
                       <div className="px-3 py-1 pl-11 text-xs text-muted-foreground/70">
-                        还有 {(group.items?.length || 0) - 10} 项...
+                        {t('sidebar.moreItems', { count: (group.items?.length || 0) - 10 })}
                       </div>
                     )}
                   </div>

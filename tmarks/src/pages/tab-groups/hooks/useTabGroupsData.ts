@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { tabGroupsService } from '@/services/tab-groups'
 import { logger } from '@/lib/logger'
 import { searchInFields } from '@/lib/search-utils'
@@ -24,6 +25,7 @@ export function useTabGroupsData({
   setDebouncedSearchQuery,
   searchQuery,
 }: UseTabGroupsDataProps) {
+  const { t } = useTranslation('tabGroups')
   
   // 加载标签组
   const loadTabGroups = async () => {
@@ -34,7 +36,7 @@ export function useTabGroupsData({
       setTabGroups(groups.filter((g) => !g.is_deleted))
     } catch (err) {
       logger.error('Failed to load tab groups:', err)
-      setError('加载失败，请重试')
+      setError(t('page.loadFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -47,7 +49,7 @@ export function useTabGroupsData({
       setTabGroups(groups.filter((g) => !g.is_deleted))
     } catch (err) {
       logger.error('Failed to refresh tree:', err)
-      setError('刷新失败')
+      setError(t('page.refreshFailed'))
     }
   }
 
